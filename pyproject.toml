@@ -1,0 +1,28 @@
+[build-system]
+requires = ["flit"]
+build-backend = "flit.buildapi"
+
+[tool.flit.metadata]
+module = "mundi"
+dist-name = "mundi"
+author = "Fábio Macêdo Mendes"
+author-email = "fabiomacedomendes@gmail.com"
+home-page = "https://github.com/pydemic/mundi"
+classifiers = [ "License :: OSI Approved :: MIT License" ]
+description-file = "README.rst"
+requires = [
+  "pandas",
+  "sidekick",
+]
+
+[tool.flit.metadata.requires-extra]
+dev = [
+  "black",
+  "twine",
+  "pycountry",
+  "coverage~=5.0",
+  "pytest~=5.0",
+]
+
+[tool.black]
+line-length = 90
