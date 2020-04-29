@@ -64,8 +64,8 @@ ZW              Zimbabwe  country   ZW          716       ZWE         <NA>      
 <BLANKLINE>
 [255 rows x 7 columns]
 
-The :func:`mundi.countries` function is just an alias to ``mundi.regions(type="country")``.
-The more generic :func:`mundi.region` function may be used to query countries and
+The ``mundi.countries()`` function is just an alias to ``mundi.regions(type="country")``.
+The more generic ``mundi.region()`` function may be used to query countries and
 subdivisions inside a country.
 
 >>> br_states = mundi.regions(country="BR", type="state"); br_states
@@ -176,4 +176,3 @@ VG  Virgin Islands, British  country   VG          092       VGB         <NA>   
 VI     Virgin Islands, U.S.  country   VI          850       VIR         <NA>      <NA>
 <BLANKLINE>
 [76 rows x 7 columns]
-
