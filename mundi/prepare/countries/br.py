@@ -21,7 +21,7 @@ class BrRegions(Region):
         states = {v: k.split("-")[1] for k, v in self._states["name"].to_dict().items()}
 
         # Read raw data from IBGE
-        dtb = pd.read_excel(self.DATA / "br" / "divisao-do-territorio-distritos.xls")
+        dtb = pd.read_csv(self.DATA / "br" / "divisao-do-territorio-distritos.csv")
         dtb.columns = [
             "state",
             "state_name",

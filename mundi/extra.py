@@ -29,6 +29,4 @@ def load_region():
 
 @loader.filtering_from_data(["income_group"])
 def load_income_group():
-    db = loader.load_database("db-wb.pkl")
-    print(db)
     return loader.load_database("db-wb.pkl").astype(IncomeGroup)
