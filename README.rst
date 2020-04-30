@@ -10,9 +10,9 @@ plugins.
 The basic data in the mundi package is centered around a dataframe describing many world
 regions with the following structure:
 
-+==============+===========================================================================================+
-| Column       | Description                                                                               |
 +--------------+-------------------------------------------------------------------------------------------+
+|    Column    |                                        Description                                        |
++==============+===========================================================================================+
 | id (index)   | Dataframe indexes are strings and correspond to the ISO code of a region, when available. |
 +--------------+-------------------------------------------------------------------------------------------+
 | name         | Region name in English                                                                    |
