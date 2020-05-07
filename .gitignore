@@ -16,5 +16,5 @@ docker-compose*
 # gettext
 *.mo
 htmlcov/
-data/tmp/
-data/external/
+data/_tmp/
+data/*/processed/
