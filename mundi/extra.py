@@ -24,9 +24,9 @@ Region = CategoricalDtype(categories=REGIONS, ordered=False)
 
 @loader.filtering_from_data(["region"])
 def load_region():
-    return loader.load_database("db-wb.pkl").astype(Region)
+    return loader.load_database("un.pkl.gz").astype(Region)
 
 
 @loader.filtering_from_data(["income_group"])
 def load_income_group():
-    return loader.load_database("db-wb.pkl").astype(IncomeGroup)
+    return loader.load_database("un.pkl.gz").astype(IncomeGroup)

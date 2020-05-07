@@ -3,10 +3,20 @@ from pathlib import Path
 import pandas as pd
 from sidekick import import_later
 
+from .db import db
+
 DATABASES = Path(__file__).parent / "databases"
 DATA_LOADERS = {
     "region": import_later("mundi.extra:load_region"),
     "income_group": import_later("mundi.extra:load_income_group"),
+    "type": db.column_loader("type"),
+    "subtype": db.column_loader("subtype"),
+    "country_code": db.column_loader("country_code"),
+    "short_code": db.column_loader("short_code"),
+    "long_code": db.column_loader("long_code"),
+    "numeric_code": db.column_loader("numeric_code"),
+    "parent_id": db.column_loader("parent_id"),
+    "alt_parents": db.column_loader("alt_parents"),
 }
 
 
@@ -49,3 +59,26 @@ def load_database(name):
     Load data from databases.
     """
     return pd.read_pickle(DATABASES / name)
+
+
+def register(name, loader):
+    """
+    Register a loader function for the given column.
+    """
+    if isinstance(loader, str):
+        loader = import_later(loader)
+    DATA_LOADERS[name] = loader
+
+
+def unregister(name, loader=None):
+    """
+    Unregister a loader function for the given column.
+    """
+
+    registered = DATA_LOADERS.get(name)
+    if registered is None:
+        return
+    elif loader is None:
+        del DATA_LOADERS[name]
+    elif loader == registered:
+        del DATA_LOADERS[name]

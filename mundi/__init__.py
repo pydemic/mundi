@@ -10,3 +10,5 @@ __version__ = "0.1.0"
 
 from . import pandas as _pandas_mod
 from .functions import regions, countries, region, country_code, code
+from .types import Region
+from .constants import *

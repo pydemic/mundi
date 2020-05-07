@@ -2,24 +2,19 @@ import re
 from functools import lru_cache
 
 import numpy as np
+import pandas as pd
 import sidekick as sk
+
+from .types import Region
 
 db = sk.import_later(".db:db", package=__package__)
 ISO2 = re.compile(r"[A-Z]{2}")
 ISO3 = re.compile(r"[A-Z]{3}")
 MUNDI_CODE = re.compile(r"[A-Z]{2}-\w+")
-TYPES_HIERARCHY = [
-    "region",
-    "state",
-    "federal district",
-    "municipality",
-    "meso-region",
-    "micro-region",
-    "district",
-]
+TYPES_HIERARCHY = ["state", "city", "district", "region"]
 
 
-def regions(country=None, **kwargs):
+def regions(country=None, **kwargs) -> pd.DataFrame:
     """
     Query the regions/sub-divisions database.
     """
@@ -30,14 +25,14 @@ def regions(country=None, **kwargs):
     return db.query(**kwargs)
 
 
-def countries(**kwargs):
+def countries(**kwargs) -> pd.DataFrame:
     """
     Query the country database.
     """
     return regions(type="country", **kwargs)
 
 
-def region(*args, country=None, **kwargs):
+def region(*args, country=None, **kwargs) -> Region:
     """
     Query the regions/sub-divisions database.
     """
@@ -46,13 +41,14 @@ def region(*args, country=None, **kwargs):
 
     if args:
         (ref,) = args
-        return db.get(code(ref))
+        row = db.get(code(ref))
     else:
-        return db.get(**kwargs)
+        row = db.get(**kwargs)
+    return Region(row.name)
 
 
 @lru_cache(1024)
-def country_code(code):
+def country_code(code: str) -> str:
     """
     Return the country code for the given country.
 
@@ -64,21 +60,27 @@ def country_code(code):
             return code.upper()
         except LookupError:
             pass
+
     elif ISO3.fullmatch(code.upper()):
         try:
-            return db.get(long_code=code.upper(), type="country").code
+            res = db.get(long_code=code.upper(), type="country")
+            return res.name
         except LookupError:
             pass
-    elif code.isdigit():
-        return db.get(numeric_code=code, type="country").code
+
+    if code.isdigit():
+        res = db.get(numeric_code=code, type="country")
+        return res.name
+
     elif "/" not in code:
-        return db.get(name=code, type="country").code
-    else:
-        raise LookupError(code)
+        res = db.get(name=code, type="country")
+        return res.name
+
+    raise LookupError(code)
 
 
 @lru_cache(32_000)
-def code(code):
+def code(code: str) -> str:
     """
     Return the mundi code for the given region.
     """
@@ -89,40 +91,50 @@ def code(code):
 
     if MUNDI_CODE.fullmatch(code.upper()):
         try:
-            s = db.get(code.upper())
-            return code.upper()
+            res = db.get(code)
+            return res.name
         except LookupError:
             pass
         country, _, division = code.partition("-")
+
     elif "/" in code:
         country, _, division = code.partition("/")
+
     else:
         raise LookupError(code)
+
     country = country_code(country)
     return _subdivision_code(country, division)
 
 
 @lru_cache(32_000)
-def _subdivision_code(country, subdivision):
+def _subdivision_code(country: str, subdivision: str) -> str:
     """
     Return the mundi code for the given subdivision of a country.
     """
     if subdivision.isdigit():
-        entry = db.get(numeric_code=subdivision, country_code=country).code
-        return country + "-" + entry
+        res = db.get(numeric_code=subdivision, country_code=country)
+        return f"{country}-{res.name}"
+
     else:
-        for lookup in ["code", "long_code"]:
+        for lookup in ["short_code", "long_code"]:
             kwargs = {lookup: subdivision, "country_code": country}
             try:
-                return country + "-" + db.get(**kwargs).code
+                res = db.get(**kwargs)
+                return f"{country}-{res.name}"
             except LookupError:
                 pass
 
-        values = db.query(country_code=country, name=subdivision)
+        values = db.query(
+            country_code=country, name=subdivision, cols=("id", "type", "subtype")
+        )
+
         if len(values) == 1:
             return values.index[0]
         elif len(values) > 1:
             pos = np.argsort([TYPES_HIERARCHY.index(x) for x in values["type"]])
+            print(values)
+            print(pos)
             return values.index[pos[0]]
         else:
             raise LookupError(code)

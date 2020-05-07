@@ -1,9 +1,11 @@
+import sys
+from abc import ABC
 from pathlib import Path
 
 import pandas as pd
 
 
-class Loader:
+class Loader(ABC):
     """
     Prepare raw d ata and save it in a useful form.
     """
@@ -104,7 +106,7 @@ class Loader:
         base = base or self.DATABASES
         format = format or self.FORMAT
         if format == "pickle":
-            return base / (target or self.TARGET + f"-{self.KEY}.pkl")
+            return base / (target or self.TARGET + f"-{self.KEY}.pkl.gz")
         elif format == "sql":
             return base / (target or self.TARGET + ".sqlite")
         elif format == "hdf5":
@@ -112,16 +114,14 @@ class Loader:
         else:
             raise RuntimeError("invalid format!")
 
-
-# TODO: report bug, check which versions are affected by it
-def fix_string_columns_bug(df):
-    """
-    It seems that pandas do not load pickled dataframes with string columns
-    with pd.NA values.
-
-    It seems to work in small dataframes, but not large(ish) ones.
-    """
-    for col, dtype in df.dtypes.items():
-        if dtype == "string":
-            df[col] = df[col].astype(str).fillna(pd.NA).astype("string")
-    return df
+    def find_path(self, sub):
+        """
+        Return the path to the databases directory.
+        """
+        mod = sys.modules[type(self).__module__]
+        path = Path(mod.__file__).resolve().absolute()
+        while path.parent and path.parent != path:
+            path = path.parent
+            if (path / sub).exists():
+                return path / sub
+        return path
