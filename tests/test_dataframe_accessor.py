@@ -15,7 +15,7 @@ class TestDataFrameAccessor:
 
     def test_extract_and_append_extra_columns(self, db):
         extra = db.mundi[..., "income_group"]
-        assert extra.shape == (10, 8)
+        assert extra.shape == (10, 2)
 
     def test_extract_multiple_columns(self, db):
         extra = db.mundi["region", "income_group"]

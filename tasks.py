@@ -9,8 +9,14 @@ def test(ctx):
 
 
 @task
-def prepare_data(ctx, clear=False):
-    if clear:
-        ctx.run("rm data/tmp/* -rfv")
-    ctx.run("rm mundi/databases/* -rfv")
-    ctx.run("python -m mundi.prepare")
+def prepare_data(ctx, fast=False):
+    if not fast:
+        ctx.run("rm mundi/databases/* -rfv")
+        ctx.run("python -m mundi prepare mundi")
+        print()
+
+    ctx.run("python -m mundi compile mundi mundi -o db.sqlite -f fix_types")
+    print()
+    ctx.run("python -m mundi compile mundi un -o db.sqlite -f fix_types")
+    print()
+    ctx.run("python -m mundi compile mundi un -o un.pkl.gz")

@@ -3,7 +3,7 @@ import pytest
 from pandas.testing import assert_frame_equal
 
 import mundi
-import mundi.functions
+from mundi import Region
 
 
 class TestDb:
@@ -13,11 +13,10 @@ class TestDb:
 
     @pytest.fixture
     def countries(self):
-        return mundi.functions.countries(["br", "it", "cn"])
+        return mundi.countries(["br", "it", "cn"])
 
     def test_load_countries(self):
-        db = mundi.functions.countries()
-        assert (db["type"] == "country").all()
+        db = mundi.countries()
         assert len(db) == 255
 
     def test_load_countries_is_an_alias_to_regions(self):
@@ -27,19 +26,30 @@ class TestDb:
 
     def test_load_states_from_regions(self):
         db = mundi.functions.regions(type="state", country="BR")
+        print(db)
         assert len(db) == 27
 
     def test_load_country(self):
-        br = mundi.region("br")
-        assert isinstance(br, pd.Series)
-        assert len(br.index) == 7
+        br = mundi.region("BR")
+        assert isinstance(br, Region)
+        assert br.id == "BR"
         assert br["name"] == "Brazil"
         assert br["type"] == "country"
-        assert br["code"] == "BR"
+        assert br["short_code"] == "BR"
         assert br["numeric_code"] == "076"
         assert br["long_code"] == "BRA"
-        assert br["country_code"] is pd.NA
-        assert br["parent_id"] is pd.NA
+        assert br["country_code"] is None
+        assert br["parent_id"] == "XSA"
+
+        ar = mundi.region("ar")
+        assert isinstance(ar, Region)
+        assert ar["name"] == "Argentina"
+        assert ar["type"] == "country"
+        assert ar["short_code"] == "AR"
+        assert ar["numeric_code"] == "032"
+        assert ar["long_code"] == "ARG"
+        assert ar["country_code"] is None
+        assert br["parent_id"] == "XSA"
 
 
 class TestBR:
