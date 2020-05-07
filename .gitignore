@@ -18,3 +18,4 @@ docker-compose*
 htmlcov/
 data/_tmp/
 data/*/processed/
+mundi/databases/
