@@ -1,5 +1,5 @@
 import sqlite3
-from collections import Sequence
+from collections.abc import Sequence
 from functools import lru_cache
 from pathlib import Path
 
@@ -99,7 +99,7 @@ class RegionsDB:
 
         ids = ",".join(map(repr, ids))
         cmd = "SELECT id, %s FROM {table} WHERE id IN (%s);" % (col, ids)
-        return self.sql(cmd)
+        return self.sql(cmd, index=True)
 
     def sql(self, sql, copy=True, index=False):
         """

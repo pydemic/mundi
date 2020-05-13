@@ -40,13 +40,23 @@ class TestRegion:
         regions = br.children(deep=False)
         assert set(regions) == {Region("BR-5301"), Region("BR-SUS:53001")}
 
+    def test_parents(self):
+        brb = Region("BR-5300108")
+        assert brb.parent.id == "BR-530101"
+        assert brb.parent.parent.id == "BR-5301"
+        assert brb.parent.parent.parent.id == "BR-DF"
+        assert brb.parent.parent.parent.parent.id == "BR-5"
+        assert brb.parent.parent.parent.parent.parent.id == "BR"
+        assert brb.parent.parent.parent.parent.parent.parent.id == "XSA"
+        assert brb.parent.parent.parent.parent.parent.parent.parent.id == "XX"
+
     def test_region_children_in_multiple_hierarchies(self):
         europe = Region("XEU")
         asia = Region("XAS")
         russia = Region("RU")
 
         assert russia in asia.children()
-        assert russia not in asia.children(only_primary=True)
+        assert russia not in asia.children(which="primary")
 
         assert russia in europe.children()
-        assert russia in europe.children(only_primary=True)
+        assert russia in europe.children(which="primary")

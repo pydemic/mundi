@@ -63,8 +63,18 @@ class Region:
             f"id       : {self.id}\n"
             f"name     : {self.name}\n"
             f"type     : {self.type}\n"
-            f"sub_type : {self.sub_type}"
+            f"subtype  : {self.subtype}"
         )
+
+    def __lt__(self, other):
+        if isinstance(other, Region):
+            return self.id < other.id
+        return NotImplemented
+
+    def __gt__(self, other):
+        if isinstance(other, Region):
+            return self.id > other.id
+        return NotImplemented
 
     def _get_field(self, key):
         fget = REGION_PLUGINS[key]
@@ -79,7 +89,7 @@ class Region:
         Convert Region to a dictionary including all requested attributes.
         """
         get = self._get_field
-        return {"id": self._id, "name": self.name, **{f: get(f) for f in fields}}
+        return {"id": self.id, "name": self.name, **{f: get(f) for f in fields}}
 
     def to_series(self, *fields: str) -> pd.Series:
         """
@@ -96,29 +106,34 @@ class Region:
         pk = self.parent_id
         return Region(pk) if pk else None
 
-    def children(self, dataframe=False, deep=False, only_primary=False):
+    def children(self, dataframe=False, deep=False, which="both"):
         """
         Return list of children.
         """
         if dataframe:
             raise NotImplementedError
 
-        ids = self._children_ids(only_primary)
+        primary = which in ("primary", "both")
+        secondary = which in ("secondary", "both")
+        ids = self._children_ids(primary, secondary)
         if deep:
             non_processed = ids.copy()
             while non_processed:
                 id = non_processed.pop()
-                new = Region(id)._children_ids(only_primary)
+                new = Region(id)._children_ids(primary, secondary)
                 non_processed.update(new - ids)
                 ids.update(new)
 
         return [Region(id) for id in ids]
 
-    def _children_ids(self, only_primary) -> set:
-        res = db.query(parent_id=self.id, cols=("id",))
-        ids = set(res["id"])
+    def _children_ids(self, primary, secondary) -> set:
+        ids = set()
 
-        if not only_primary:
+        if primary:
+            res = db.query(parent_id=self.id, cols=("id",))
+            ids.update(res["id"])
+
+        if secondary:
             cmd = f"SELECT id FROM mundi WHERE alt_parents LIKE '%;{self.id}%';"
             ids.update(map(lambda x: x[0], db.raw_sql(cmd)))
 

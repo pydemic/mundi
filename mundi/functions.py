@@ -1,5 +1,6 @@
 import re
 from functools import lru_cache
+from typing import Union
 
 import numpy as np
 import pandas as pd
@@ -10,7 +11,7 @@ from .types import Region
 db = sk.import_later(".db:db", package=__package__)
 ISO2 = re.compile(r"[A-Z]{2}")
 ISO3 = re.compile(r"[A-Z]{3}")
-MUNDI_CODE = re.compile(r"[A-Z]{2}-\w+")
+MUNDI_CODE = re.compile(r"[A-Z]{2}-\w+(:\w+)*")
 TYPES_HIERARCHY = ["state", "city", "district", "region"]
 
 
@@ -41,6 +42,8 @@ def region(*args, country=None, **kwargs) -> Region:
 
     if args:
         (ref,) = args
+        if isinstance(ref, Region):
+            return ref
         row = db.get(code(ref))
     else:
         row = db.get(**kwargs)
@@ -54,6 +57,11 @@ def country_code(code: str) -> str:
 
     Similar to the code() function, but only accept valid countries.
     """
+    if isinstance(code, Region):
+        if code.type != "country":
+            raise ValueError(f"region is not a country: {code}")
+        return code.id
+
     if ISO2.fullmatch(code.upper()):
         try:
             db.get(code)
@@ -80,10 +88,13 @@ def country_code(code: str) -> str:
 
 
 @lru_cache(32_000)
-def code(code: str) -> str:
+def code(code: Union[Region, str]) -> str:
     """
     Return the mundi code for the given region.
     """
+    if isinstance(code, Region):
+        return code.id
+
     try:
         return country_code(code)
     except LookupError:
@@ -133,8 +144,6 @@ def _subdivision_code(country: str, subdivision: str) -> str:
             return values.index[0]
         elif len(values) > 1:
             pos = np.argsort([TYPES_HIERARCHY.index(x) for x in values["type"]])
-            print(values)
-            print(pos)
             return values.index[pos[0]]
         else:
             raise LookupError(code)
