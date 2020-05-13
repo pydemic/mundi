@@ -6,7 +6,7 @@ import pycountry
 import mundi
 
 inv = lambda d: {v: k for k, v in d.items()}
-PATH = Path(__file__).parent
+PATH = Path(__file__).parent.resolve()
 COL_RENAME = {"alpha_2": "short_code", "alpha_3": "long_code", "numeric": "numeric_code"}
 REGION_MAP = inv(mundi.REGION_DESCRIPTIONS)
 INCOME_MAP = inv(mundi.INCOME_GROUP_DESCRIPTIONS)
@@ -26,7 +26,6 @@ df.index.name = "id"
 
 df["type"] = "country"
 df["subtype"] = pd.NA
-df["parent_id"] = "XX"
 df["country_code"] = pd.NA
 df = df.astype("string")
 
@@ -51,17 +50,17 @@ print(f"UN data saved to {path}")
 # Loading continents
 #
 
+# Load continent codes
+# https://en.wikipedia.org/wiki/List_of_sovereign_states_and_dependent_territories_by_continent_(data_file)#Data_file
+data = pd.read_csv(PATH / "countries-to-continents.csv", index_col=0, dtype="string")
+df["parent_id"] = "X" + data["continent_id"]
+
 # Load continents
 data = pd.read_csv(PATH / "continents.csv").fillna("NA").set_index("id")
 data["type"] = "continent"
 data["parent_id"] = "XX"
 data["short_code"] = data.index
-df = df.append(data)
-
-# Load continent codes
-# https://en.wikipedia.org/wiki/List_of_sovereign_states_and_dependent_territories_by_continent_(data_file)#Data_file
-data = pd.read_csv(PATH / "countries-to-continents.csv", index_col=0, dtype="string")
-df["parent_id"] = "X" + data["continent_id"].fillna("NA")
+df = pd.concat([df, data]).astype("string")
 
 # Transcontinental countries are assigned to their secondary continent in the
 # alt_parent column.

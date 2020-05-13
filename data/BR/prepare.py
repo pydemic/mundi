@@ -104,7 +104,7 @@ def states():
 
 
 @lru_cache(1)
-def sus():
+def SUS():
     """
     SUS healthcare regions.
     """
@@ -127,6 +127,7 @@ def sus():
     out["short_code"] = "SUS:" + out.index
     out["numeric_code"] = out.index
     out["long_code"] = pd.NA
+    out["alt_parents"] = pd.NA
     out.index = "BR-" + out["short_code"]
     return out.astype("string")
 
@@ -202,7 +203,7 @@ def _subdivisions():
 
 
 # Save tables
-for i, fn in enumerate([macro_regions, states, sus, subdivisions], start=1):
+for i, fn in enumerate([macro_regions, states, SUS, subdivisions], start=1):
     name = fn.__name__.rstrip("s")
     path = PATH / "processed" / f"mundi-C{i}-{name}.pkl"
     df = fn()
