@@ -11,6 +11,7 @@ from typing import Dict, List, Iterable
 import pandas as pd
 import sidekick as sk
 
+from ..functions import regions
 from ..types import PandasT
 
 sqlite3 = sk.import_later("sqlite3")
@@ -19,6 +20,8 @@ PICKLE_EXTENSIONS = (".pkl", ".pickle", ".pkl.gz", ".pickle.gz")
 SQL_EXTENSIONS = (".sql", ".sqlite")
 CSV_EXTENSIONS = (".csv", ".csv.gz", ".csv.bz2")
 HDF5_EXTENSIONS = (".hdf", ".hfd5")
+
+db = sk.deferred(regions)
 
 
 def find_data_path(package) -> Path:
@@ -110,22 +113,48 @@ def collect_processed_data(package, kind=None) -> PandasT:
     paths = collect_processed_paths(package, kind)
     paths = list(chain(*paths.values()))
     paths.sort(key=lambda x: x.name)
+    if not paths:
+        raise ValueError(f"Empty list of datasets for {package}/{kind}")
 
+    cols = None
     datasets = []
     for p in paths:
         df = read_path(p, kind)
         df.index.name = "id"
+        if isinstance(df, pd.Series):
+            pass
+        elif cols is None:
+            cols = set(df.columns)
+        elif set(df.columns) != cols:
+            invalid = cols.symmetric_difference(df.columns)
+            raise ValueError(
+                f"different columns in two paths:\n"
+                f"- {p}\n"
+                f"- {paths[0]}"
+                f"- Columns: {invalid}"
+            )
+
+        if package != "mundi" and not df.index.isin(db.index).all():
+            invalid = set(df.index) - db.index
+            raise ValueError(
+                f"index contain invalid mundi codes:\n"
+                f"- {p}\n"
+                f"- Invalid codes: {invalid}"
+            )
+
         datasets.append(df)
 
-    data = (
-        pd.concat(datasets)
-        .reset_index()
-        .drop_duplicates("id", keep="last")
-        .set_index("id")
-        .sort_index()
-    )
-    data.index.name = "id"
-    return data
+    data = pd.concat(datasets).reset_index()
+    if isinstance(data, pd.Series):
+        data = data.drop_duplicates(keep="last")
+    elif isinstance(data.columns, pd.MultiIndex):
+        col = data.columns[0]
+        data = data.drop_duplicates(col, keep="last")
+        data = data.set_index("id")
+    else:
+        data = data.drop_duplicates("id", keep="last")
+        data = data.set_index("id")
+    return data.sort_index()
 
 
 def clean_processed_data(package, kind=None, verbose=False):
@@ -195,7 +224,7 @@ def fix_string_columns_bug(df):
     columns = list(df.columns)
 
     for col_name, dtype in df.dtypes.items():
-        if dtype == "string":
+        if isinstance(dtype, pd.StringDtype):
             col = df.pop(col_name).astype(str)
             col = col[col != "<NA>"]
             col = col[~col.isna()]

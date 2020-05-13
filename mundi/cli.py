@@ -13,10 +13,18 @@ def plugin():
 @plugin.command()
 @click.argument("package")
 @click.option("--silent", "-s", is_flag=True, help="Do not print debug messages")
-def prepare(package, silent):
+def prepare_cmd(**kwargs):
     """
     Prepare data for mundi plugin.
     """
+    prepare(**kwargs)
+
+
+def prepare(package, silent=False):
+    """
+    Prepare data for mundi plugin.
+    """
+
     from .plugin import utils
 
     log = lambda *args: None if silent else click.echo(*args)
@@ -38,7 +46,14 @@ def prepare(package, silent):
 @click.option(
     "--fix", "-f", multiple=True, help="Name of functions used to post-process data"
 )
-def compile(package, kind, output, fix, silent):
+def compile_cmd(**kwargs):
+    """
+    Compile prepared data for mundi plugin.
+    """
+    compile(**kwargs)
+
+
+def compile(package, kind=None, output=None, fix=(), silent=False):
     """
     Compile prepared data for mundi plugin.
     """
@@ -47,7 +62,7 @@ def compile(package, kind, output, fix, silent):
     log = lambda *args: None if silent else click.echo(*args)
     t0 = time.time()
 
-    log("Collecting processed files...")
+    log(f"Collecting processed files for {package}/{kind}")
     data = utils.collect_processed_data(package, kind)
     try:
         mod = importlib.import_module(package)
@@ -56,6 +71,12 @@ def compile(package, kind, output, fix, silent):
 
     # Apply fixes
     for name in fix:
+        if callable(name):
+            fn = name
+            log(f"Applying fix: {fn.__name__}...")
+            data = fn(package, kind, data)
+            continue
+
         log(f"Applying fix: {name}...")
 
         # Normalize name
