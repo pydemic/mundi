@@ -7,6 +7,14 @@ as a convenient set of classes and Pandas dataframes. It uses information provid
 popular pycountry package and supplement it with several other data sources using
 plugins.
 
+Warning!
+========
+
+Mundi is still in an early stage of development and thus is changing very quickly. New users
+should expect some risks in terms of API changes and general breakage. We suggest that if you
+want to take that risk, install it from git and keep in touch with the developers (and better yet,
+contribute to the project).
+
 Usage
 =====
 
