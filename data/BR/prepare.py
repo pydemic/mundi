@@ -41,14 +41,6 @@ def territory():
 
 
 @lru_cache(1)
-def sus_division():
-    """
-    Return dataframe with raw data about SUS regions.
-    """
-    return pd.read_csv(PATH / "regionais-de-saude.csv", dtype="string", index_col=0)
-
-
-@lru_cache(1)
 def macro_regions():
     """
     Macro regions, i.e., Norte, Nordeste, Sudeste, Sul e Centro-Oeste.
@@ -109,26 +101,15 @@ def SUS():
     SUS healthcare regions.
     """
 
-    state_id = dict(states()["numeric_code"])
-    state_id = {v: k for k, v in state_id.items()}
-
-    out = sus_division()
-    out = (
-        out[["sus_id", "name"]]
-        .drop_duplicates("sus_id")
-        .rename({"sus_id": "id"}, axis=1)
-        .set_index("id")
-    )
-
+    out = pd.read_csv(PATH / "sus-macros.csv", dtype="string")
     out["type"] = "region"
     out["subtype"] = "healthcare region"
     out["country_code"] = "BR"
-    out["parent_id"] = [state_id[x[:2]] for x in out.index]
-    out["short_code"] = "SUS:" + out.index
-    out["numeric_code"] = out.index
-    out["long_code"] = pd.NA
+    out["short_code"] = out["id"].str[7:]
+    out["numeric_code"] = out["id"].str[7:]
+    out["long_code"] = out["id"].str[3:]
     out["alt_parents"] = pd.NA
-    out.index = "BR-" + out["short_code"]
+    out = out.set_index("id")
     return out.astype("string")
 
 
@@ -140,9 +121,8 @@ def subdivisions():
     Include SUS regions as parent_extra after loading raw _subdivisions
     """
     out = _subdivisions()
-    sus = sus_division()
-    sus.index = "BR-" + sus.index
-    out["alt_parents"] = ";BR-SUS:" + sus["sus_id"]
+    sus = pd.read_csv(PATH / "sus-cities.csv", index_col=0, dtype="string")
+    out["alt_parents"] = ";" + sus["sus_id"]
     return out
 
 

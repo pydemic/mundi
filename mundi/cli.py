@@ -10,7 +10,7 @@ def plugin():
     pass
 
 
-@plugin.command()
+@plugin.command(name="prepare")
 @click.argument("package")
 @click.option("--silent", "-s", is_flag=True, help="Do not print debug messages")
 def prepare_cmd(**kwargs):
@@ -38,7 +38,7 @@ def prepare(package, silent=False):
     log(f"Finished in {time.time() - t0:.2} seconds.")
 
 
-@plugin.command()
+@plugin.command(name="compile")
 @click.argument("package")
 @click.argument("kind")
 @click.option("--silent", "-s", is_flag=True, help="Do not print debug messages")

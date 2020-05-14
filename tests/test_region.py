@@ -34,11 +34,11 @@ class TestRegion:
             Region("BR-5301"),
             Region("BR-530101"),
             Region("BR-5300108"),
-            Region("BR-SUS:53001"),
+            Region("BR-SUS:5301"),
         }
 
         regions = br.children(deep=False)
-        assert set(regions) == {Region("BR-5301"), Region("BR-SUS:53001")}
+        assert set(regions) == {Region("BR-5301"), Region("BR-SUS:5301")}
 
     def test_parents(self):
         brb = Region("BR-5300108")

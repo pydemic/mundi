@@ -1,0 +1,118 @@
+id,name,parent_id
+BR-SUS:2301,1ª Macro - Fortaleza,BR-CE
+BR-SUS:2302,2ª Macro - Sobral,BR-CE
+BR-SUS:2303,3ª Macro - Cariri,BR-CE
+BR-SUS:2304,4ª Macro - Sertão Central,BR-CE
+BR-SUS:2305,5ª Macro - Litoral Leste/Jaguaribe,BR-CE
+BR-SUS:2701,1ª Macrorregião de Saúde,BR-AL
+BR-SUS:2702,2ª Macrorregião de Saúde,BR-AL
+BR-SUS:2601,Agreste,BR-PE
+BR-SUS:2602,Metropolitana,BR-PE
+BR-SUS:2603,Sertão,BR-PE
+BR-SUS:2604,Vale do S.Francisco e Araripe,BR-PE
+BR-SUS:4201,Alto Vale do Itajaí,BR-SC
+BR-SUS:4202,Foz do Rio Itajaí,BR-SC
+BR-SUS:4203,Grande Florianópolis,BR-SC
+BR-SUS:4204,Grande Oeste,BR-SC
+BR-SUS:4205,Meio Oeste e Serra Catarinense,BR-SC
+BR-SUS:4206,Planalto Norte e Nordeste,BR-SC
+BR-SUS:4207,Sul,BR-SC
+BR-SUS:5001,Campo Grande,BR-MS
+BR-SUS:5002,Corumbá,BR-MS
+BR-SUS:5003,Dourados,BR-MS
+BR-SUS:5004,Três Lagoas,BR-MS
+BR-SUS:1301,Central,BR-AM
+BR-SUS:1302,Leste,BR-AM
+BR-SUS:1303,Oeste,BR-AM
+BR-SUS:3201,Central,BR-ES
+BR-SUS:3202,Metropolitana,BR-ES
+BR-SUS:3203,Norte,BR-ES
+BR-SUS:3204,Sul,BR-ES
+BR-SUS:2901,Centro-Leste (NRS - Feira Santana),BR-BA
+BR-SUS:2902,Centro - Norte (NRS - Jacobina),BR-BA
+BR-SUS:2903,Extremo Sul (NRS - Teixeira Freitas),BR-BA
+BR-SUS:2904,Leste - (NRS - Salvador),BR-BA
+BR-SUS:2905,Nordeste (NRS - Alagoinhas),BR-BA
+BR-SUS:2906,Norte - (NRS - Juazeiro),BR-BA
+BR-SUS:2907,Oeste (NBS - Barreiras),BR-BA
+BR-SUS:2908,Sudoeste (NBS - Vitória Conquista),BR-BA
+BR-SUS:2909,Sul (NBS - Ilhéus),BR-BA
+BR-SUS:4301,Centro-oeste,BR-RS
+BR-SUS:4302,Metropolitana,BR-RS
+BR-SUS:4303,Missioneira,BR-RS
+BR-SUS:4304,Norte,BR-RS
+BR-SUS:4305,Serra,BR-RS
+BR-SUS:4306,Sul,BR-RS
+BR-SUS:4307,Vales,BR-RS
+BR-SUS:2201,Cerrados,BR-PI
+BR-SUS:2202,Litoral,BR-PI
+BR-SUS:2203,Meio Norte,BR-PI
+BR-SUS:2204,Semi-árido,BR-PI
+BR-SUS:5301,Distrito Federal,BR-DF
+BR-SUS:3101,Macrorregião Centro,BR-MG
+BR-SUS:3102,Macrorregião Centro-Sul,BR-MG
+BR-SUS:3103,Macrorregião Jequitinhonha ,BR-MG
+BR-SUS:3104,Macrorregião Leste,BR-MG
+BR-SUS:3105,Macrorregião Leste do Sul,BR-MG
+BR-SUS:3106,Macrorregião Nordeste,BR-MG
+BR-SUS:3107,Macrorregião Noroeste,BR-MG
+BR-SUS:3108,Macrorregião Norte,BR-MG
+BR-SUS:3109,Macrorregião Oeste,BR-MG
+BR-SUS:3110,Macrorregião Sudeste,BR-MG
+BR-SUS:3111,Macrorregião Sul ,BR-MG
+BR-SUS:3112,Macrorregião Triângulo do Norte,BR-MG
+BR-SUS:3113,Macrorregião Triângulo do Sul,BR-MG
+BR-SUS:5101,Macrorregião Centro-Norte,BR-MT
+BR-SUS:5102,Macrorregião Leste,BR-MT
+BR-SUS:5103,Macrorregião Norte ,BR-MT
+BR-SUS:5104,Macrorregião Oeste,BR-MT
+BR-SUS:5105,Macrorregião Sul ,BR-MT
+BR-SUS:5201,Macrorregião Centro-Norte,BR-GO
+BR-SUS:5202,macrorregião Centro-Oeste,BR-GO
+BR-SUS:5203,Macrorregião Centro Sudeste,BR-GO
+BR-SUS:5204,Macrorregião Nordeste,BR-GO
+BR-SUS:5205,Macrorregião Sudoeste,BR-GO
+BR-SUS:1701,Macrorregião Centro-Sul,BR-TO
+BR-SUS:1702,Macrorregião Norte,BR-TO
+BR-SUS:2401,Macrorregião I,BR-RN
+BR-SUS:2402,macrorregião II,BR-RN
+BR-SUS:3301,Macrorregião II,BR-RJ
+BR-SUS:3302,Macrorregião III,BR-RJ
+BR-SUS:3303,Metropolitana I,BR-RJ
+BR-SUS:2501,Macrorregião II - Campina Grande,BR-PB
+BR-SUS:2502,Macrorregião III - Sertão/Alto Sertão,BR-PB
+BR-SUS:2503,Macrorregião I - João Pessoa,BR-PB
+BR-SUS:1101,Macrorregião I - Porto Velho,BR-RO
+BR-SUS:1102,Macrorregional II (Cacoal),BR-RO
+BR-SUS:2101,Macrorregião Leste,BR-MA
+BR-SUS:2102,Macrorregião Norte,BR-MA
+BR-SUS:2103,Macrorregião Sul,BR-MA
+BR-SUS:4101,Macrorregião Oeste,BR-PR
+BR-SUS:4102,Macrorregional Leste,BR-PR
+BR-SUS:4103,Macrorregional Noroeste,BR-PR
+BR-SUS:4104,Macrorregional Norte,BR-PR
+BR-SUS:1501,Macrorregional I,BR-PA
+BR-SUS:1502,Macrorregional II,BR-PA
+BR-SUS:1503,Macrorregional III ,BR-PA
+BR-SUS:1504,Macrorregional IV,BR-PA
+BR-SUS:2801,Macro Única,BR-SE
+BR-SUS:1201,Macro única - AC,BR-AC
+BR-SUS:1601,Macro única - AP,BR-AP
+BR-SUS:1401,Macro única - RR,BR-RR
+BR-SUS:3501,RRAS1,BR-SP
+BR-SUS:3502,RRAS10,BR-SP
+BR-SUS:3503,RRAS11,BR-SP
+BR-SUS:3504,RRAS12,BR-SP
+BR-SUS:3505,RRAS13,BR-SP
+BR-SUS:3506,RRAS14,BR-SP
+BR-SUS:3507,RRAS15,BR-SP
+BR-SUS:3508,RRAS16,BR-SP
+BR-SUS:3509,RRAS17,BR-SP
+BR-SUS:3510,RRAS2,BR-SP
+BR-SUS:3511,RRAS3,BR-SP
+BR-SUS:3512,RRAS4,BR-SP
+BR-SUS:3513,RRAS5,BR-SP
+BR-SUS:3514,RRAS6,BR-SP
+BR-SUS:3515,RRAS7,BR-SP
+BR-SUS:3516,RRAS8,BR-SP
+BR-SUS:3517,RRAS9,BR-SP
