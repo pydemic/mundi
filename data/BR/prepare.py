@@ -123,6 +123,7 @@ def subdivisions():
     out = _subdivisions()
     sus = pd.read_csv(PATH / "sus-cities.csv", index_col=0, dtype="string")
     out["alt_parents"] = ";" + sus["sus_id"]
+    print(out[out["type"] == "city"])
     return out
 
 
@@ -157,7 +158,7 @@ def _subdivisions():
             Row(city_id, row.city_name, "city", "municipality", micro_id, city_long_id)
         )
         district.add(
-            Row(district_id, row.district_name, "district", pd.NA, city_id, pd.NA)
+            Row(district_id, row.district_name, "district", pd.NA, city_long_id, pd.NA)
         )
 
     def mk_table(data):

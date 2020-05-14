@@ -6,7 +6,7 @@ Mundi has a plug-in system that expands the data sets to many other
 specialized uses.
 """
 __author__ = "Fábio Mendes"
-__version__ = "0.2.1"
+__version__ = "0.2.2"
 
 from . import pandas as _pandas_mod
 from .functions import regions, countries, region, country_code, code

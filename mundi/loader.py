@@ -9,6 +9,7 @@ DATABASES = Path(__file__).parent / "databases"
 DATA_LOADERS = {
     "region": import_later("mundi.extra:load_region"),
     "income_group": import_later("mundi.extra:load_income_group"),
+    "name": db.column_loader("name"),
     "type": db.column_loader("type"),
     "subtype": db.column_loader("subtype"),
     "country_code": db.column_loader("country_code"),

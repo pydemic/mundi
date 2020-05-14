@@ -34,6 +34,7 @@ class TestRegion:
             Region("BR-5301"),
             Region("BR-530101"),
             Region("BR-5300108"),
+            Region("BR-530010805"),
             Region("BR-SUS:5301"),
         }
 

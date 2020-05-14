@@ -60,6 +60,7 @@ data = pd.read_csv(PATH / "continents.csv").fillna("NA").set_index("id")
 data["type"] = "continent"
 data["parent_id"] = "XX"
 data["short_code"] = data.index
+data.loc["XX", "parent_id"] = pd.NA
 df = pd.concat([df, data]).astype("string")
 
 # Transcontinental countries are assigned to their secondary continent in the
