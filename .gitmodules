@@ -1,0 +1,3 @@
+[submodule "mundi-data"]
+	path = mundi-data
+	url = https://github.com/pydemic/mundi-data
