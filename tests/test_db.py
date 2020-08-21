@@ -38,7 +38,7 @@ class TestDb:
         assert br["short_code"] == "BR"
         assert br["numeric_code"] == "076"
         assert br["long_code"] == "BRA"
-        assert br["country_code"] is None
+        assert br["country_id"] is None
         assert br["parent_id"] == "XSA"
 
         ar = mundi.region("ar")
@@ -48,7 +48,7 @@ class TestDb:
         assert ar["short_code"] == "AR"
         assert ar["numeric_code"] == "032"
         assert ar["long_code"] == "ARG"
-        assert ar["country_code"] is None
+        assert ar["country_id"] is None
         assert br["parent_id"] == "XSA"
 
 

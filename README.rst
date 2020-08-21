@@ -23,7 +23,7 @@ it and load the desired information. Mundi exposes collections of entries as dat
 and single entries (rows in those dataframes) as Series objects.
 
 >>> import mundi
->>> df = mundi.countries(); df  # DOCTEST: +ELLIPSIS
+>>> df = mundi.country_dataframe(); df  # DOCTEST: +ELLIPSIS
                     name
 id
 AD               Andorra
@@ -33,11 +33,11 @@ AG   Antigua and Barbuda
 AI              Anguilla
 ...
 
-The ``mundi.countries()`` function is just an alias to ``mundi.regions(type="country")``.
+The ``mundi.country_dataframe()`` function is just an alias to ``mundi.country_dataframe(type="country")``.
 The more generic ``mundi.region()`` function may be used to query countries and
 subdivisions inside a country.
 
->>> br_states = mundi.regions(country="BR", type="state"); br_states  # DOCTEST: +ELLIPSIS
+>>> br_states = mundi.region_dataframe(country="BR", type="state"); br_states  # DOCTEST: +ELLIPSIS
                       name
 id
 BR-AC                 Acre
@@ -78,7 +78,7 @@ Each region also exhibit those values as attributes
 It is also possible to keep the columns of the original dataframe using
 the ellipsis syntax
 
->>> df = df.mundi[..., "region", "income_group"]; df    # DOCTEST: +ELLIPSIS
+>>> df = df.mundi[..., ["region", "income_group"]]; df    # DOCTEST: +ELLIPSIS
                     name         region  income_group
 id
 AD               Andorra         europe          high
@@ -113,7 +113,7 @@ regions with the following structure:
 +---------------+-------------------------------------------------------------------------------------------+
 |    Column     |                                        Description                                        |
 +===============+===========================================================================================+
-| id (index)    | Dataframe indexes are strings and correspond to the ISO code of a region, when available. |
+| id  (index)   | Dataframe indexes are strings and correspond to the ISO code of a region, when available. |
 +---------------+-------------------------------------------------------------------------------------------+
 | name          | Region name in English                                                                    |
 +---------------+-------------------------------------------------------------------------------------------+
@@ -133,17 +133,17 @@ regions with the following structure:
 |               | too. Mundi will try to use those codes whenever possible, or will leave this column empty |
 |               | when no numerical convention is available.                                                |
 +---------------+-------------------------------------------------------------------------------------------+
-| country_code  | Country code for the selected region. If region is a country, this column is empty.       |
+| country_id    | Country code for the selected region. If region is a country or continent, this column is |
+|               | empty.                                                                                    |
 +---------------+-------------------------------------------------------------------------------------------+
 | parent_id     | The id string for the parent element. Countries are considered to be root elements and    |
 |               | therefore do not fill this column. The parent might be an intermediate region between     |
 |               | the current row and the corresponding country. A city, for instance, may have a parent    |
 |               | state, which have a parent country.                                                       |
 +---------------+-------------------------------------------------------------------------------------------+
-| alt_parents   | List of ids separated by semi-colons with alternative parents that do not belong to the   |
-|               | main hierarchy.                                                                           |
-+---------------+-------------------------------------------------------------------------------------------+
-| income_group  | Country classification according to UN's income groups.                                   |
+| level         | Hierarchical level starting with 0 = world, 1 = continent, 2 = country.                   |
 +---------------+-------------------------------------------------------------------------------------------+
 | region        | Region of the globe according to UN's classification.                                     |
++---------------+-------------------------------------------------------------------------------------------+
+| income_group  | Classification according to UN's income groups.                                           |
 +---------------+-------------------------------------------------------------------------------------------+

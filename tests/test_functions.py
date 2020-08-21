@@ -2,14 +2,14 @@ import mundi
 
 
 class TestMundiFunctions:
-    def test_country_code(self):
-        assert mundi.country_code("BR") == "BR"
-        assert mundi.country_code("br") == "BR"
-        assert mundi.country_code("BRA") == "BR"
-        assert mundi.country_code("bra") == "BR"
-        assert mundi.country_code("076") == "BR"
-        assert mundi.country_code("Brazil") == "BR"
-        assert mundi.country_code("brazil") == "BR"
+    def test_country_id(self):
+        assert mundi.country_id("BR") == "BR"
+        assert mundi.country_id("br") == "BR"
+        assert mundi.country_id("BRA") == "BR"
+        assert mundi.country_id("bra") == "BR"
+        assert mundi.country_id("076") == "BR"
+        assert mundi.country_id("Brazil") == "BR"
+        assert mundi.country_id("brazil") == "BR"
 
     def test_code_function(self):
         assert mundi.code("Brazil") == "BR"
