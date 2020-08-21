@@ -12,7 +12,7 @@ DATA_LOADERS = {
     "name": db.column_loader("name"),
     "type": db.column_loader("type"),
     "subtype": db.column_loader("subtype"),
-    "country_code": db.column_loader("country_code"),
+    "country_id": db.column_loader("country_id"),
     "short_code": db.column_loader("short_code"),
     "long_code": db.column_loader("long_code"),
     "numeric_code": db.column_loader("numeric_code"),

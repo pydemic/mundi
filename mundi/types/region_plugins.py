@@ -27,7 +27,7 @@ REGION_PLUGINS.update(
     short_code=region_mundi_plugin(db, "short_code"),
     long_code=region_mundi_plugin(db, "long_code"),
     numeric_code=region_mundi_plugin(db, "numeric_code"),
-    country_code=region_mundi_plugin(db, "country_code"),
+    country_id=region_mundi_plugin(db, "country_id"),
     parent_id=region_mundi_plugin(db, "parent_id"),
     alt_parents=region_mundi_plugin(db, "alt_parents"),
 )

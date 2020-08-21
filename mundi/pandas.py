@@ -26,7 +26,7 @@ class MundiDataFrameAcessor:
         if not isinstance(cols, tuple):
             cols = (cols,)
 
-        left, right = map(list, sk.partition_at((X == ...), cols))
+        left, right = map(list, sk.partition((X == ...), cols))
         frames = [self.extra(left)] if left else []
         if right:
             _, *right = right  # remove ellipsis

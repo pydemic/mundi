@@ -1,3 +1,8 @@
+from pathlib import Path
+import os
+
+MUNDI_PATH = Path(os.path.expanduser("~/.local/lib/mundi/")).absolute()
+
 REGION_DESCRIPTIONS = {
     "north-america": "North America",
     "south-asia": "South Asia",
@@ -21,22 +26,9 @@ DATA_COLUMNS = {
         "short_code",
         "numeric_code",
         "long_code",
-        "country_code",
+        "country_id",
         "parent_id",
         "alt_parents",
     ],
     "un": ["region", "income_group"],
-}
-DATA_TYPES = {
-    "name": "string",
-    "type": "category",
-    "subtype": "category",
-    "short_code": "string",
-    "numeric_code": "string",
-    "long_code": "string",
-    "country_code": "string",
-    "parent_id": "string",
-    "alt_parents": "string",
-    "region": "category",
-    "income_group": "category",
 }

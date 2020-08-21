@@ -9,6 +9,6 @@ __author__ = "Fábio Mendes"
 __version__ = "0.2.3"
 
 from . import pandas as _pandas_mod
-from .functions import regions, countries, region, country_code, code
+from .functions import regions, countries, region, country_id, code
 from .types import Region
 from .constants import *

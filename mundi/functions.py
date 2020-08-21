@@ -19,10 +19,10 @@ def regions(country=None, **kwargs) -> pd.DataFrame:
     """
     Query the regions/sub-divisions database.
     """
-    if country and "country_code" in kwargs:
-        raise TypeError("cannot specify country and country_code")
+    if country and "country_id" in kwargs:
+        raise TypeError("cannot specify country and country_id")
     elif country:
-        kwargs["country_code"] = country_code(country)
+        kwargs["country_id"] = country_id(country)
     return db.query(**kwargs)
 
 
@@ -38,7 +38,7 @@ def region(*args, country=None, **kwargs) -> Region:
     Query the regions/sub-divisions database.
     """
     if country:
-        kwargs["country_code"] = country_code(country)
+        kwargs["country_id"] = country_id(country)
 
     if args:
         (ref,) = args
@@ -51,7 +51,7 @@ def region(*args, country=None, **kwargs) -> Region:
 
 
 @lru_cache(1024)
-def country_code(code: str) -> str:
+def country_id(code: str) -> str:
     """
     Return the country code for the given country.
 
@@ -96,7 +96,7 @@ def code(code: Union[Region, str]) -> str:
         return code.id
 
     try:
-        return country_code(code)
+        return country_id(code)
     except LookupError:
         pass
 
@@ -114,7 +114,7 @@ def code(code: Union[Region, str]) -> str:
     else:
         raise LookupError(code)
 
-    country = country_code(country)
+    country = country_id(country)
     return _subdivision_code(country, division)
 
 
@@ -124,12 +124,12 @@ def _subdivision_code(country: str, subdivision: str) -> str:
     Return the mundi code for the given subdivision of a country.
     """
     if subdivision.isdigit():
-        res = db.get(numeric_code=subdivision, country_code=country)
+        res = db.get(numeric_code=subdivision, country_id=country)
         return f"{country}-{res.name}"
 
     else:
         for lookup in ["short_code", "long_code"]:
-            kwargs = {lookup: subdivision, "country_code": country}
+            kwargs = {lookup: subdivision, "country_id": country}
             try:
                 res = db.get(**kwargs)
                 return f"{country}-{res.name}"
@@ -137,7 +137,7 @@ def _subdivision_code(country: str, subdivision: str) -> str:
                 pass
 
         values = db.query(
-            country_code=country, name=subdivision, cols=("id", "type", "subtype")
+            country_id=country, name=subdivision, cols=("id", "type", "subtype")
         )
 
         if len(values) == 1:
