@@ -48,7 +48,7 @@ def get_table(name):
     raise ValueError(f"no table registered as {name!r}")
 
 
-def query(model, **kwargs) -> Query:
+def query(model="region", **kwargs) -> Query:
     """
     Query model with optional filter parameters.
     """

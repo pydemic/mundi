@@ -4,11 +4,10 @@ from typing import Union
 
 import numpy as np
 import pandas as pd
-import sidekick as sk
 
+from . import db
 from .types import Region
 
-db = sk.import_later(".db:db", package=__package__)
 ISO2 = re.compile(r"[A-Z]{2}")
 ISO3 = re.compile(r"[A-Z]{3}")
 MUNDI_CODE = re.compile(r"[A-Z]{2}-\w+(:\w+)*")
@@ -51,95 +50,111 @@ def region(*args, country=None, **kwargs) -> Region:
 
 
 @lru_cache(1024)
-def country_id(code: str) -> str:
+def country_id(ref: str) -> str:
     """
     Return the country code for the given country.
 
     Similar to the code() function, but only accept valid countries.
     """
-    if isinstance(code, Region):
-        if code.type != "country":
-            raise ValueError(f"region is not a country: {code}")
-        return code.id
+    if isinstance(ref, Region):
+        if ref.type != "country":
+            raise ValueError(f"region is not a country: {ref}")
+        return ref.id
 
-    if ISO2.fullmatch(code.upper()):
+    ref_ = ref.upper()
+    if ISO2.fullmatch(ref_):
         try:
-            db.get(code)
-            return code.upper()
+            res = db.query().get(ref_)
+            if res.type == "country":
+                return res.id
         except LookupError:
             pass
 
-    elif ISO3.fullmatch(code.upper()):
+    elif ISO3.fullmatch(ref_):
         try:
-            res = db.get(long_code=code.upper(), type="country")
-            return res.name
-        except LookupError:
+            res = db.query(long_code=ref_, type="country").first()
+            if res is not None:
+                return res.id
+        except (LookupError, IndexError):
             pass
 
-    if code.isdigit():
-        res = db.get(numeric_code=code, type="country")
-        return res.name
+    if ref.isdigit():
+        res = db.query(numeric_code=ref, type="country").first()
+        if res is not None:
+            return res.id
 
-    elif "/" not in code:
-        res = db.get(name=code, type="country")
-        return res.name
+    elif "/" not in ref:
+        res = db.query(name=ref, type="country").first()
+        if res is not None:
+            return res.id
 
-    raise LookupError(code)
+        res = db.query(type="country").filter(db.Region.name.ilike(f"%{ref}%")).first()
+        if res is not None:
+            return res.id
+
+    raise LookupError(ref)
 
 
-@lru_cache(32_000)
-def code(code: Union[Region, str]) -> str:
+@lru_cache(32_768)
+def code(ref: Union[Region, str]) -> str:
     """
     Return the mundi code for the given region.
     """
-    if isinstance(code, Region):
-        return code.id
+    if isinstance(ref, Region):
+        return ref.id
 
     try:
-        return country_id(code)
+        return country_id(ref)
     except LookupError:
         pass
 
-    if MUNDI_CODE.fullmatch(code.upper()):
+    ref_ = ref.upper()
+    if MUNDI_CODE.fullmatch(ref_):
         try:
-            res = db.get(code)
-            return res.name
+            res = db.query().get(ref_)
+            return res.id
         except LookupError:
             pass
-        country, _, division = code.partition("-")
+        country, _, division = ref.partition("-")
 
-    elif "/" in code:
-        country, _, division = code.partition("/")
+    elif "/" in ref:
+        country, _, division = ref.partition("/")
 
     else:
-        raise LookupError(code)
+        raise LookupError(ref)
 
     country = country_id(country)
     return _subdivision_code(country, division)
 
 
-@lru_cache(32_000)
+@lru_cache(32_768)
 def _subdivision_code(country: str, subdivision: str) -> str:
     """
     Return the mundi code for the given subdivision of a country.
     """
     if subdivision.isdigit():
-        res = db.get(numeric_code=subdivision, country_id=country)
+        res = db.query(numeric_code=subdivision, country_id=country).first()
         return f"{country}-{res.name}"
 
     else:
         for lookup in ["short_code", "long_code"]:
             kwargs = {lookup: subdivision, "country_id": country}
             try:
-                res = db.get(**kwargs)
-                return f"{country}-{res.name}"
+                res = db.query(**kwargs).first()
+                if res is not None:
+                    return res.id
             except LookupError:
                 pass
 
-        values = db.query(
-            country_id=country, name=subdivision, cols=("id", "type", "subtype")
+        values = list(
+            db.query(country_id=country, name=subdivision).values("id", "type", "subtype")
+        ) or list(
+            db.query(country_id=country)
+            .filter(db.Region.name.ilike(f"%{subdivision}%"))
+            .values("id", "type", "subtype")
         )
 
+        values = pd.DataFrame(values).set_index("id")
         if len(values) == 1:
             return values.index[0]
         elif len(values) > 1:
