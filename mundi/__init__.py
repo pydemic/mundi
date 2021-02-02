@@ -12,3 +12,4 @@ from . import pandas as _pandas_mod
 from .functions import regions, countries, region, country_id, code
 from .types import Region
 from .constants import *
+from .logging import log

@@ -33,8 +33,8 @@ AG   Antigua and Barbuda
 AI              Anguilla
 ...
 
-The ``mundi.country_dataframe()`` function is just an alias to ``mundi.country_dataframe(type="country")``.
-The more generic ``mundi.region()`` function may be used to query countries and
+The ``mundi.country_dataframe()`` function is just an alias to ``mundi.region_dataframe(type="country")``.
+The more generic ``mundi.region_dataframe()`` function may be used to query countries and
 subdivisions inside a country.
 
 >>> br_states = mundi.region_dataframe(country="BR", type="state"); br_states  # DOCTEST: +ELLIPSIS
@@ -78,7 +78,7 @@ Each region also exhibit those values as attributes
 It is also possible to keep the columns of the original dataframe using
 the ellipsis syntax
 
->>> df = df.mundi[..., ["region", "income_group"]]; df    # DOCTEST: +ELLIPSIS
+>>> df = df.mundi[[..., "region", "income_group"]]; df    # DOCTEST: +ELLIPSIS
                     name         region  income_group
 id
 AD               Andorra         europe          high
@@ -92,7 +92,7 @@ AI              Anguilla            NaN           NaN
 The ``.mundi`` accessor is also able to select countries over mundi columns,
 even if those columns are not in the original dataframe.
 
->>> countries = mundi.countries()
+>>> countries = mundi.country_dataframe()
 >>> countries.mundi.filter(income_group="upper-middle")  # DOCTEST: +ELLIPSIS
                        name
 id
@@ -144,6 +144,4 @@ regions with the following structure:
 | level         | Hierarchical level starting with 0 = world, 1 = continent, 2 = country.                   |
 +---------------+-------------------------------------------------------------------------------------------+
 | region        | Region of the globe according to UN's classification.                                     |
-+---------------+-------------------------------------------------------------------------------------------+
-| income_group  | Classification according to UN's income groups.                                           |
-+---------------+-------------------------------------------------------------------------------------------+
++---------------+-------------------------------------------------------------------------------------------++---------------+-------------------------------------------------------------------------------------------+

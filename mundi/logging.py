@@ -1,3 +1,5 @@
-from logging import getLogger
+import logging
 
-log = getLogger("mundi")
+log = logging.getLogger("mundi")
+logging.basicConfig()
+logging.getLogger("sqlalchemy.engine").setLevel(logging.WARNING)
