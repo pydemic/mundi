@@ -7,7 +7,6 @@ import pandas as pd
 import sidekick as sk
 from sidekick import X
 
-from .loader import DATA_LOADERS
 
 Pandas = Union[pd.Series, pd.DataFrame]
 

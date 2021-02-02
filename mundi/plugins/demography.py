@@ -10,8 +10,8 @@ import sidekick.api as sk
 from sqlalchemy import Column, Integer, LargeBinary
 from sqlalchemy.orm import relationship
 
-from mundi.database import MundiRef
-from ..database import Plugin, Base, Fill
+from mundi.db import MundiRef
+from ..db import Plugin, Base, Fill
 from ..source import Data
 
 ModRef = Union[str, ModuleType]

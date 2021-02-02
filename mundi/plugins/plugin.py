@@ -1,21 +1,18 @@
-import importlib
-import os
+import contextlib
 import re
-import subprocess
-import sys
 import time
 from abc import ABC
-from itertools import chain
+from collections import defaultdict
 from pathlib import Path
-from typing import Dict, List, Iterable
-from typing import TypeVar
+from typing import Dict, TypeVar, Type
 
 import pandas as pd
 import sidekick.api as sk
 
-from mundi._utils import fix_string_columns_bug
-from ..functions import regions
-from ..types import PandasT
+from .. import config
+from ..db import Base
+from ..pipeline import Collector, Importer, find_prepare_scripts, execute_prepare_script
+from ..utils import read_file
 
 sqlite3 = sk.import_later("sqlite3")
 IS_CODE_PATH = re.compile(r"[A-Z]{2}(-\w+)?")
@@ -24,7 +21,7 @@ SQL_EXTENSIONS = (".sql", ".sqlite")
 CSV_EXTENSIONS = (".csv", ".csv.gz", ".csv.bz2")
 HDF5_EXTENSIONS = (".hdf", ".hfd5")
 
-db = sk.deferred(regions)
+PLUGIN_INSTANCES = {}
 
 T = TypeVar("T")
 
@@ -34,99 +31,135 @@ class Plugin(ABC):
     Base plugin class.
     """
 
-    name: str = NotImplemented
-    _instance: "Plugin"
+    name: str
+    tables: Dict[str, Base]
+    collectors: Dict[str, Type[Collector]] = defaultdict(lambda: Collector)
+    importers: Dict[str, Type[Importer]] = defaultdict(lambda: Importer)
 
     @classmethod
-    @sk.once
-    def initialize(cls):
+    def instance(cls):
         """
-        Default method for initializing plugin when mundi starts.
+        Return singleton instance to class.
+        """
+        try:
+            return PLUGIN_INSTANCES[cls]
+        except KeyError:
+            PLUGIN_INSTANCES[cls] = plugin = cls()
+            return plugin
 
-        Plugins are (quasi)-singletons, in which the default constructor accepts
-        only a single instance of the plugin and recycle them in future
-        invocations.
+    @classmethod
+    def cli(cls, click=sk.import_later("click")):
         """
-        raise
+        Execute data processing actions related to plugin.
+        """
 
-    def __new__(cls: type, *args, recycle=True, **kwargs):
-        if ABC in cls.__bases__:
-            raise TypeError("cannot create instance of abstract type!")
-        elif recycle and "_instance" in cls.__dict__:
-            return cls._instance
-        elif not recycle:
-            return super().__new__(cls, *args, **kwargs)
-        else:
-            cls._instance = new = cls(*args, recycle=False, **kwargs)
-            return new
+        @click.group()
+        def cli():
+            pass
 
-    def __init__(self, name=None, recycle=True):
-        if recycle:
-            return
-        if name is None and not hasattr(self, "name"):
-            raise RuntimeError("Class does not implement a name attribute.")
-        self.name = name or self.name
+        @cli.command()
+        @click.option("--path", "-p", help="Location of mundi-path")
+        @click.option(
+            "--verbose", "-v", is_flag=True, default=False, help="Verbose output"
+        )
+        def prepare(path, verbose):
+            if path is None:
+                path = config.mundi_data_path() / "data"
+            else:
+                path = Path(path)
+            plugin = cls.instance()
+            plugin.prepare(path, verbose=verbose)
 
-    #
-    # Query properties
-    #
-    def tables(self) -> Iterable[str]:
-        """
-        Iterates over all table names exposed by the plugin.
-        """
-        raise NotImplementedError
+        @cli.command()
+        @click.option("--path", "-p", help="Location of mundi-path")
+        @click.option(
+            "--verbose", "-v", is_flag=True, default=False, help="Verbose output"
+        )
+        def collect(path, verbose):
+            if path is None:
+                path = config.mundi_data_path() / "build"
+            else:
+                path = Path(path)
+            plugin = cls.instance()
 
-    def is_loaded(self, table) -> bool:
-        """
-        Return True if data is already loaded to the database.
-        """
-        raise NotImplementedError
+            for table in plugin.tables:
+                plugin.collect(path, table, verbose=verbose)
+
+        @cli.command()
+        @click.option("--path", "-p", help="Location of mundi-path")
+        @click.option(
+            "--verbose", "-v", is_flag=True, default=False, help="Verbose output"
+        )
+        @click.option("--table", "-t", default="", help="Select specific table")
+        def reload(path, verbose, table):
+            if path is None:
+                path = config.mundi_data_path() / "build" / "databases"
+            else:
+                path = Path(path)
+            plugin = cls.instance()
+
+            for table in table.split(",") or plugin.tables:
+                plugin.reload(path, table, verbose=verbose)
+
+        return cli()
+
+    def __init__(self):
+        if type(self) in PLUGIN_INSTANCES:
+            raise RuntimeError("trying to initialize plugin twice.")
+        if not hasattr(self, "name"):
+            raise RuntimeError("Class does not implement a 'name' attribute.")
+        if not hasattr(self, "tables"):
+            raise RuntimeError("Class does not implement a 'tables' attribute.")
+        self.name = self.name
+        PLUGIN_INSTANCES[type(self)] = self
 
     #
     # Pipeline
     #
-    def pipeline(self: T, path, force=False) -> T:
-        """
-        Run the complete data processing pipeline from preparation, collection,
-        loading to registering.
-
-        Args:
-            path:
-                Path for the data repository. Must contain the data, chunks and
-                build sub-folders.
-            force:
-                If true, forces execution of pipeline even if it contains a
-                successful build.
-        """
-        if force:
-            self.prepare(path)
-            for table in self.tables():
-                data = self.collect(path, table, force=True)
-                self.load(table, data, force=True)
-        else:
-            raise NotImplementedError
-
-        return self
-
-    def prepare(self, path):
+    def prepare(self, path, verbose=False):
         """
         Execute all prepare.py scripts in the given path.
         """
-        print("preparing...", path)
-        print(find_data_scripts(path))
-        raise NotImplementedError
+        for part in find_prepare_scripts(path):
+            plugin, region, path = part
+            if plugin != self.name:
+                continue
+            execute_prepare_script(path, verbose=verbose)
 
-    def collect(self, path, table, force=False):
+    def collect(self, path, table, verbose=False):
         """
         Collect chunks for the given table.
         """
-        raise NotImplementedError
+        with _timing(f"collecting {table!r}...", verbose):
+            collector = self.collectors[table](path, table)
+            collector.process()
 
-    def load_data(self, table, data, force=False):
+    def reload(self, path, table, verbose=False):
         """
-        Load collected data into database.
+        Reload data in path and save in the SQL database under table.
         """
-        raise NotImplementedError
+        with _timing(f"saving to db {table!r}...", verbose):
+            importer = self.importers[table](path, table)
+            importer.clear()
+            for chunk in importer.load_chunks():
+                importer.save(chunk)
+
+    def save_data(self, data, table, verbose=False):
+        """
+        Save collected data into database.
+        """
+        with _timing(f"saving to db {table!r}...", verbose):
+            importer = self.importers[table](".", table)
+            importer.clear()
+            importer.save(data)
+
+    def load_data(self, table, verbose=False) -> pd.DataFrame:
+        """
+        Load data from disk or from URL.
+        """
+        with _timing(f"loading table {table!r}...", verbose):
+            uri, is_remote = config.mundi_data_uri(table)
+            return read_file(uri)
 
     def register(self):
         """
@@ -142,257 +175,13 @@ class Plugin(ABC):
         raise NotImplementedError
 
 
-# class _Plugin(ABC):
-#     """
-#     Plugins store new data in the central database and offer a mundi API to
-#     access them.
-#
-#     Plugins are instantiated with the register classmethod:
-#
-#     >>> Plugin.register()
-#     """
-#
-#     # Metadata attributes
-#     __tables__: Dict[str, Type['Base']] = None
-#     __mundi_namespace__: str = sk.lazy(X.name)
-#     __data_location__: str = None
-#
-#     # Computed properties, aliases, delegates and transformations
-#     columns: Dict[str, 'Field'] = sk.alias('_columns', transform=MappingProxyType)
-#
-#     @sk.lazy
-#     def plugin_key(self) -> str:
-#         cls = type(self)
-#         return f'{cls.__module__}.{cls.__qualname__}'
-#
-#     def __init_subclass__(cls, **kwargs):
-#         key = f'{cls.__module__}.{cls.__qualname__}'
-#         PLUGIN_DB[key] = cls
-#
-#     def __init__(self):
-#         self._columns = {}
-#         self._bind_columns()
-#
-#     def _bind_columns(self):
-#         annotations = getattr(self, '__annotations__', None) or {}
-#         cls = type(self)
-#         for k in dir(cls):
-#             v = getattr(cls, k, None)
-#             if isinstance(v, Field):
-#                 kind = annotations.get(k)
-#                 new: Field = v.update(plugin=self, type=kind, name=k)
-#                 setattr(self, k, new)
-#                 self._columns[k] = new
-#
-#     def create_tables(self):
-#         """
-#         Create and populate necessary SQL tables.
-#         """
-#
-#         create_tables()
-#         for name, table in self.__tables__.items():
-#             if not MundiRegistry.has_populated_table(self, name):
-#                 url = self.__data_location__.format(table=name)
-#                 data = mundi_data(name, url)
-#                 self.populate(name, data)
-#
-#     def populate(self, table: str, data: pd.DataFrame):
-#         """
-#         Populate table with data from the given dataframe.
-#         """
-#
-#         Model = self.__tables__[table]
-#         session = new_session()
-#
-#         # NA types seems to cause surprises. In some cases it produces more than
-#         # one instance when pickled from a saved dataframe.
-#         for ref, row in data.to_dict('index'):
-#             kwargs = {k: v for k, v in row.items() if not isinstance(v, NAType)}
-#             session.add(Model(id=ref, **kwargs))
-#
-#         session.commit()
-
-
-#
-# Utility functions
-#
-def find_data_path(package) -> Path:
-    """
-    Find the data folder for package.
-
-    This assumes the package is installed as as symlink from the main
-    repository folder.
-    """
-    try:
-        mod = sys.modules[package]
-    except KeyError:
-        mod = importlib.import_module(package)
-    return Path(mod.__file__).resolve().absolute().parent.parent / "data"
-
-
-def find_data_sources(path) -> Dict[str, Path]:
-    """
-    Return a map from codes to paths to the locations to data sources for
-    each region.
-    """
-    out = {}
-    for sub in os.listdir(str(path)):
-        if IS_CODE_PATH.fullmatch(sub):
-            out[sub] = path / sub
-    return out
-
-
-def find_data_scripts(path) -> Dict[str, List[Path]]:
-    """
-    Return a map from codes to paths to the locations of the prepare scripts
-    for the given folder.
-    """
-    out = {}
-    for key, sub_path in find_data_sources(path).items():
-        out[key] = [
-            sub_path / p
-            for p in sorted(os.listdir(str(sub_path)))
-            if p.startswith("prepare") and p.endswith(".py")
-        ]
-    return out
-
-
-def execute_prepare_scripts(package, verbose=False) -> None:
-    """
-    Execute all prepare scripts in package.
-    """
-    for code, scripts in find_data_scripts(package).items():
-        for script in scripts:
-            if verbose:
-                print(f'Script: "{code}/{script.name}"')
-            dir = script.parent
-            name = script.name
-            t0 = time.time()
-            out = subprocess.check_output([sys.executable, name], cwd=dir)
-            if out:
-                lines = out.decode("utf8").splitlines()
-                print("OUT:")
-                print("\n".join(f"  - {ln.rstrip()}" for ln in lines))
-            dt = time.time() - t0
-            print(f"Script executed in {dt:3.2} seconds.\n\n", flush=True)
-
-
-def collect_processed_paths(package, kind=None) -> Dict[str, List[Path]]:
-    """
-    Return a map from codes to paths to the locations of the prepare data in
-    each folder.
-    """
-    kind = kind or ""
-    out = {}
-    for key, path in find_data_sources(package).items():
-        path = path / "processed"
-        out[key] = [
-            path / p
-            for p in os.listdir(str(path))
-            if p.startswith(kind) or p.startswith("db")
-        ]
-    return out
-
-
-def collect_processed_data(package, kind=None) -> PandasT:
-    """
-    Return a list of dataframes collected from <code>/processed folders.
-
-    Dataframes are ordered lexicographically first by name of the collected file,
-    then by code.
-    """
-    paths = collect_processed_paths(package, kind)
-    paths = list(chain(*paths.values()))
-    paths.sort(key=lambda x: x.name)
-    if not paths:
-        raise ValueError(f"Empty list of datasets for {package}/{kind}")
-
-    cols = None
-    datasets = []
-    for p in paths:
-        df = read_path(p, kind)
-        df.index.name = "id"
-        if isinstance(df, pd.Series):
-            pass
-        elif cols is None:
-            cols = set(df.columns)
-        elif set(df.columns) != cols:
-            invalid = cols.symmetric_difference(df.columns)
-            raise ValueError(
-                f"different columns in two paths:\n"
-                f"- {p}\n"
-                f"- {paths[0]}"
-                f"- Columns: {invalid}"
-            )
-
-        if package != "mundi" and not df.index.isin(db.index).all():
-            invalid = set(df.index) - db.index
-            raise ValueError(
-                f"index contain invalid mundi codes:\n"
-                f"- {p}\n"
-                f"- Invalid codes: {invalid}"
-            )
-
-        datasets.append(df)
-
-    data = pd.concat(datasets).reset_index()
-    if isinstance(data, pd.Series):
-        data = data.drop_duplicates(keep="last")
-    elif isinstance(data.columns, pd.MultiIndex):
-        col = data.columns[0]
-        data = data.drop_duplicates(col, keep="last")
-        data = data.set_index("id")
-    else:
-        data = data.drop_duplicates("id", keep="last")
-        data = data.set_index("id")
-    return data.sort_index()
-
-
-def clean_processed_data(package, kind=None, verbose=False):
-    """
-    Clean all files in the <code>/processed folders.
-    """
-    for code, paths in collect_processed_paths(package, kind=kind).items():
-        for path in paths:
-            os.unlink(str(path))
-            print("  -", Path("/".join(path.parts[-3:])))
-
-
-def read_path(path: Path, key: str = None) -> PandasT:
-    """
-    Read dataframe from path. Optional key is only used with certain file types
-    such as sql and hdf5. Otherwise it is ignored.
-    """
-    name = path.name
-    if endswith(name, PICKLE_EXTENSIONS):
-        return fix_string_columns_bug(pd.read_pickle(path))
-    else:
-        raise ValueError(f'could not infer data type: "{path}"')
-
-
-def save_path(data: PandasT, path: Path, key: str = None, **kwargs) -> None:
-    """
-    Save dataframe at given path. Optional key is only used with certain file
-    types such as sql and hdf5. Otherwise it is ignored.
-
-    Source type is inferred from extension.
-    """
-    name = path.name
-
-    if endswith(name, PICKLE_EXTENSIONS):
-        kwargs.setdefault("protocol", 3)
-        data.to_pickle(str(path), **kwargs)
-
-    elif endswith(name, SQL_EXTENSIONS):
-        with sqlite3.connect(path) as conn:
-            data.to_sql(key, conn, if_exists="replace")
-
-    else:
-        raise ValueError(f'could not infer data type: "{path}"')
-
-
-def endswith(st: str, suffixes: Iterable[str]) -> bool:
-    """
-    Return true if string ends with one of the given suffixes.
-    """
-    return any(st.endswith(ext) for ext in suffixes)
+@contextlib.contextmanager
+def _timing(msg, verbose):
+    t0 = None
+    if verbose:
+        print(msg, end=" ", flush=True)
+        t0 = time.time()
+    yield
+    if verbose:
+        dt = time.time() - t0
+        print(f"[{dt:.2}sec]")

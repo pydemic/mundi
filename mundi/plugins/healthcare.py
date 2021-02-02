@@ -1,7 +1,7 @@
 from types import ModuleType
 from typing import Union
 
-from ..database import Plugin, Column
+from ..db import Plugin, Column
 from mundi.enums import Fill
 
 ModRef = Union[str, ModuleType]

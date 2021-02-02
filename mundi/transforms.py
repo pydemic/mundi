@@ -40,7 +40,7 @@ def agg_children(data: pd.DataFrame, agg="sum", which="both") -> pd.DataFrame:
         if len(out) == 0:
             return pd.concat(parts)
         parts.append(out)
-        skip |= out.index
+        skip = skip.union(out.index)
         data = out
 
 
