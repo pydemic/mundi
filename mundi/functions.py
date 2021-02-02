@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 
 from . import db
-from .types import Region
+from .types import Region, RegionSet
 
 ISO2 = re.compile(r"[A-Z]{2}")
 ISO3 = re.compile(r"[A-Z]{3}")
@@ -14,22 +14,36 @@ MUNDI_CODE = re.compile(r"[A-Z]{2}-\w+(:\w+)*")
 TYPES_HIERARCHY = ["state", "city", "district", "region"]
 
 
-def regions(country=None, **kwargs) -> pd.DataFrame:
+def regions(country=None, **kwargs) -> RegionSet:
     """
     Query the regions/sub-divisions database.
     """
     if country and "country_id" in kwargs:
-        raise TypeError("cannot specify country and country_id")
+        raise TypeError("cannot specify both 'country' and 'country_id'")
     elif country:
         kwargs["country_id"] = country_id(country)
-    return db.query(**kwargs)
+    return RegionSet(db.query(**kwargs).values("id"))
 
 
-def countries(**kwargs) -> pd.DataFrame:
+def regions_dataframe(cols=("name",), **kwargs) -> pd.DataFrame:
+    """
+    Query the regions/sub-divisions database, returning a dataframe.
+    """
+    return pd.DataFrame(db.query(**kwargs).values("id", *cols)).set_index("id")
+
+
+def countries(**kwargs) -> RegionSet:
     """
     Query the country database.
     """
     return regions(type="country", **kwargs)
+
+
+def countries_dataframe(cols=("name",), **kwargs) -> pd.DataFrame:
+    """
+    Query the regions/sub-divisions database, returning a dataframe.
+    """
+    return regions_dataframe(cols, type="country", **kwargs)
 
 
 def region(*args, country=None, **kwargs) -> Region:
@@ -43,10 +57,12 @@ def region(*args, country=None, **kwargs) -> Region:
         (ref,) = args
         if isinstance(ref, Region):
             return ref
-        row = db.get(code(ref))
+        return Region(code(ref))
     else:
-        row = db.get(**kwargs)
-    return Region(row.name)
+        row = db.query(**kwargs).first()
+        if row is None:
+            raise LookupError("not found")
+    return Region(row.id)
 
 
 @lru_cache(1024)
@@ -110,11 +126,9 @@ def code(ref: Union[Region, str]) -> str:
 
     ref_ = ref.upper()
     if MUNDI_CODE.fullmatch(ref_):
-        try:
-            res = db.query().get(ref_)
+        res = db.query().get(ref_)
+        if res is not None:
             return res.id
-        except LookupError:
-            pass
         country, _, division = ref.partition("-")
 
     elif "/" in ref:

@@ -9,7 +9,15 @@ __author__ = "Fábio Mendes"
 __version__ = "0.2.3"
 
 from . import pandas as _pandas_mod
-from .functions import regions, countries, region, country_id, code
-from .types import Region
+from .functions import (
+    regions,
+    countries,
+    regions_dataframe,
+    countries_dataframe,
+    region,
+    country_id,
+    code,
+)
+from .types import Region, RegionSet
 from .constants import *
 from .logging import log
