@@ -1,89 +1,16 @@
 from functools import lru_cache
-from types import MappingProxyType
-from typing import Mapping
+from typing import Callable
 
-import pandas as pd
-import sqlalchemy as sql
-from sidekick.types import Record
-from sqlalchemy import Column, String, Boolean, ForeignKey
+import sidekick.api as sk
+from sqlalchemy import Column, String, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy.orm import sessionmaker, Session, Query
 
-from ._utils import fix_string_columns_bug
-from .config import mundi_db_engine, mundi_db_path
-from .constants import MUNDI_PATH
-from .enums import Fill
+from ..config import mundi_db_engine, mundi_db_path
 
-PLUGIN_DB = {}
-PLUGIN_INSTANCES = {}
-EMPTY_DICT = MappingProxyType({})
-TYPE_MAP = {int: sql.Integer, str: sql.String}
-
-
-class Field(Record):
-    """
-    Describes a column.
-    """
-
-    name: str = None
-    type: type = None
-    aggregation: Fill = Fill.NONE
-    plugin: "Plugin" = None
-    index: pd.Index = None
-    columns: pd.Index = None
-
-    agg = Fill
-
-    def __repr__(self):
-        cls = self.type
-        cls = f"{cls.__name__}, " if cls else "name="
-        return f"Info({cls}{self.name!r})"
-
-    def astype(self, type):
-        """
-        Return Info bound to given type.
-        """
-        return self.copy(type=type)
-
-    def copy(self, data: Mapping = EMPTY_DICT, **kwargs):
-        """
-        Return copy of object, changing the given keyword arguments
-        """
-        return Field(**{**dict(self), **data, **kwargs})
-
-    def update(self, data: Mapping = EMPTY_DICT, **kwargs):
-        """
-        Like copy, but only changes null values.
-        """
-        update = {}
-        for k, v in {**data, **kwargs}.items():
-            if getattr(self, k) in (None, Fill.NONE):
-                update[k] = v
-        return self.copy(update)
-
-    def query(self, db, *args, **kwargs):
-        """
-
-        Args:
-            db:
-            *args:
-            **kwargs:
-
-        Returns:
-
-        """
-
-    def load(self, db, ref):
-        """
-        Load value for the given id.
-        """
-
-    def to_sql_column(self):
-        if self.type is None:
-            kind = sql.String
-        else:
-            kind = TYPE_MAP[self.type]
-        return sql.Info(kind)
+table_registry = {}
+Base = declarative_base(class_registry=table_registry)
+BaseSession: Callable[[], Session] = sk.deferred(lambda: sessionmaker(mundi_db_engine()))
 
 
 @lru_cache(2)
@@ -96,73 +23,44 @@ def create_tables(*, force=False):
     return Base.metadata.create_all(mundi_db_engine())
 
 
-def new_session() -> Session:
+def session() -> Session:
     """
     Starts a new session to SQL database.
     """
-    return sessionmaker(mundi_db_engine())()
+    return BaseSession()
 
 
 def connection():
     """
     Return a connection with the database.
     """
-    return mundi_db_engine().connection()
+    return mundi_db_engine().connect()
 
 
-def mundi_data(name, url=None) -> pd.DataFrame:
+@lru_cache(32)
+def get_table(name):
     """
-    Return a dataframe with mundi data with the given name.
-
-    If data is not found locally or if name is None, fallback to downloading
-    from the given URL.
+    Return the ORM class from table name.
     """
-    if name:
-        for ext in (".pkl", ".pkl.gz", ".pkl.bz2"):
-            path = MUNDI_PATH / "data" / (name + ext)
-            if path.exists():
-                break
-        else:
-            path = url
-    else:
-        path = url
-    if not path:
-        raise ValueError("name or valid url must be given")
-    data = pd.read_pickle(path)
-    return fix_string_columns_bug(data)
+    for table in table_registry.values():
+        if hasattr(table, "__table__") and table.__table__.name == name:
+            return table
+    raise ValueError(f"no table registered as {name!r}")
 
 
-Base = declarative_base()
-
-
-class MundiRegistry(Base):
+def query(model, **kwargs) -> Query:
     """
-    Register mundi elements
+    Query model with optional filter parameters.
     """
-
-    __tablename__ = "mundi_registry"
-
-    plugin_key = Column(String(64), primary_key=True)
-    table_name = Column(String(64), primary_key=True)
-    is_populated = Column(Boolean, default=False)
-
-    @classmethod
-    def has_populated_table(cls, plugin, table=None):
-        """
-        Return true if registry has populated tables.
-        """
-        if not table:
-            tables = plugin.__tables__
-            return all(cls.has_populated_table(plugin, table) for table in tables)
-
-        key = getattr(plugin, "plugin_key", plugin)
-        query = (
-            new_session().query(MundiRegistry).filter_by(plugin_key=key, table_name=table)
-        )
-        return getattr(query.first(), "is_populated", False)
+    if isinstance(model, str):
+        model = get_table(model)
+    q = session().query(model)
+    if kwargs:
+        q = q.filter_by(**kwargs)
+    return q
 
 
-def MundiRef(key=None, primary_key=False, **kwargs):
+def MundiRef(key=None, primary_key=False, **kwargs) -> Column:
     """
     Create a foreign key reference to a mundi id. This method fixes the
     correct data type for char-based foreign key relations.
@@ -178,6 +76,6 @@ def MundiRef(key=None, primary_key=False, **kwargs):
     """
     if not key and not primary_key:
         raise TypeError("either key or primary key must be given!")
-    if key:
+    if key or kwargs.pop("foreign_key", False):
         return Column(String(16), ForeignKey(key), **kwargs)
     return Column(String(16), primary_key=True, **kwargs)
