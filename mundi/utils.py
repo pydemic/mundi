@@ -4,7 +4,7 @@ from typing import Union
 
 import pandas as pd
 
-EXT_KINDS = {"pkl.gz": "pickle"}
+EXT_KINDS = {".pkl.gz": "pickle", ".pkl": "pickle", ".csv": "csv", ".csv.gz": "csv"}
 
 
 # TODO: is it a bug? report it? check which versions are affected by it
@@ -50,6 +50,13 @@ def reader_from_filename(path: Union[str, Path]):
     """
     Return file kind from filename.
     """
-    _, ext = os.path.splitext(path)
-    kind = EXT_KINDS[ext]
+    base, ext = os.path.splitext(path)
+    try:
+        kind = EXT_KINDS[ext]
+    except KeyError:
+        if ext in ('.gz', '.bz2'):
+            base, ext_extra = os.path.splitext(base)
+            if not base:
+                raise
+            kind = EXT_KINDS[ext_extra + ext]
     return getattr(pd, f"read_{kind}")

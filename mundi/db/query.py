@@ -3,7 +3,7 @@ from abc import ABC
 NOT_GIVEN = object()
 
 
-class Mapper(ABC):
+class Query(ABC):
     """
     Maps function calls into database queries.
     """

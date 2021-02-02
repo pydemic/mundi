@@ -1,6 +1,3 @@
-from mundi.plugin import utils
-
-
 class TestPluginUtilities:
     def test_utility_functions(self):
         path = utils.find_data_path("mundi")

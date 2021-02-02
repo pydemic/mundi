@@ -1,10 +1,11 @@
 from abc import ABC
 
+import numpy as np
 import pandas as pd
 from sqlalchemy import Column, String, Integer
 from sqlalchemy.orm import relationship, backref
 
-from ..database import Base, Field, Fill, MundiRef
+from ..db import Base, Field, Fill, MundiRef
 from ..pipeline import Data, DataIOMixin, DataValidationMixin, DataTransformMixin, Plugin
 
 
@@ -20,7 +21,7 @@ class Region(Base):
 
     id = MundiRef(primary_key=True, doc="Unique identifier for each region. Primary key.")
     name = Column(
-        String, doc="Human-readable name of region (English version)", nullable=False
+        String, doc="Human-readable name of region (English version).", nullable=False
     )
     type = Column(String(32), doc="Region main type.", nullable=False)
     subtype = Column(String(32), doc="Optional Region sub-type.")
@@ -99,9 +100,8 @@ class MainData(DataIOMixin, DataValidationMixin, DataTransformMixin, Data, ABC):
         "long_code": "string",
         "country_id": "string",
         "parent_id": "string",
-        "level": int,
+        "level": np.dtype('uint8'),
         "region": "string",
-        "income_group": "string",
     }
     REGION_M2M_DATA_TYPES = {
         "child_id": "string",
@@ -113,16 +113,20 @@ class MainData(DataIOMixin, DataValidationMixin, DataTransformMixin, Data, ABC):
         """
         Fill optional columns with empty values.
         """
-        kwargs = {
+        defaults = {
             "short_code": (pd.NA, "string"),
             "numeric_code": (pd.NA, "string"),
             "long_code": (pd.NA, "string"),
             "parent_id": (pd.NA, "string"),
             "region": (pd.NA, "string"),
-            "income_group": (pd.NA, "string"),
-            **kwargs,
+            "subtype": (pd.NA, "string"),
+            "type": (pd.NA, "string"),
+            "country_id": (pd.NA, "string"),
         }
-        return self.assign(data, **kwargs)
+        types = {k: 'string' for k in defaults}
+        types['level'] = 'uint8'
+        kwargs = {**defaults, **kwargs}
+        return self.assign(data, **kwargs).astype(types)
 
 
 #

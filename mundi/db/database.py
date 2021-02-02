@@ -1,21 +1,16 @@
-import os
-from abc import ABC
 from functools import lru_cache
-from pathlib import Path
 from types import MappingProxyType
-from typing import Mapping, Type, Dict
+from typing import Mapping
 
 import pandas as pd
-import sidekick.api as sk
 import sqlalchemy as sql
-from pandas._libs.missing import NAType
-from sidekick.api import X
 from sidekick.types import Record
-from sqlalchemy import create_engine, Column, String, Boolean, ForeignKey
+from sqlalchemy import Column, String, Boolean, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 
 from ._utils import fix_string_columns_bug
+from .config import mundi_db_engine, mundi_db_path
 from .constants import MUNDI_PATH
 from .enums import Fill
 
@@ -91,36 +86,28 @@ class Field(Record):
         return sql.Info(kind)
 
 
-@sk.once
-def engine():
-    return create_engine(f"sqlite:///{path()}", echo=True)
-
-
-@sk.once
-def path():
-    path = Path(os.path.expanduser("~/.local/lib/mundi/"))
-    path.mkdir(parents=True, exist_ok=True)
-    return path / "db.sqlite3"
-
-
-@sk.once
-def session_maker() -> sessionmaker:
-    return sessionmaker(engine())
-
-
 @lru_cache(2)
 def create_tables(*, force=False):
-    if path().exists() and force:
-        path().unlink()
-    return Base.metadata.create_all(engine())
+    """
+    Create all SQL tables.
+    """
+    if mundi_db_path().exists() and force:
+        mundi_db_path().unlink()
+    return Base.metadata.create_all(mundi_db_engine())
 
 
 def new_session() -> Session:
-    return session_maker()()
+    """
+    Starts a new session to SQL database.
+    """
+    return sessionmaker(mundi_db_engine())()
 
 
 def connection():
-    return engine.connection()
+    """
+    Return a connection with the database.
+    """
+    return mundi_db_engine().connection()
 
 
 def mundi_data(name, url=None) -> pd.DataFrame:
