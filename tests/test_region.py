@@ -56,8 +56,8 @@ class TestRegion:
         asia = Region("XAS")
         russia = Region("RU")
 
-        assert russia in asia.children()
-        assert russia not in asia.children(which="primary")
+        assert russia in asia.children("all")
+        assert russia not in asia.children()
 
+        assert russia in europe.children("all")
         assert russia in europe.children()
-        assert russia in europe.children(which="primary")

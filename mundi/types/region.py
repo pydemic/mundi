@@ -1,12 +1,15 @@
-from typing import Optional
+from functools import lru_cache
+from typing import Optional, Iterator, TYPE_CHECKING
 from weakref import WeakValueDictionary
 
 import pandas as pd
 
-from ..db import db
+from .. import db
 
-REGION_PLUGINS = {}
 REGION_DB = WeakValueDictionary()
+
+if TYPE_CHECKING:
+    from .region_set import RegionSet
 
 
 class Region:
@@ -16,16 +19,14 @@ class Region:
 
     name: str
 
-    def __new__(cls, id):
-        if not isinstance(id, str):
-            raise TypeError(f"expect string, got {id.__class__.__name__}")
-        try:
-            return REGION_DB[id]
-        except KeyError:
-            new = object.__new__(cls)
-            new.__dict__["id"] = id
-            REGION_DB[id] = new
+    def __new__(cls, ref, unsafe=False):
+        if not isinstance(ref, str):
+            raise TypeError(f"expect string, got {ref.__class__.__name__}")
+        if unsafe:
+            new = object.__new__(Region)
+            new.__dict__["id"] = ref
             return new
+        return make_region(ref)
 
     def __hash__(self):
         return hash(self.id)
@@ -33,11 +34,13 @@ class Region:
     def __getstate__(self):
         return self.id
 
-    def __setstate__(self, id):
-        self.__dict__["id"] = id
+    def __setstate__(self, ref):
+        self.__dict__["id"] = ref
 
     def __getitem__(self, key):
-        return self._get_field(key)
+        value = get_scalar_field(self.id, key)
+        self.__dict__[key] = value
+        return value
 
     def __setattr__(self, attr, value):
         raise AttributeError("Region objects are immutable")
@@ -46,7 +49,7 @@ class Region:
         if item.startswith("_"):
             raise AttributeError(item)
         try:
-            return self._get_field(item)
+            return self[item]
         except KeyError:
             raise AttributeError(item)
 
@@ -76,11 +79,6 @@ class Region:
             return self.id > other.id
         return NotImplemented
 
-    def _get_field(self, key):
-        fget = REGION_PLUGINS[key]
-        self.__dict__[key] = value = fget(self)
-        return value
-
     #
     # Conversions
     #
@@ -106,41 +104,79 @@ class Region:
         pk = self.parent_id
         return Region(pk) if pk else None
 
-    def children(self, dataframe=False, deep=False, which="both"):
+    def children(self, relation="default", *, deep=False, name=None) -> "RegionSet":
         """
         Return list of children.
         """
-        if dataframe:
-            raise NotImplementedError
+        from .region_set import RegionSet
 
-        primary = which in ("primary", "both")
-        secondary = which in ("secondary", "both")
-        ids = self._children_ids(primary, secondary)
+        if name is None:
+            name = f"{self.id} children"
+        if relation in ("*", "all"):
+            relation = None
+        return RegionSet(self._children_ids(relation, deep), name=name)
+
+    def children_dataframe(
+        self, relation="default", columns=("name",), *, deep=False
+    ) -> pd.DataFrame:
+        raise NotImplementedError
+
+    def _children_ids(self, relation, deep) -> Iterator[str]:
+        # FIXME: this query works, but is highly inefficient.
         if deep:
-            non_processed = ids.copy()
-            while non_processed:
-                id = non_processed.pop()
-                new = Region(id)._children_ids(primary, secondary)
-                non_processed.update(new - ids)
-                ids.update(new)
+            memo = set()
+            for ref in self._children_ids(relation, False):
+                yield ref
+                for child_ref in Region(ref)._children_ids(relation, True):
+                    if child_ref not in memo:
+                        yield child_ref
+                        memo.add(ref)
 
-        return [Region(id) for id in ids]
+        kwargs = {"parent_id": self.id}
+        if relation is not None:
+            kwargs["relation"] = relation
+        for (ref,) in db.query("region_m2m", **kwargs).values("child_id"):
+            yield ref
 
-    def _children_ids(self, primary, secondary) -> set:
-        ids = set()
-
-        if primary:
-            res = db.query(parent_id=self.id, cols=("id",))
-            ids.update(res["id"])
-
-        if secondary:
-            cmd = f"SELECT id FROM mundi WHERE alt_parents LIKE '%;{self.id}%';"
-            ids.update(map(lambda x: x[0], db.raw_sql(cmd)))
-
-        return ids
-
-    def parents(self, dataframe=False):
+    def parents(self):
         """
         Return list of parents.
         """
         raise NotImplementedError
+
+
+@lru_cache(1024)
+def make_region(ref):
+    """
+    Create Region object from ref.
+    """
+    try:
+        return REGION_DB[ref]
+    except KeyError:
+        cls = db.get_table("region")
+        session = db.session()
+        if session.query(cls).filter(cls.id == ref).first() is None:
+            raise ValueError("region does not exist")
+
+        new = object.__new__(Region)
+        new.__dict__["id"] = ref
+        REGION_DB[ref] = new
+        return new
+
+
+def as_region(region) -> Region:
+    """
+    Convert string to Region.
+    """
+    if isinstance(region, str):
+        return Region(region)
+    else:
+        return region
+
+
+def get_scalar_field(ref, field):
+    cls = db.get_table("region")
+    session = db.session()
+    row = session.query(cls).filter(cls.id == ref).first()
+    print(row)
+    return getattr(row, field)
