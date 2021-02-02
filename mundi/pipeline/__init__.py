@@ -8,7 +8,7 @@ saving data to destination database. Each step is performed by some specific
 class.
 
 A mundi plugin should typically subclass all of those classes and implement
-specific logic
+specific logic.
 
 1) Data: basic class responsible for fetching and transforming raw data to a
 suitable dataframe. Usually, a plugin will define a base Data subclass that is
@@ -19,29 +19,19 @@ data from some specific location and convert it to a uniform representation
 expected by the Mundi plugin.
 
 2) Collector: dataframes produced by Data instances are stored in chunks inside
-the build/chunks directory of mundi-data. A chunk usually contains data from an
+the build/chunks directory under mundi-data. A chunk usually contains data from an
 specific country or region of the world and the complete database must be
 build by concatenating all chunks and sometimes doing some additional
 post-processing operations (e.g., imputation of missing data, data clean-up,
 preparation to a final representation, etc). The final result of this operation
 is a dataframe holding information to be inserted into an SQL database. The
-results produced by a collector are stored as assets into the mundi-data repository
-and can be downloaded by users to avoid an expensive operation in the previous
-step.
+results produced by a collector are stored as build/databases pickles into the
+mundi-data repository and can be downloaded by users to avoid executing the
+expensive operation described in the previous step.
 
 3) Importer: importer task is to load a dataframe from a collector into an SQL
 database.
-
-4) Mapper: mapper is responsible to map mundi actions and queries into SQL
-queries. It fetches information from the database and expose it in a suitable
-form to the user.
-
-5) Plugin: the plugin class coordinates all other classes. If finds data scripts
-responsible for creating data chunks, calls the collector to produce the final
-data frame and the importer to load data to the database.
 """
 from .collector import Collector
-from .data import Data, DataIOMixin, DataValidationMixin, DataTransformMixin
+from .data import Data, DataIO, find_prepare_scripts, execute_prepare_script
 from .importer import Importer
-from .mapper import Mapper
-from .plugin import Plugin

@@ -1,20 +1,37 @@
 import os
+import subprocess
 import sys
+import time
 from abc import ABC, abstractmethod
-from collections import Counter
 from pathlib import Path
-from typing import Dict, Any
+from typing import Dict, Iterator
 
 import pandas as pd
 import sidekick.api as sk
 
-from .._utils import read_file
+from .. import config
 from ..logging import log
+from ..utils import (
+    read_file,
+    assign,
+    check_unique_index,
+    check_no_object_columns,
+    check_column_types,
+    safe_concat,
+    sort_region_names,
+    sort_plugin_names,
+)
 
 
 class Data(ABC):
     """
     Abstract data preparation interface.
+
+    The prepare.py scripts should read some data source and save the
+    post-processed data into the appropriate file under build/chunks/. This
+    process can be implemented manually, but this class helps with repetitive
+    tasks of data validation, imputation and finding the correct paths so save
+    and load files.
 
     Data subclasses have 4 main methods:
         - main (classmethod): execute CLI interface.
@@ -29,7 +46,7 @@ class Data(ABC):
     region_name: str
 
     @classmethod
-    def main(cls, **kwargs):
+    def cli(cls, **kwargs):
         """
         Create instance and execute.
         """
@@ -85,12 +102,14 @@ class Data(ABC):
         Validate table and prepare it to be saved.
         """
 
+        attr = f"{name.upper()}_DATA_TYPES"
         try:
-            dtypes = getattr(self, f"{name.upper()}_DATA_TYPES")
+            dtypes = getattr(self, attr)
         except AttributeError:
-            pass
+            raise NotImplementedError(f"class must implement {attr} dictionary")
         else:
-            table = check_column_types(dtypes, table)
+            if dtypes is not None:
+                table = check_column_types(dtypes, table)
 
         return sk.pipe(table, check_unique_index, check_no_object_columns)
 
@@ -114,100 +133,12 @@ class Data(ABC):
             log.info(f"[mundi.data]: {rows}x{cols} data saved to {path}")
 
 
-#
-# Utility methods for common dataframe manipulations
-#
-def assign(data: pd.DataFrame, **values) -> pd.DataFrame:
+class DataIO(Data, ABC):
     """
-    Assign values to all missing columns specified as keyword arguments.
+    A data subclass with methods for making IO.
 
-    Similar to a DataFrame's assign method, but do not overwrite existing
-    columns.
-    """
-
-    def normalize(x):
-        if x is pd.NA or isinstance(x, str):
-            return x, "string"
-        return x if isinstance(x, tuple) else (x, None)
-
-    values = {k: normalize(x) for k, x in values.items()}
-    for col in data.keys():
-        if col in values:
-            del values[col]
-
-    return data.assign(**{k: v[0] for k, v in values.items()}).astype(
-        {k: v[1] for k, v in values.items() if v[1] is not None}
-    )
-
-
-def check_unique_index(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Assert that dataframe has a unique index and return an error showing
-    repetitions in case it don't.
-    """
-    if df.index.is_unique:
-        return df
-
-    count = Counter(df.index)
-    common = count.most_common(5)
-    raise ValueError(f"index is not unique: {common}")
-
-
-def check_no_object_columns(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Check there is no column of dtype=object
-    """
-    for col, dtype in df.dtypes.items():
-        if dtype == object:
-            try:
-                # Try to convert to string with pd.NA missing data
-                df[col] = df[col].fillna(pd.NA).astype("string")
-            except Exception:
-                raise ValueError(f"column {col} is of invalid dtype object")
-    return df
-
-
-@sk.curry(2)
-def check_column_types(types: Dict[str, Any], table: pd.DataFrame) -> pd.DataFrame:
-    """
-    Check if table has all types.
-
-    This is a curried static method, and hence can be used in a pipe by
-    passing a single argument.
-
-    Args:
-        types:
-            A mapping of columns to expected types.
-        table:
-            A data frame with the expected columns.
-
-    Returns:
-        Reorder columns according to the order in the types dict and raises
-        an error if dataframe is missing some column, has extra columns or
-        if some column is of the wrong type.
-    """
-    for col, dtype in types.items():
-        try:
-            col_type = table[col].dtype
-        except KeyError:
-            raise ValueError(f"missing column: {col!r} (dtype = {dtype})")
-        if col_type != dtype:
-            msg = f"invalid type for column {col}: expect {dtype}, got {col_type}"
-            raise ValueError(msg)
-
-    extra = set(table.keys()) - set(types)
-    if extra:
-        raise ValueError(f"invalid columns: {extra}")
-
-    return table[list(types)]
-
-
-#
-# Mixin classes
-#
-class DataIOMixin:
-    """
-    Methods to interact with files.
+    Normally, most plugins should inherit from this class, since it has a
+    richer and more convenient interface.
     """
 
     def read_csv(self, path, **kwargs):
@@ -217,27 +148,76 @@ class DataIOMixin:
         kwargs.setdefault("index_col", 0)
         return self.read_data(path, kind="csv", **kwargs)
 
-    @staticmethod
-    def read_data(path, **kwargs):
+    def read_data(self, path, **kwargs):
         """
         Read file from current path.
         """
+        path = self._normalize_path(path)
         return read_file(path, **kwargs)
 
+    def _normalize_path(self, path):
+        if os.path.exists(path):
+            return path
 
-class DataTransformMixin:
-    """
-    Methods to perform data transformations.
-    """
+        full_path = os.path.abspath(path)
+        if os.path.exists(full_path):
+            return full_path
 
+        mod = sys.modules[type(self).__module__]
+        mod_path = os.path.dirname(mod.__file__)
+        cls_path = os.path.join(mod_path, path)
+
+        if os.path.exists(cls_path):
+            return cls_path
+
+        raise FileNotFoundError(path)
+
+    # Data transformations
     assign = staticmethod(assign)
+    safe_concat = staticmethod(safe_concat)
 
-
-class DataValidationMixin:
-    """
-    Expose validation functions as methods, if necessary.
-    """
-
+    # Data validation
     check_column_types = staticmethod(check_column_types)
     check_unique_index = staticmethod(check_unique_index)
     check_no_object_columns = staticmethod(check_no_object_columns)
+
+
+def find_prepare_scripts(path: Path) -> Iterator[Path]:
+    """
+    Return an iterator with (plugin, region, path) with the location of all
+    prepare.py plugins under the current mundi-data path.
+    """
+
+    for region in sort_region_names(os.listdir(path)):
+        for plugin in sort_plugin_names(os.listdir(path / region)):
+            prepare = (path / region / plugin / "prepare.py").absolute()
+            if os.path.exists(prepare):
+                yield plugin, region, prepare
+
+
+def _main():
+    for part in find_prepare_scripts(config.mundi_data_path() / "data"):
+        plugin, region, path = part
+        print(f"{plugin}[{region}]")
+
+
+def execute_prepare_script(path, verbose=False) -> None:
+    """
+    Execute all prepare scripts in package.
+    """
+    if verbose:
+        print(f'Script: "{path}"')
+    dir = path.parent
+    t0 = time.time()
+    out = subprocess.check_output([sys.executable, str(path)], cwd=dir)
+    if out and verbose:
+        lines = out.decode("utf8").splitlines()
+        print("OUT:")
+        print("\n".join(f"  - {ln.rstrip()}" for ln in lines))
+    dt = time.time() - t0
+    if verbose:
+        print(f"Script executed in {dt:3.2} seconds.\n", flush=True)
+
+
+if __name__ == "__main__":
+    _main()

@@ -2,7 +2,7 @@ import click
 import sidekick.api as sk
 
 from .. import plugins as plugin_modules, Path
-from ..database import create_tables
+from ..db import create_tables
 
 VALID_PLUGINS = ["main", "demography", "healthcare"]
 

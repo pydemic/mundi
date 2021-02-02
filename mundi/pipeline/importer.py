@@ -1,13 +1,12 @@
-import json
-from abc import ABC, abstractmethod
-from collections.abc import MutableMapping
+from abc import ABC
 from pathlib import Path
 from typing import Iterable
 
 import pandas as pd
-import sidekick.api as sk
 
-from ..typing import Data
+from .. import db
+from ..logging import log
+from ..utils import read_file
 
 
 class Importer(ABC):
@@ -18,94 +17,99 @@ class Importer(ABC):
     Importers do not validate data.
     """
 
-    def __init__(self,):
-        self.cache = cache()
+    path: Path
+    table: str
 
-    @abstractmethod
-    def load(self) -> Iterable[Data]:
+    @classmethod
+    def cli(cls):
+        """
+        Main CLI interface for data importers.
+        """
+
+        import click
+
+        @click.command()
+        @click.argument("path")
+        @click.option("--table", "-t", default="region")
+        @click.option("--verbose", "-v", is_flag=True, default="display debug messages")
+        @click.option("--clear", "-c", is_flag=True, help="clear table before importing")
+        def run(path, table, clear, verbose):
+            db.create_tables()
+            if verbose:
+                log.setLevel("DEBUG")
+            importer = cls(path, table=table)
+            if clear:
+                importer.clear()
+            importer.process()
+
+        run()
+
+    def __init__(self, path, table, chunk_size=1024):
+        self.path = Path(path)
+        self.table = table
+        self.chunk_size = chunk_size
+
+    def load_chunks(self) -> Iterable[pd.DataFrame]:
         """
         Loads data from main source.
 
         Return an iterable with data chunks that comfortably fits in memory.
         """
-        raise NotImplementedError
+        data: pd.DataFrame = read_file(self.path / f"{self.table}.pkl.gz")
+        idx = 0
+        size = len(data)
+        while idx < size:
+            chunk = data[idx : idx + self.chunk_size]
+            yield chunk
+            idx += self.chunk_size
 
-    @abstractmethod
-    def save(self, data: Data):
+    def save(self, data: pd.DataFrame):
         """
         Saves chunk of data to the database.
         """
-        raise NotImplementedError
+        cls = db.get_table(self.table)
+        session = db.session()
+        rows = []
+
+        if hasattr(cls, "id"):
+            data = data.reset_index()
+
+        for row_data in data.to_dict("records"):
+            kwargs = clean_row(row_data)
+            row = cls(**kwargs)
+            rows.append(row)
+
+        log.debug(f"[{self.table}] loading {len(rows)} rows")
+        session.add_all(rows)
+        session.commit()
+
+    def clear(self):
+        """
+        Clear data in table.
+        """
+
+        cls = db.get_table(self.table)
+        session = db.session()
+        session.query(cls).delete()
+        session.commit()
+        log.info(f"[{self.table}] deleted all entries")
 
     def process(self):
         """
         Load data in save all data chunks in iterable.
         """
-        for chunk in self.load():
+
+        # Save chunks
+        for chunk in self.load_chunks():
             self.save(chunk)
 
 
-class Cache(MutableMapping):
+def clean_row(data):
     """
-    A file-based chunks cache with dataframe iterators.
+    Clean a record dictionary replacing pd.NA to None.
     """
-
-    path: Path
-
-    def __init__(self, path=None, chunk_size=100):
-        self.path = path
-        self.chunk_size = chunk_size
-
-    def __iter__(self):
-        for f in self.path.iterdir():
-            if f.is_file() and f.name.endswith(".csv.gz"):
-                yield f.name[:-7]  # strip .pkl.gz from the end
-
-    def __len__(self):
-        return sum(1 for _ in self)
-
-    def __getitem__(self, key):
-        kwargs = self._read_args(json.load(self._file(key, ".json")))
-        return pd.read_csv(self._file(key), **kwargs)
-
-    def __setitem__(self, key, value: Iterable[Data]):
-        value = sk.iter(value)
-        kwargs = self._prepare_args(value[0])
-
-        with self._file(key).open("bw") as fd:
-            for i, chunk in enumerate(value):
-                extra = {"header": False} if i != 0 else {}
-                chunk.to_csv(fd, **extra, **kwargs)
-
-        with self._file(key, ".json").open("bw") as fd:
-            json.dump(kwargs, fd)
-
-    def __delitem__(self, key):
-        try:
-            self._file(key).unlink()
-            self._file(key, ".json").unlink()
-        except FileNotFoundError:
-            raise KeyError(key)
-
-    def _file(self, key: str, ext: str = ".csv.gz") -> Path:
-        return self.path / (key + ext)
-
-    def _read_args(self, json) -> dict:
-        return {"chunksize": self.chunk_size, **json}
-
-    def _prepare_args(self, data) -> dict:
-        """
-        Prepare a json-compatible representation of arguments used by the CSV
-        data loader.
-        """
-        return {}
+    return {k: (None if v is pd.NA else v) for k, v in data.items()}
 
 
-@sk.once
-def cache():
-    return Cache(mundi_cache_path())
-
-
-@sk.once
-def mundi_cache_path() -> Path:
-    return Path(".")
+if __name__ == "__main__":
+    Importer.cli()
