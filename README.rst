@@ -98,14 +98,16 @@ The ``.mundi`` accessor is also able to select countries over mundi columns,
 even if those columns are not in the original dataframe.
 
 >>> countries = mundi.countries_dataframe()
->>> countries.mundi.filter(region="latin-america")  # doctest: +ELLIPSIS
-                       name
+>>> countries.mundi.filter(region="latin-america")  # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+                                name
 id
-AD                  Andorra
-AE     United Arab Emirates
-AG      Antigua and Barbuda
-AT                  Austria
-AU                Australia
+AW                              Aruba
+AR                          Argentina
+AG                Antigua and Barbuda
+BS                            Bahamas
+BZ                             Belize
+BO    Bolivia, Plurinational State of
+BR                             Brazil
 ...
 
 

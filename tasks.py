@@ -3,9 +3,10 @@ from invoke import task
 
 @task
 def test(ctx):
-    ctx.run("pytest tests/ --cov")
-    ctx.run("black --check .")
-    ctx.run("pycodestyle")
+    ctx.run("pytest tests/ --cov", pty=True)
+    ctx.run("sphinx-build docs/ build/docs/ -b doctest", pty=True)
+    ctx.run("black --check .", pty=True)
+    ctx.run("pycodestyle", pty=True)
 
 
 @task
