@@ -28,4 +28,4 @@ class TestDataFrameAccessor:
 class TestDataFrameAccessorPlugin:
     def test_extract_multiple_columns_with_plugins(self, db):
         extra = db.mundi[["population", "region"]]
-        assert extra.shape == (10, 3)
+        assert extra.shape == (10, 2)

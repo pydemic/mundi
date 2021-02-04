@@ -1,7 +1,16 @@
-from sqlalchemy import Column, String, Integer, Boolean, PrimaryKeyConstraint
+from sqlalchemy import (
+    Column,
+    String,
+    Integer,
+    Boolean,
+    LargeBinary,
+    PrimaryKeyConstraint,
+    UniqueConstraint,
+)
+from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship, backref
 
-from ..db import Base, MundiRef
+from .database import Base, MundiRef
 
 
 class MundiRegistry(Base):
@@ -41,34 +50,69 @@ class Region(Base):
 
     __tablename__ = "region"
 
-    id = MundiRef(primary_key=True, doc="Unique identifier for each region. Primary key.")
-    name = Column(
-        String, doc="Human-readable name of region (English version).", nullable=False
+    id = MundiRef(
+        primary_key=True,
+        doc="Unique identifier for each region. This derived from alpha2 codes "
+        "and works as a primary key.",
     )
-    type = Column(String(32), doc="Region main type.", nullable=False)
-    subtype = Column(String(32), doc="Optional Region sub-type.")
+    name = Column(
+        String,
+        doc="Human-readable name of region (English version).",
+        nullable=False,
+        index=True,
+    )
+    type = Column(
+        String(32),
+        doc="Region main type. Usually must be queried with subtype to "
+        "specify different kinds of regions.",
+        nullable=False,
+        index=True,
+    )
+    subtype = Column(
+        String(32),
+        doc="Optional Region sub-type. This helps to differentiate "
+        "sub-categories of regions",
+        index=True,
+    )
     short_code = Column(
-        String(16), doc="Small identification code (uses ISO alpha-2 for countries)"
+        String(16),
+        doc="Small identification code (uses ISO alpha-2 for countries)",
+        index=True,
     )
     long_code = Column(
-        String(32), doc="A longer identification code (uses ISO alpha-3 for countries)"
+        String(32),
+        doc="A longer identification code (uses ISO alpha-3 for countries)",
+        index=True,
     )
     numeric_code = Column(
-        String(32), doc="An optional numeric identification for region."
+        String(32),
+        doc="An optional numeric identification for region. "
+        "It is stored as string since the number of digits may convey meaning.",
+        index=True,
     )
-    country_id = MundiRef("region.id", doc="Country id for regions within a country.")
-    parent_id = MundiRef("region.id", doc="Reference to parent element.")
-    income_group = Column(String(16), doc="UN income groups.")
-    region = Column(String(16), doc="UN regions.")
+    country_id = MundiRef(
+        "region.id",
+        doc="Country id for regions within a country. "
+        "Only applies to regions within countries.",
+        index=True,
+    )
+    parent_id = MundiRef(
+        "region.id",
+        doc="Reference to parent element. Access object using the 'parent' relationship",
+        index=True,
+    )
+    region = Column(
+        String(16),
+        doc="United nations classification for world regions. "
+        "Sub-regions inherit from parents.",
+        index=True,
+    )
     level = Column(
         Integer,
         doc="Level in the mundi hierarchy. Level starts at 0 = XX/World and "
         "increases by one at each additional nesting.",
+        index=True,
     )
-
-    # Relationships
-    # parent = relationship("Region", remote_side=[id], foreign_keys=[parent_id])
-    # country = relationship("Region", remote_side=[id], foreign_keys=[country_id])
     children = relationship(
         "Region", backref=backref("parent", remote_side=[id]), foreign_keys=[parent_id]
     )
@@ -93,8 +137,6 @@ class RegionM2M(Base):
     parent_id = MundiRef("region.id")
     child_id = MundiRef("region.id")
     relation = Column(String(32))
-
-    # Relationships
     parent = relationship(
         "Region",
         backref=backref("parents_alt", remote_side="Region.id"),
@@ -104,4 +146,92 @@ class RegionM2M(Base):
         "Region",
         backref=backref("children_alt", remote_side="Region.id"),
         foreign_keys=[child_id],
+    )
+
+
+class RegionDataMixin:
+    @declared_attr
+    def id(cls):
+        return MundiRef(
+            key=Region.id,
+            primary_key=True,
+            doc="Unique identifier for each region. Primary key.",
+        )
+
+    @declared_attr
+    def region(cls):
+        return relationship("Region")
+
+
+class DemographyMixin:
+    """
+    Basic container for demographic data.
+
+    Tabular data is packaged into numpy arrays, which are then serialized with
+    ndarray.to_string() method.
+    """
+
+    population = Column(
+        Integer(),
+        doc="Total population. Computed from age_distribution, when available.",
+        index=True,
+        nullable=False,
+    )
+    age_distribution = Column(
+        LargeBinary(),
+        doc="Binary blob representing age distribution in 5 years bins. "
+        "Store a numpy array. Computed from age_pyramid, when available.",
+    )
+    age_pyramid = Column(
+        LargeBinary(),
+        doc="Binary blob representing gender-stratified age distribution in 5 "
+        "years bins. Store a numpy array.",
+    )
+
+
+class Demography(RegionDataMixin, DemographyMixin, Base):
+    __tablename__ = "demography"
+
+
+class HistoricDemography(DemographyMixin, Base):
+    __tablename__ = "historic_demography"
+    __table_args__ = (UniqueConstraint("region_id", "year"),)
+
+    pk = Column(Integer, primary_key=True, autoincrement=True)
+    region_id = MundiRef(
+        key=Region.id,
+        doc="Unique identifier for each region. Primary key.",
+    )
+    year = Column(
+        Integer(),
+        doc="Year in which population information was collected.",
+        index=True,
+        nullable=False,
+    )
+    region = relationship("Region")
+
+
+class Healthcare(RegionDataMixin, Base):
+    __tablename__ = "healthcare"
+
+    hospital_capacity = Column(
+        Integer,
+        default=0,
+        nullable=False,
+        doc="Total capacity of clinical beds in hospitals and clinics.",
+    )
+    hospital_capacity_public = Column(
+        Integer, default=0, nullable=False, doc="Total capacity in the public sector."
+    )
+    icu_capacity = Column(
+        Integer,
+        default=0,
+        nullable=False,
+        doc="Total capacity of ICU beds in hospitals.",
+    )
+    icu_capacity_public = Column(
+        Integer,
+        default=0,
+        nullable=False,
+        doc="Total capacity of ICUs in the public sector.",
     )

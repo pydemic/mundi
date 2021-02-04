@@ -1,28 +1,24 @@
 import contextlib
-import re
 import time
 from abc import ABC
 from collections import defaultdict
 from pathlib import Path
-from typing import Dict, TypeVar, Type
+from typing import Dict, TypeVar, Type, List
 
 import pandas as pd
+import pkg_resources
 import sidekick.api as sk
+from sqlalchemy import Column
+from sqlalchemy.orm.properties import ColumnProperty
 
 from .. import config
-from ..db import Base
+from .database import Base
+from ..logging import log
 from ..pipeline import Collector, Importer, find_prepare_scripts, execute_prepare_script
 from ..utils import read_file
 
-sqlite3 = sk.import_later("sqlite3")
-IS_CODE_PATH = re.compile(r"[A-Z]{2}(-\w+)?")
-PICKLE_EXTENSIONS = (".pkl", ".pickle", ".pkl.gz", ".pickle.gz")
-SQL_EXTENSIONS = (".sql", ".sqlite")
-CSV_EXTENSIONS = (".csv", ".csv.gz", ".csv.bz2")
-HDF5_EXTENSIONS = (".hdf", ".hfd5")
 PLUGIN_INSTANCES = {}
-PLUGIN_SUBCLASSES = set()
-
+PLUGIN_SUBCLASSES = []
 T = TypeVar("T")
 
 
@@ -33,22 +29,11 @@ class Plugin(ABC):
 
     name: str
     tables: Dict[str, Base]
+    data_tables: List[Type[Base]] = None
     collectors: Dict[str, Type[Collector]] = defaultdict(lambda: Collector)
     importers: Dict[str, Type[Importer]] = defaultdict(lambda: Importer)
-
-    def __init_subclass__(cls, **kwargs):
-        PLUGIN_SUBCLASSES.add(cls)
-
-    @classmethod
-    def instance(cls):
-        """
-        Return singleton instance to class.
-        """
-        try:
-            return PLUGIN_INSTANCES[cls]
-        except KeyError:
-            PLUGIN_INSTANCES[cls] = plugin = cls()
-            return plugin
+    columns: Dict[str, Column] = None
+    prefix: str = ""
 
     @classmethod
     def cli(cls, click=sk.import_later("click")):
@@ -66,6 +51,7 @@ class Plugin(ABC):
             "--verbose", "-v", is_flag=True, default=False, help="Verbose output"
         )
         def prepare(path, verbose):
+            click.echo(path)
             if path is None:
                 path = config.mundi_data_path() / "data"
             else:
@@ -78,41 +64,98 @@ class Plugin(ABC):
         @click.option(
             "--verbose", "-v", is_flag=True, default=False, help="Verbose output"
         )
-        def collect(path, verbose):
+        @click.option("--table", "-t", help="Select specific table")
+        def collect(path, verbose, table):
             if path is None:
                 path = config.mundi_data_path() / "build"
             else:
                 path = Path(path)
             plugin = cls.instance()
 
-            for table in plugin.tables:
+            if table is None:
+                for table in plugin.tables:
+                    plugin.collect(path, table, verbose=verbose)
+            else:
                 plugin.collect(path, table, verbose=verbose)
 
-        @cli.command()
+        @cli.command("import")
         @click.option("--path", "-p", help="Location of mundi-path")
         @click.option(
             "--verbose", "-v", is_flag=True, default=False, help="Verbose output"
         )
-        @click.option("--table", "-t", default="", help="Select specific table")
-        def reload(path, verbose, table):
+        @click.option("--table", "-t", help="Select specific table")
+        def import_(path, verbose, table):
             if path is None:
                 path = config.mundi_data_path() / "build" / "databases"
             else:
                 path = Path(path)
-            plugin = cls.instance()
 
-            for table in table.split(",") or plugin.tables:
+            plugin = cls.instance()
+            if table:
+                tables = table.split(",")
+            else:
+                tables = list(plugin.tables)
+
+            db.create_tables()
+            for table in tables:
                 plugin.reload(path, table, verbose=verbose)
 
         return cli()
+
+    @classmethod
+    def instance(cls):
+        """
+        Return singleton instance to class.
+        """
+        try:
+            return PLUGIN_INSTANCES[cls]
+        except KeyError:
+            PLUGIN_INSTANCES[cls] = plugin = cls()
+            return plugin
+
+    @classmethod
+    def init_plugins(cls):
+        """
+        Initialize the plugin system.
+        """
+        load_external_plugins()
+        n = len(PLUGIN_SUBCLASSES)
+        log.info(f"initializing {n} plugins")
+
+        plugins = []
+        for plugin_cls in PLUGIN_SUBCLASSES:
+            plugin = plugin_cls.instance()
+            log.info(f"initializing plugin: {plugin}")
+            plugins.append(plugin)
+
+        for plugin in plugins:
+            plugin.register()
+
+    @classmethod
+    def get_column(cls, column: str):
+        """
+        Return the column associated with the given column name.
+        """
+        for plugin in PLUGIN_INSTANCES.values():
+            try:
+                return plugin.columns[column]
+            except KeyError:
+                pass
+
+        raise ValueError(f"no column named {column}")
+
+    def __init_subclass__(cls, **kwargs):
+        PLUGIN_SUBCLASSES.append(cls)
 
     def __init__(self):
         if type(self) in PLUGIN_INSTANCES:
             raise RuntimeError("trying to initialize plugin twice.")
         if not hasattr(self, "name"):
-            raise RuntimeError("Class does not implement a 'name' attribute.")
+            cls = type(self).__name__
+            raise RuntimeError(f"Class {cls} does not implement a 'name' attribute.")
         if not hasattr(self, "tables"):
-            raise RuntimeError("Class does not implement a 'tables' attribute.")
+            cls = type(self).__name__
+            raise RuntimeError(f"Class {cls} does not implement a 'tables' attribute.")
         self.name = self.name
         PLUGIN_INSTANCES[type(self)] = self
 
@@ -164,18 +207,34 @@ class Plugin(ABC):
             uri, is_remote = config.mundi_data_uri(table)
             return read_file(uri)
 
+    #
+    # Plugin registry
+    #
     def register(self):
         """
         Register itself in the plugins registry that maps fields to SQL queries
         to the database.
         """
-        raise NotImplementedError
 
-    def unregister(self):
-        """
-        Un-register plugin from the global plugin registry.
-        """
-        raise NotImplementedError
+        if self.data_tables is None:
+            self.data_tables = list(self.tables)
+
+        # Fill the columns attribute, if empty
+        if self.columns is None:
+            self.columns = columns = {}
+            prefix = self.prefix
+            for table_name in self.data_tables:
+                table = self.tables[table_name]
+                for attr, prop in table.__mapper__.attrs.items():
+                    key = prefix + attr
+                    if key in columns:
+                        continue
+                    if isinstance(prop, ColumnProperty):
+                        columns[key] = prop.expression
+
+    #
+    # Query terms
+    #
 
 
 @contextlib.contextmanager
@@ -188,3 +247,15 @@ def _timing(msg, verbose):
     if verbose:
         dt = time.time() - t0
         print(f"[{dt:.2}sec]")
+
+
+def load_external_plugins():
+    """
+    Load external plugins, including entry points.
+    """
+    from ..plugins import demography, region, healthcare
+
+    _, _, _ = demography, region, healthcare
+
+    for entry_point in pkg_resources.iter_entry_points("mundi_plugin"):
+        entry_point.load()
