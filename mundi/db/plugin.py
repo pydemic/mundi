@@ -20,8 +20,8 @@ PICKLE_EXTENSIONS = (".pkl", ".pickle", ".pkl.gz", ".pickle.gz")
 SQL_EXTENSIONS = (".sql", ".sqlite")
 CSV_EXTENSIONS = (".csv", ".csv.gz", ".csv.bz2")
 HDF5_EXTENSIONS = (".hdf", ".hfd5")
-
 PLUGIN_INSTANCES = {}
+PLUGIN_SUBCLASSES = set()
 
 T = TypeVar("T")
 
@@ -35,6 +35,9 @@ class Plugin(ABC):
     tables: Dict[str, Base]
     collectors: Dict[str, Type[Collector]] = defaultdict(lambda: Collector)
     importers: Dict[str, Type[Importer]] = defaultdict(lambda: Importer)
+
+    def __init_subclass__(cls, **kwargs):
+        PLUGIN_SUBCLASSES.add(cls)
 
     @classmethod
     def instance(cls):

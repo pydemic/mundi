@@ -61,3 +61,8 @@ class TestRegion:
 
         assert russia in europe.children("all")
         assert russia in europe.children()
+
+    def test_region_attributes_from_plugins(self):
+        br = Region("BR")
+
+        assert br.population >= 200_000_000

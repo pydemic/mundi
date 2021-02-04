@@ -6,7 +6,7 @@ from typing import Union, Sequence
 import pandas as pd
 import sidekick as sk
 from sidekick import X
-
+from . import db
 
 Pandas = Union[pd.Series, pd.DataFrame]
 
@@ -21,16 +21,25 @@ class MundiDataFrameAcessor:
     def __init__(self, obj):
         self._data = obj
 
-    def __getitem__(self, cols):
-        if not isinstance(cols, tuple):
-            cols = (cols,)
+    def __getitem__(self, key):
+        if isinstance(key, tuple):
+            left, right = key
+            if left is ...:
+                return pd.concat([self._data, self[right]], axis=1)
+            elif right is ...:
+                return pd.concat([self[left], self._data], axis=1)
+            else:
+                raise IndexError(f"invalid index: {key}")
 
-        left, right = map(list, sk.partition((X == ...), cols))
-        frames = [self.extra(left)] if left else []
-        if right:
-            _, *right = right  # remove ellipsis
-            frames.append(self.extend(right))
-        return pd.concat(frames, axis=1)
+        query = db.query().filter(db.Region.id.in_(self._data.index))
+        if isinstance(key, list):
+            values = query.values("id", *key)
+            table = pd.DataFrame(list(values)).set_index("id")
+            table = table.replace({None: pd.NA})
+        else:
+            values = query.values("id", key)
+            table = pd.DataFrame(list(values)).set_index("id").iloc[:, 0]
+        return table.reindex(self._data.index)
 
     def select(self, **kwargs):
         """
@@ -71,18 +80,6 @@ def mask(data: Pandas, col: str, value) -> pd.Series:
     if col not in data:
         data = extend(data, col)
     return data[col].__eq__(value)
-
-
-def extend(data: Pandas, name: str) -> Pandas:
-    """
-    Load additional data from the given data source.
-    """
-    try:
-        fn = DATA_LOADERS[name]
-    except KeyError:
-        msg = f"Mundi does not know how to load {name!r} columns."
-        raise ValueError(msg)
-    return fn(data)
 
 
 def extend_columns(data: pd.DataFrame, cols: Sequence[str], init=None, repeat=False):
