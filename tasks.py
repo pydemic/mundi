@@ -11,12 +11,18 @@ def test(ctx):
 @task
 def prepare_data(ctx, fast=False):
     if not fast:
-        ctx.run("rm mundi/databases/* -rfv")
-        ctx.run("python -m mundi prepare mundi")
-        print()
+        ctx.run("python -m mundi.plugins.region prepare -v")
+    ctx.run("python -m mundi.plugins.region collect -v -t region")
+    ctx.run("python -m mundi.plugins.region import -v -t region")
+    ctx.run("python -m mundi.plugins.region collect -v -t region_m2m")
+    ctx.run("python -m mundi.plugins.region import -v -t region_m2m")
 
-    ctx.run("python -m mundi compile mundi mundi -o db.sqlite -f fix_types")
-    print()
-    ctx.run("python -m mundi compile mundi un -o db.sqlite -f fix_types")
-    print()
-    ctx.run("python -m mundi compile mundi un -o un.pkl.gz")
+    if not fast:
+        ctx.run("python -m mundi.plugins.demography prepare -v")
+    ctx.run("python -m mundi.plugins.demography collect -v")
+    ctx.run("python -m mundi.plugins.demography import -v")
+
+    if not fast:
+        ctx.run("python -m mundi.plugins.healthcare prepare -v")
+    ctx.run("python -m mundi.plugins.healthcare collect -v")
+    ctx.run("python -m mundi.plugins.healthcare import -v")
