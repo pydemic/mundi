@@ -46,6 +46,7 @@ class Data(ABC):
     plugin_name: str
     region_name: str
     _as_script = True
+    _path = None
 
     @classmethod
     def cli(cls, **kwargs):
@@ -53,10 +54,13 @@ class Data(ABC):
         Create instance and execute.
         """
 
-        def main(show=False, validate=False):
+        def main(show=False, validate=False, table=None):
             data = cls(**kwargs)
             if show:
-                for k, v in data.collect().items():
+                values = data.collect()
+                if table is not None:
+                    values = {table: values[table]}
+                for k, v in values.items():
                     try:
                         data = data.validate(v, k) if validate else v
                     except Exception:
@@ -68,7 +72,16 @@ class Data(ABC):
                         raise
 
                     print("TABLE:", k, "\n")
-                    print(data, "\n\nTYPES:", data.dtypes, end="\n\n")
+                    with pd.option_context(
+                        "display.max_rows", 200, "display.max_columns", None
+                    ):
+                        print(data)
+
+                    print("\nTYPES:", k, "\n")
+                    with pd.option_context(
+                        "display.max_rows", None, "display.max_columns", None
+                    ):
+                        print(data.dtypes, end="\n\n")
 
             else:
                 data.save()
@@ -83,20 +96,27 @@ class Data(ABC):
             @click.option(
                 "--validate", "-v", default=False, is_flag=True, help="Validates data."
             )
+            @click.option("--table", "-t", help="Filter to single table.")
             def _main(**kwargs):
                 return main(**kwargs)
+
+            return _main()
 
         main()
 
     def __init__(self, path=None):
         if path is None:
             cls = type(self)
-            path, _ = os.path.splitext(sys.modules[cls.__module__].__file__)
+            if cls._path is not None:
+                path = cls._path
+            else:
+                path, _ = sys.modules[cls.__module__].__file__
+                path = Path(path).parent
+
         path = Path(path)
-        self.path = path.parent
-        self.script_name = path.name
-        self.plugin_name = path.parent.name
-        self.region_name = path.parent.parent.name
+        self.path = path
+        self.plugin_name = path.name
+        self.region_name = path.parent.name
 
     @abstractmethod
     def collect(self) -> Dict[str, pd.DataFrame]:
@@ -217,19 +237,26 @@ def execute_prepare_script(path: Path, verbose: bool = False) -> None:
     if verbose:
         print(f'Script: "{path}"')
 
-    dir = path.parent
+    directory = path.parent
     t0 = time.time()
-    env = {"__file__": str(path), "__name__": "__main__"}
+    env = {
+        "__file__": str(path),
+        "__name__": "__main__",
+    }
 
     cwd = os.getcwd()
     out = io.StringIO()
     try:
         Data._as_script = False
-        os.chdir(str(dir))
+        os.chdir(str(directory))
         with contextlib.redirect_stdout(out):
-            exec(path.read_text(), env)
+            try:
+                Data._path = directory
+                exec(path.read_text(), env)
+            finally:
+                Data._path = None
     except Exception as ex:
-        raise RuntimeError(f"script failed with error: {ex}")
+        raise RuntimeError(f"script failed with error: {ex}") from ex
     finally:
         Data._as_script = True
         os.chdir(cwd)

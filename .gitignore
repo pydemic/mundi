@@ -19,4 +19,4 @@ htmlcov/
 data/_tmp/
 data/*/processed/
 build/
-mundi-data/
+mundi-data/build/

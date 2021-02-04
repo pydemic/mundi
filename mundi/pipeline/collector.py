@@ -153,7 +153,9 @@ class Collector(ABC):
         Load and save data to <path>/databases/<table>.pkl.gz
         """
         data = self.load()
-        data.to_pickle(str(self.path / "databases" / (self.table + ".pkl.gz")))
+        path = self.path / "databases" / (self.table + ".pkl.gz")
+        path.parent.mkdir(exist_ok=True, parents=True)
+        data.to_pickle(str(path))
 
     def _chunk_cmp(self, a, b):
         """

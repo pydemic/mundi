@@ -1,3 +1,4 @@
+import pandas as pd
 import pytest
 
 from mundi import Region
@@ -66,3 +67,10 @@ class TestRegion:
         br = Region("BR")
 
         assert br.population >= 200_000_000
+
+    def test_region_attributes_are_normalized(self):
+        br = Region("BR-1200104")
+        print(br.age_distribution)
+        print(br.age_pyramid)
+        assert isinstance(br.age_distribution, pd.Series)
+        assert isinstance(br.age_pyramid, pd.DataFrame)

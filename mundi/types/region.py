@@ -124,6 +124,9 @@ class Region:
     def children_dataframe(
         self, relation="default", columns=("name",), *, deep=False
     ) -> pd.DataFrame:
+        """
+        Return a dataframe with all children.
+        """
         raise NotImplementedError
 
     def _children_ids(self, relation, deep, max_depth=32) -> Iterator[str]:
@@ -182,7 +185,7 @@ def as_region(region) -> Region:
 
 
 def get_scalar_field(ref, field):
-    print(ref, list(db.values_for([ref], field)))
     (row,) = db.values_for([ref], field)
     (value,) = row
-    return value
+    transformer = db.get_transformer(field)
+    return transformer(value)

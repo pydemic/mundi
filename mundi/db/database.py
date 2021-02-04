@@ -195,6 +195,15 @@ def clear_caches():
     _get_table_from_query_param.cache_clear()
     _get_expr_function_from_query_param.cache_clear()
     _get_column_from_query_param.cache_clear()
+    get_transformer.cache_clear()
+
+
+@lru_cache(512)
+def get_transformer(param: str):
+    param, sep, extra = param.partition("__")
+    if sep:
+        raise NotImplementedError
+    return Plugin.get_transformer(param)
 
 
 from .tables import Region

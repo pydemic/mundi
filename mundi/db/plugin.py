@@ -3,7 +3,7 @@ import time
 from abc import ABC
 from collections import defaultdict
 from pathlib import Path
-from typing import Dict, TypeVar, Type, List
+from typing import Dict, TypeVar, Type, List, Union, Callable
 
 import pandas as pd
 import pkg_resources
@@ -11,8 +11,8 @@ import sidekick.api as sk
 from sqlalchemy import Column
 from sqlalchemy.orm.properties import ColumnProperty
 
-from .. import config
 from .database import Base
+from .. import config
 from ..logging import log
 from ..pipeline import Collector, Importer, find_prepare_scripts, execute_prepare_script
 from ..utils import read_file
@@ -32,6 +32,7 @@ class Plugin(ABC):
     data_tables: List[Type[Base]] = None
     collectors: Dict[str, Type[Collector]] = defaultdict(lambda: Collector)
     importers: Dict[str, Type[Importer]] = defaultdict(lambda: Importer)
+    transformers: Dict[str, Union[str, Callable]] = None
     columns: Dict[str, Column] = None
     prefix: str = ""
 
@@ -40,6 +41,8 @@ class Plugin(ABC):
         """
         Execute data processing actions related to plugin.
         """
+
+        from .. import db
 
         @click.group()
         def cli():
@@ -144,6 +147,19 @@ class Plugin(ABC):
 
         raise ValueError(f"no column named {column}")
 
+    @classmethod
+    def get_transformer(cls, column: str):
+        """
+        Return the column associated with the given column name.
+        """
+        for plugin in PLUGIN_INSTANCES.values():
+            try:
+                return plugin.transformers[column]
+            except KeyError:
+                pass
+
+        return lambda x: x
+
     def __init_subclass__(cls, **kwargs):
         PLUGIN_SUBCLASSES.append(cls)
 
@@ -231,6 +247,12 @@ class Plugin(ABC):
                         continue
                     if isinstance(prop, ColumnProperty):
                         columns[key] = prop.expression
+
+        if self.transformers is None:
+            self.transformers = {}
+        for k, fn in self.transformers.items():
+            if isinstance(fn, str):
+                self.transformers[k] = getattr(self, fn)
 
     #
     # Query terms

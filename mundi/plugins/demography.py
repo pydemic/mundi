@@ -1,6 +1,7 @@
 from types import ModuleType
 from typing import Union
 
+import numpy as np
 import pandas as pd
 import sidekick.api as sk
 
@@ -28,13 +29,15 @@ class DemographyData(DataIO):
         "age_pyramid": {"uint32", object},
     }
 
-    def extend_dataframe(self, df, attr, extra=("",), name=None):
+    def extend_dataframe(self, df, attr, extra=("", ""), name=None):
         src: pd.DataFrame = getattr(self, attr)
         name = name or attr
         if src is pd.NA:
             df[(name, *extra)] = pd.NA
             return df
         src.columns = multi_index(name, src.columns)
+        if src.columns.nlevels == 2:
+            src.columns = pd.MultiIndex.from_tuples((*t, "") for t in src.columns)
         return pd.concat([df, src], axis=1)
 
     @sk.lazy
@@ -55,7 +58,7 @@ class DemographyData(DataIO):
 
     @sk.lazy
     def demography(self):
-        df = pd.DataFrame({("population", ""): self.population})
+        df = pd.DataFrame({("population", "", ""): self.population})
         df = self.extend_dataframe(df, "age_distribution")
         df = self.extend_dataframe(df, "age_pyramid")
         df.columns = pd.MultiIndex.from_tuples(df.columns)
@@ -81,14 +84,11 @@ class DemographyData(DataIO):
 
     @sk.lazy
     def historic_demography(self):
-        df = pd.DataFrame({("population", ""): self.historic_population})
+        df = pd.DataFrame({("population", "", ""): self.historic_population})
         df = self.extend_dataframe(
             df, "historic_age_distribution", name="age_distribution"
         )
-        df.columns = pd.MultiIndex.from_tuples((*t, "") for t in df.columns)
-        df = self.extend_dataframe(
-            df, "historic_age_pyramid", ("", ""), name="age_pyramid"
-        )
+        df = self.extend_dataframe(df, "historic_age_pyramid", name="age_pyramid")
         df.columns = pd.MultiIndex.from_tuples(df.columns)
         df = (
             df.reset_index()
@@ -123,6 +123,28 @@ class DemographyPlugin(db.Plugin):
     name = "demography"
     tables = {"demography": db.Demography, "historic_demography": db.HistoricDemography}
     data_tables = {"demography"}
+    transformers = {
+        "age_distribution": "to_distribution",
+        "age_pyramid": "to_pyramid",
+    }
+
+    def to_distribution(self, raw):
+        if raw is None:
+            return None
+        data = np.fromstring(raw, dtype="uint32")
+        N = 5 * len(data)
+        index = pd.RangeIndex(0, N, 5, name="age")
+        return pd.Series(data, index=index, name="age_distribution")
+
+    def to_pyramid(self, raw):
+        if raw is None:
+            return None
+        data = np.fromstring(raw, dtype="uint32")
+        female = data[: len(data) // 2]
+        male = data[len(female) :]
+        N = 5 * len(female)
+        index = pd.RangeIndex(0, N, 5, name="age")
+        return pd.DataFrame({"female": female, "male": male}, index=index)
 
 
 def multi_index(prefix, idxs):

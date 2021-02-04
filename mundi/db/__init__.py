@@ -16,7 +16,8 @@ from .database import (
     session,
     query,
     get_table,
+    get_transformer,
     values_for,
 )
-from .tables import Region, RegionM2M, Demography, HistoricDemography, Healthcare
 from .plugin import Plugin
+from .tables import Region, RegionM2M, Demography, HistoricDemography, Healthcare
