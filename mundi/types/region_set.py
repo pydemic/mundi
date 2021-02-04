@@ -1,9 +1,10 @@
-from typing import Optional
-from weakref import WeakValueDictionary
 from collections.abc import Set
+from typing import Optional
+
 import pandas as pd
 
 from .region import as_region
+import sidekick.api as sk
 
 
 class RegionSet(Set):
@@ -38,6 +39,19 @@ class RegionSet(Set):
         except KeyError:
             pass
         raise AttributeError(item)
+
+    def __repr__(self):
+        return f"RegionSet({self._regions}, name={self.name!r})"
+
+    def __str__(self):
+        regions = sorted([r.id for r in self])
+        if len(regions) > 5:
+            regions = [*regions[:5], "..."]
+        regions = ", ".join(regions)
+
+        return (
+            f"Composite Region\n" f"  name     : {self.name}\n" f"  regions  : {regions}"
+        )
 
     def _get_field(self, key):
         fget = REGION_PLUGINS[key]

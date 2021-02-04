@@ -1,39 +1,47 @@
 import pandas as pd
 
+from . import db
 
-def sum_children(data, which="both"):
+
+def sum_children(data, relation="default"):
     """
     Fill values by summing the contents of children.
     """
-    return agg_children(data, "sum", which)
+    return agg_children(data, "sum", relation)
 
 
-def agg_children(data: pd.DataFrame, agg="sum", which="both") -> pd.DataFrame:
+def agg_children(data: pd.DataFrame, agg="sum", relation="default") -> pd.DataFrame:
     """
-    Fill all NA values aggregating children by summation.
+    Fill all NA values aggregating children by aggregation function.
     """
-    if which == "both":
-        data = agg_children(data, agg, "primary")
-        return agg_children(data, agg, "secondary")
-    elif which == "primary":
-        m2m_callback = primary_child_parent_m2m
-    elif which == "secondary":
-        m2m_callback = secondary_child_parent_m2m
-    else:
-        msg = 'which must be in {"primary", "secondary", "both"}, got %r'
-        raise ValueError(msg % which)
+    if relation in ("*", "all"):
+        for relation in ("default", "continent", "sus_region"):
+            data = agg_children(data, agg, relation)
+        return data
 
     skip = data.index
     parts = [data]
 
     while True:
-        m2m = m2m_callback(data).rename({"child_id": "id"}, axis=1)
+        m2m = pd.DataFrame(
+            list(
+                db.session()
+                .query(db.RegionM2M)
+                .filter(db.RegionM2M.relation == relation)
+                .filter(db.RegionM2M.child_id.in_(data.index))
+                .values("child_id", "parent_id")
+            )
+        )
+        if len(m2m) == 0:
+            return pd.concat(parts)
+
+        m2m = m2m.rename(columns={"child_id": "id"})
         m2m = m2m[~m2m["parent_id"].isin(skip).values]
 
         out = (
             pd.merge(m2m, data.reset_index(), on="id")
             .drop(columns="id")
-            .rename({"parent_id": "id"}, axis=1)
+            .rename(columns={"parent_id": "id"})
             .groupby("id")
             .agg(agg)
         )
@@ -42,33 +50,3 @@ def agg_children(data: pd.DataFrame, agg="sum", which="both") -> pd.DataFrame:
         parts.append(out)
         skip = skip.union(out.index)
         data = out
-
-
-def primary_child_parent_m2m(data):
-    """
-    Return a m2m table with (child_id, parent_id) pairs.
-    """
-    return (
-        data.mundi["parent_id"].dropna().reset_index().rename({"id": "child_id"}, axis=1)
-    )
-
-
-def secondary_child_parent_m2m(data):
-    """
-    Return a m2m table with (child_id, parent_id) pairs.
-    """
-
-    parents = (
-        data.mundi["alt_parents"]["alt_parents"]
-        .dropna()
-        .reset_index()
-        .rename({"alt_parents": "parent_id", "id": "child_id"}, axis=1)
-    )
-    return pd.DataFrame(
-        list(
-            (idx, p)
-            for _, (idx, parents) in parents.iterrows()
-            for p in parents[1:].split(";")
-        ),
-        columns=["child_id", "parent_id"],
-    ).reset_index(drop=True)

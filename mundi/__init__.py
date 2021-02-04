@@ -8,7 +8,9 @@ specialized uses.
 __author__ = "Fábio Mendes"
 __version__ = "0.2.3"
 
-from . import pandas as _pandas_mod
+from . import db
+from . import pandas as _pandas_module
+from .constants import *
 from .functions import (
     regions,
     countries,
@@ -18,6 +20,7 @@ from .functions import (
     country_id,
     code,
 )
-from .types import Region, RegionSet
-from .constants import *
 from .logging import log
+from .types import Region, RegionSet
+
+db.Plugin.init_plugins()

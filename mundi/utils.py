@@ -135,21 +135,50 @@ def check_column_types(types: Dict[str, Any], table: pd.DataFrame) -> pd.DataFra
     """
     for col, expected in types.items():
         try:
-            dtype = table[col].dtype
+            col_data = table[col]
+            if table.columns.nlevels > 1:
+                try:
+                    col_data = table[col, ""]
+                except KeyError:
+                    pass
+
         except KeyError:
+            print(table.dtypes)
             raise ValueError(f"missing column: {col!r} (dtype = {expected})")
+
+        if isinstance(col_data, pd.Series):
+            dtype = col_data.dtype
+        elif isinstance(col_data, pd.DataFrame):
+            dtypes = set(col_data.dtypes.values)
+            if len(dtypes) == 0:
+                dtype = expected
+            elif len(dtypes) > 1:
+                msg = f"sub-dataframe {col} is not of a uniform type. Got {dtypes}"
+                raise ValueError(msg)
+            else:
+                (dtype,) = dtypes
+        else:
+            raise TypeError(f"invalid type for column: {type(col_data)}")
 
         # Handle string columns. This seems to be a bug in pandas that do
         # not recognize pd.StringDtype as a normal dtype.
+        expected_types = expected if isinstance(expected, set) else {expected}
         try:
-            is_different = dtype != expected
+            is_different = all(dtype != e for e in expected_types)
         except TypeError:
             is_different = True
         if is_different:
+            print(table["region_id", ""])
+            print(col_data, type(col_data), col_data.dtypes, table.dtypes, sep="\n\n")
             msg = f"invalid type for column {col!r}: expect {expected}, got {dtype}"
             raise ValueError(msg)
 
-    extra = set(table.keys()) - set(types)
+    if table.columns.nlevels == 1:
+        extra = set(table.columns)
+    else:
+        extra = set(c[0] for c in table.columns)
+    extra -= set(types)
+
     if extra:
         raise ValueError(f"invalid columns: {extra}")
 
@@ -211,3 +240,15 @@ def sort_plugin_names(lst: Iterable[str]) -> List[str]:
         return r != "main", r.upper()
 
     return sorted(lst, key=key)
+
+
+def dataframe_to_bytes(df: pd.DataFrame, **kwargs) -> pd.Series:
+    """
+    Convert dataframe to series with a single column that stores data as bytes.
+    """
+    rows = [row.tobytes() for row in df.values]
+    return pd.Series(rows, index=df.index, **kwargs)
+
+
+def dataframe_from_bytes(series: pd.Series, **kwargs) -> pd.DataFrame:
+    raise NotImplementedError

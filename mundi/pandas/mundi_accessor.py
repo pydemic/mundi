@@ -4,15 +4,14 @@ from operator import attrgetter
 from typing import Union, Sequence
 
 import pandas as pd
-import sidekick as sk
-from sidekick import X
-from . import db
+
+from .. import db
 
 Pandas = Union[pd.Series, pd.DataFrame]
 
 
 @pd.api.extensions.register_dataframe_accessor("mundi")
-class MundiDataFrameAcessor:
+class MundiDataFrameAccessor:
     def __new__(cls, obj):
         if "mundi" in obj:
             return obj["mundi"]
@@ -31,15 +30,13 @@ class MundiDataFrameAcessor:
             else:
                 raise IndexError(f"invalid index: {key}")
 
-        query = db.query().filter(db.Region.id.in_(self._data.index))
+        index = self._data.index
         if isinstance(key, list):
-            values = query.values("id", *key)
-            table = pd.DataFrame(list(values)).set_index("id")
-            table = table.replace({None: pd.NA})
+            values = db.values_for(index, *key, null=pd.NA)
+            table = pd.DataFrame(list(values), columns=key, index=index)
         else:
-            values = query.values("id", key)
-            table = pd.DataFrame(list(values)).set_index("id").iloc[:, 0]
-        return table.reindex(self._data.index)
+            return self[[key]][key]
+        return table.reindex(index)
 
     def select(self, **kwargs):
         """

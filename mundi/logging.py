@@ -1,5 +1,10 @@
 import logging
+import os
 
 log = logging.getLogger("mundi")
 logging.basicConfig()
-logging.getLogger("sqlalchemy.engine").setLevel(logging.WARNING)
+
+if os.environ.get("MUNDI_DEBUG", "").lower() == "true":
+    logging.getLogger("mundi").setLevel(logging.DEBUG)
+else:
+    logging.getLogger("mundi").setLevel(logging.WARNING)

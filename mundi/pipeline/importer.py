@@ -79,7 +79,7 @@ class Importer(ABC):
             row = cls(**kwargs)
             rows.append(row)
 
-        log.debug(f"[{self.table}] loading {len(rows)} rows")
+        log.debug(f"[{self.table}] saving {len(rows)} rows to db")
         session.add_all(rows)
         session.commit()
 

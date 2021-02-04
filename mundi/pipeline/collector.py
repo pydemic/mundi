@@ -7,7 +7,7 @@ import pandas as pd
 import sidekick.api as sk
 
 from ..logging import log
-from ..utils import read_file
+from ..utils import read_file, dataframe_to_bytes
 
 
 class Collector(ABC):
@@ -20,6 +20,8 @@ class Collector(ABC):
     path: Path
     table: str
     duplicate_indexes = "id"
+    auto_index = False
+    keep_duplicate = "last"
 
     @classmethod
     def cli(cls, click=sk.import_later("click")):
@@ -42,6 +44,18 @@ class Collector(ABC):
                 collector.process()
 
         collect()
+
+    @classmethod
+    def register(cls, table):
+        """
+        Register collector class to the given table.
+        """
+
+        def decorator(collector_cls):
+            cls.TABLE_MAPPER[table] = collector_cls
+            return collector_cls
+
+        return decorator
 
     def __init__(self, path, table):
         self.path = Path(path)
@@ -97,6 +111,27 @@ class Collector(ABC):
         chunks.sort(key=cmp_to_key(self._chunk_cmp))
         return [chunk for _, _, chunk in chunks]
 
+    def prepare_column(self, col, data):
+        """
+        Prepare column in multi-index chunks
+        """
+        if isinstance(data, pd.DataFrame):
+            return dataframe_to_bytes(data, name=col)
+        return data
+
+    def prepare_chunk(self, chunk: pd.DataFrame) -> pd.DataFrame:
+        """
+        Prepare chunk to be included in concatenation.
+        """
+        if chunk.columns.nlevels > 1:
+            columns = set(chunk.columns.get_level_values(0))
+            data = {}
+            for col in columns:
+                data[col] = self.prepare_column(col, chunk[col])
+            return pd.DataFrame(data)
+
+        return chunk
+
     def prepare_table(self, chunks: List[pd.DataFrame]) -> pd.DataFrame:
         """
         Join list of chunks in a single dataframe, normalizing result.
@@ -104,13 +139,13 @@ class Collector(ABC):
         Default implementation simply remove duplicates, keeping only the last
         observed value.
         """
-        table = pd.concat([chunk for chunk in chunks])
+        table = pd.concat([self.prepare_chunk(chunk) for chunk in chunks])
         table.index.name = "id"
-        data = (
-            table.reset_index()
-            .drop_duplicates(self.duplicate_indexes, keep="last")
-            .set_index("id")
+        data = table.reset_index(drop=self.auto_index).drop_duplicates(
+            self.duplicate_indexes, keep=self.keep_duplicate
         )
+        if not self.auto_index:
+            data = data.set_index("id")
         return data
 
     def process(self) -> None:
@@ -142,39 +177,6 @@ class Collector(ABC):
                 return -1
             else:
                 return 1
-
-
-class RegionM2MCollector(Collector):
-    """
-    Specialized collector for the region_m2m table.
-    """
-
-    duplicate_indexes = ["child_id", "parent_id", "relation"]
-
-    def prepare_table(self, chunks):
-        table = super().prepare_table(chunks)
-        regions = self.path / "databases" / "region.pkl.gz"
-
-        if regions.exists():
-            extra = self.prepare_default_m2m(read_file(regions))
-            table = pd.concat([table, extra]).drop_duplicates().reset_index(drop=True)
-        else:
-            warnings.warn(f"no region.pkl.gz found at {regions}")
-
-        return table
-
-    def prepare_default_m2m(self, data):
-        return (
-            data[["parent_id"]]
-            .reset_index()
-            .rename(columns={"id": "child_id"})
-            .assign(relation="default")
-            .astype("string")
-            .dropna()
-        )[["child_id", "parent_id", "relation"]]
-
-
-Collector.TABLE_MAPPER["region_m2m"] = RegionM2MCollector
 
 
 def chunk_level(data):

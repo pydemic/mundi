@@ -23,7 +23,7 @@ it and load the desired information. Mundi exposes collections of entries as dat
 and single entries (rows in those dataframes) as Series objects.
 
 >>> import mundi
->>> df = mundi.country_dataframe(); df  # DOCTEST: +ELLIPSIS
+>>> df = mundi.countries_dataframe(); df  # DOCTEST: +ELLIPSIS
                     name
 id
 AD               Andorra
@@ -33,11 +33,11 @@ AG   Antigua and Barbuda
 AI              Anguilla
 ...
 
-The ``mundi.country_dataframe()`` function is just an alias to ``mundi.region_dataframe(type="country")``.
-The more generic ``mundi.region_dataframe()`` function may be used to query countries and
+The ``mundi.country_dataframe()`` function is just an alias to ``mundi.regions_dataframe(type="country")``.
+The more generic ``mundi.regions_dataframe()`` function may be used to query countries and
 subdivisions inside a country.
 
->>> br_states = mundi.region_dataframe(country="BR", type="state"); br_states  # DOCTEST: +ELLIPSIS
+>>> br_states = mundi.regions_dataframe(country="BR", type="state"); br_states  # DOCTEST: +ELLIPSIS
                       name
 id
 BR-AC                 Acre
@@ -58,7 +58,7 @@ methods not present in regular data frames. The most important of those is
 the ability to extend the data frame with additional columns available from Mundi
 itself or from plugins.
 
->>> extra = df.mundi[["region", "income_group"]]; extra   # DOCTEST: +ELLIPSIS
+>>> extra = df.mundi[["region", "population"]]; extra   # DOCTEST: +ELLIPSIS
                 region  income_group
 id
 AD              europe          high
@@ -78,14 +78,14 @@ Each region also exhibit those values as attributes
 It is also possible to keep the columns of the original dataframe using
 the ellipsis syntax
 
->>> df = df.mundi[[..., "region", "income_group"]]; df    # DOCTEST: +ELLIPSIS
-                    name         region  income_group
+>>> df = df.mundi[[..., "region", "population"]]; df    # DOCTEST: +ELLIPSIS
+                    name         region    population
 id
-AD               Andorra         europe          high
-AE  United Arab Emirates    middle-east          high
-AF           Afghanistan     south-asia           low
-AG   Antigua and Barbuda  latin-america          high
-AI              Anguilla            NaN           NaN
+AD               Andorra         europe          1
+AE  United Arab Emirates    middle-east          2
+AF           Afghanistan     south-asia           3
+AG   Antigua and Barbuda  latin-america          4
+AI              Anguilla            NaN           5
 ...
 
 
@@ -93,7 +93,7 @@ The ``.mundi`` accessor is also able to select countries over mundi columns,
 even if those columns are not in the original dataframe.
 
 >>> countries = mundi.country_dataframe()
->>> countries.mundi.filter(income_group="upper-middle")  # DOCTEST: +ELLIPSIS
+>>> countries.mundi.filter(region="latin-america")  # DOCTEST: +ELLIPSIS
                        name
 id
 AD                  Andorra
@@ -144,4 +144,4 @@ regions with the following structure:
 | level         | Hierarchical level starting with 0 = world, 1 = continent, 2 = country.                   |
 +---------------+-------------------------------------------------------------------------------------------+
 | region        | Region of the globe according to UN's classification.                                     |
-+---------------+-------------------------------------------------------------------------------------------++---------------+-------------------------------------------------------------------------------------------+
++---------------+-------------------------------------------------------------------------------------------+

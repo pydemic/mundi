@@ -22,17 +22,26 @@ classifiers = [
 ]
 description-file = "README.rst"
 requires = [
-  "pandas",
-  "sidekick",
+    "pandas",
+    "sqlalchemy",
+    "sidekick",
+    "click",
+]
+
+[project.entry-points]
+mundi_plugins = [
+    "region = mundi.plugins.region:RegionPlugin",
+    "demography = mundi.plugins.demography:DemographyPlugin",
+    "healthcare = mundi.plugins.healthcare:HealthcarePlugin",
 ]
 
 [tool.flit.metadata.requires-extra]
 dev = [
-  "black",
-  "twine",
-  "pycountry",
-  "coverage~=5.0",
-  "pytest~=5.0",
+    "black",
+    "twine",
+    "pycountry",
+    "coverage~=5.0",
+    "pytest~=5.0",
 ]
 
 [tool.black]

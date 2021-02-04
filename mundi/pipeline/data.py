@@ -1,5 +1,6 @@
+import contextlib
+import io
 import os
-import subprocess
 import sys
 import time
 from abc import ABC, abstractmethod
@@ -44,20 +45,15 @@ class Data(ABC):
     script_name: str
     plugin_name: str
     region_name: str
+    _as_script = True
 
     @classmethod
     def cli(cls, **kwargs):
         """
         Create instance and execute.
         """
-        import click
 
-        @click.command()
-        @click.option("--show", "-s", is_flag=True, help="Show data instead of saving it")
-        @click.option(
-            "--validate", "-v", default=False, is_flag=True, help="Validates data"
-        )
-        def main(show, validate):
+        def main(show=False, validate=False):
             data = cls(**kwargs)
             if show:
                 for k, v in data.collect().items():
@@ -76,6 +72,19 @@ class Data(ABC):
 
             else:
                 data.save()
+
+        if cls._as_script:
+            import click
+
+            @click.command()
+            @click.option(
+                "--show", "-s", is_flag=True, help="Show data instead of saving it"
+            )
+            @click.option(
+                "--validate", "-v", default=False, is_flag=True, help="Validates data."
+            )
+            def _main(**kwargs):
+                return main(**kwargs)
 
         main()
 
@@ -187,7 +196,7 @@ def find_prepare_scripts(path: Path) -> Iterator[Path]:
     Return an iterator with (plugin, region, path) with the location of all
     prepare.py plugins under the current mundi-data path.
     """
-
+    print("scripts")
     for region in sort_region_names(os.listdir(path)):
         for plugin in sort_plugin_names(os.listdir(path / region)):
             prepare = (path / region / plugin / "prepare.py").absolute()
@@ -201,19 +210,36 @@ def _main():
         print(f"{plugin}[{region}]")
 
 
-def execute_prepare_script(path, verbose=False) -> None:
+def execute_prepare_script(path: Path, verbose: bool = False) -> None:
     """
     Execute all prepare scripts in package.
     """
     if verbose:
         print(f'Script: "{path}"')
+
     dir = path.parent
     t0 = time.time()
-    out = subprocess.check_output([sys.executable, str(path)], cwd=dir)
+    env = {"__file__": str(path), "__name__": "__main__"}
+
+    cwd = os.getcwd()
+    out = io.StringIO()
+    try:
+        Data._as_script = False
+        os.chdir(str(dir))
+        with contextlib.redirect_stdout(out):
+            exec(path.read_text(), env)
+    except Exception as ex:
+        raise RuntimeError(f"script failed with error: {ex}")
+    finally:
+        Data._as_script = True
+        os.chdir(cwd)
+
+    out = out.getvalue()
     if out and verbose:
-        lines = out.decode("utf8").splitlines()
+        lines = out.splitlines()
         print("OUT:")
         print("\n".join(f"  - {ln.rstrip()}" for ln in lines))
+
     dt = time.time() - t0
     if verbose:
         print(f"Script executed in {dt:3.2} seconds.\n", flush=True)

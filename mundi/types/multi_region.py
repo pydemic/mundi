@@ -76,21 +76,6 @@ class CompositeRegion(Region):
         for k, v in args:
             state[k] = v
 
-    def __str__(self):
-        regions = [r.id for r in self.regions]
-        if len(regions) > 5:
-            regions = regions[:5] + "..."
-        regions = ", ".join(regions)
-
-        return (
-            f"Composite Region\n"
-            f"id       : {self.id}\n"
-            f"name     : {self.name}\n"
-            f"type     : {self.type}\n"
-            f"subtype  : {self.subtype}\n"
-            f"regions  : {regions}"
-        )
-
     def __eq__(self, other):
         if isinstance(other, CompositeRegion):
             keys = self._keys.union(other._keys)

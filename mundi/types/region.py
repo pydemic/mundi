@@ -3,6 +3,7 @@ from typing import Optional, Iterator, TYPE_CHECKING
 from weakref import WeakValueDictionary
 
 import pandas as pd
+import sidekick.api as sk
 
 from .. import db
 
@@ -38,7 +39,10 @@ class Region:
         self.__dict__["id"] = ref
 
     def __getitem__(self, key):
-        value = get_scalar_field(self.id, key)
+        try:
+            value = get_scalar_field(self.id, key)
+        except AttributeError as ex:
+            raise RuntimeError(ex) from ex
         self.__dict__[key] = value
         return value
 
@@ -46,7 +50,7 @@ class Region:
         raise AttributeError("Region objects are immutable")
 
     def __getattr__(self, item):
-        if item.startswith("_"):
+        if item.startswith("_") or hasattr(type(self), item):
             raise AttributeError(item)
         try:
             return self[item]
@@ -101,12 +105,12 @@ class Region:
     #
     @property
     def parent(self) -> Optional["Region"]:
-        pk = self.parent_id
+        pk = self["parent_id"]
         return Region(pk) if pk else None
 
     def children(self, relation="default", *, deep=False, name=None) -> "RegionSet":
         """
-        Return list of children.
+        Return a RegionSet with all children.
         """
         from .region_set import RegionSet
 
@@ -114,28 +118,33 @@ class Region:
             name = f"{self.id} children"
         if relation in ("*", "all"):
             relation = None
-        return RegionSet(self._children_ids(relation, deep), name=name)
+        ids = sk.iter(self._children_ids(relation, deep))
+        return RegionSet(ids, name=name)
 
     def children_dataframe(
         self, relation="default", columns=("name",), *, deep=False
     ) -> pd.DataFrame:
         raise NotImplementedError
 
-    def _children_ids(self, relation, deep) -> Iterator[str]:
+    def _children_ids(self, relation, deep, max_depth=32) -> Iterator[str]:
         # FIXME: this query works, but is highly inefficient.
         if deep:
+            if max_depth <= 0:
+                raise ValueError("maximum depth reached")
             memo = set()
-            for ref in self._children_ids(relation, False):
+            for ref in self._children_ids(relation, False, max_depth - 1):
                 yield ref
-                for child_ref in Region(ref)._children_ids(relation, True):
+                for child_ref in Region(ref)._children_ids(relation, True, max_depth - 1):
                     if child_ref not in memo:
                         yield child_ref
                         memo.add(ref)
 
-        kwargs = {"parent_id": self.id}
+        table = db.RegionM2M
+        query_args = [table.parent_id == self.id]
         if relation is not None:
-            kwargs["relation"] = relation
-        for (ref,) in db.query("region_m2m", **kwargs).values("child_id"):
+            query_args.append(table.relation == relation)
+
+        for (ref,) in db.query(table).filter(*query_args).values("child_id"):
             yield ref
 
     def parents(self):
@@ -153,9 +162,7 @@ def make_region(ref):
     try:
         return REGION_DB[ref]
     except KeyError:
-        cls = db.get_table("region")
-        session = db.session()
-        if session.query(cls).filter(cls.id == ref).first() is None:
+        if db.session().query(db.Region).filter(db.Region.id == ref).first() is None:
             raise ValueError("region does not exist")
 
         new = object.__new__(Region)
@@ -175,8 +182,7 @@ def as_region(region) -> Region:
 
 
 def get_scalar_field(ref, field):
-    cls = db.get_table("region")
-    session = db.session()
-    row = session.query(cls).filter(cls.id == ref).first()
-    print(row)
-    return getattr(row, field)
+    print(ref, list(db.values_for([ref], field)))
+    (row,) = db.values_for([ref], field)
+    (value,) = row
+    return value
