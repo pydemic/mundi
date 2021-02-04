@@ -1,13 +1,7 @@
-from types import ModuleType
-from typing import Union
-
-from ..db import Plugin, Column
-from mundi.enums import Fill
-
-ModRef = Union[str, ModuleType]
+from .. import db
 
 
-class Healthcare(Plugin):
+class HealthcarePlugin(db.Plugin):
     """
     Demography plugin gather information from various data sources concerning
     basic demographic parameters of a population.
@@ -17,18 +11,5 @@ class Healthcare(Plugin):
     * age_pyramid: Age distribution disaggregated by sex
     """
 
-    hospital_capacity: int = Column(
-        aggregation=Fill.SUM_CHILDREN,
-        description="Total capacity of clinical beds in hospitals and clinics.",
-    )
-    hospital_capacity_public: int = Column(
-        aggregation=Fill.SUM_CHILDREN, description="Total capacity in the public sector."
-    )
-    icu_capacity: int = Column(
-        aggregation=Fill.SUM_CHILDREN,
-        description="Total capacity of ICU beds in hospitals.",
-    )
-    icu_capacity_public: int = Column(
-        aggregation=Fill.SUM_CHILDREN,
-        description="Total capacity of ICUs in the public sector.",
-    )
+    name = "healthcare"
+    tables = {"healthcare": db.Healthcare}

@@ -1,11 +1,12 @@
+import warnings
 from abc import ABC
 
 import numpy as np
 import pandas as pd
 
-from .plugin import Plugin
 from .. import db
-from ..pipeline import DataIO
+from ..pipeline import DataIO, Collector
+from ..utils import read_file
 
 
 class RegionData(DataIO, ABC):
@@ -51,10 +52,42 @@ class RegionData(DataIO, ABC):
         return self.assign(data, **kwargs).astype(types)
 
 
+@Collector.register("region_m2m")
+class RegionM2MCollector(Collector):
+    """
+    Specialized collector for the region_m2m table.
+    """
+
+    duplicate_indexes = ["child_id", "parent_id", "relation"]
+    auto_index = True
+
+    def prepare_table(self, chunks):
+        table = super().prepare_table(chunks)
+        regions = self.path / "databases" / "region.pkl.gz"
+
+        if regions.exists():
+            extra = self.prepare_default_m2m(read_file(regions))
+            table = pd.concat([table, extra]).drop_duplicates().reset_index(drop=True)
+        else:
+            warnings.warn(f"no region.pkl.gz found at {regions}")
+
+        return table
+
+    def prepare_default_m2m(self, data):
+        return (
+            data[["parent_id"]]
+            .reset_index()
+            .rename(columns={"id": "child_id"})
+            .assign(relation="default")
+            .astype("string")
+            .dropna()
+        )[["child_id", "parent_id", "relation"]]
+
+
 #
 # Plugin
 #
-class RegionPlugin(Plugin):
+class RegionPlugin(db.Plugin):
     """
     Main data
     """
@@ -64,10 +97,7 @@ class RegionPlugin(Plugin):
         "region": db.Region,
         "region_m2m": db.RegionM2M,
     }
-    collectors = {
-        "region": RegionCollector,
-        "region_m2m": RegionM2MCollector,
-    }
+    data_tables = {"region"}
     data_url = "http://github.com/pydemic/mundi-data/{table}.pkl.gz"
 
 

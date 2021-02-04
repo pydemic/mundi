@@ -1,55 +1,116 @@
-import sys
-from functools import lru_cache
-from pathlib import Path
 from types import ModuleType
-from typing import Union, Tuple
+from typing import Union
 
-import numpy as np
 import pandas as pd
 import sidekick.api as sk
-from sqlalchemy import Column, Integer, LargeBinary
-from sqlalchemy.orm import relationship
 
-from mundi.db import MundiRef
-from ..db import Plugin, Base, Fill
-from ..source import Data
+from .. import db
+from ..pipeline import DataIO, Collector
 
 ModRef = Union[str, ModuleType]
 
 
-class Demography(Base):
-    """
-    Basic container for demographic data.
-
-    Tabular data is packaged into numpy arrays, which are then serialized with
-    ndarray.to_string() method.
-    """
-
-    __tablename__ = "demography"
-
-    id = MundiRef(primary_key=True, doc="Unique identifier for each region. Primary key.")
-    reference_year = Column(
-        Integer(), doc="Year in which population information was collected."
-    )
-    population = Column(Integer(), doc="Total population")
-    age_distribution = Column(
-        LargeBinary(), doc="Binary blob representing age distribution in 5 years bins."
-    )
-    age_pyramid = Column(
-        LargeBinary(),
-        doc="Binary blob representing gender-stratified age distribution in 5 "
-        "years bins.",
-    )
-    region = relationship  # One-to-one relations...
-
-
-class DemographyData(Data):
+class DemographyData(DataIO):
     """
     Base data extractor class for demography plugin.
     """
 
+    DEMOGRAPHY_DATA_TYPES = {
+        "population": "uint32",
+        "age_distribution": {"uint32", object},
+        "age_pyramid": {"uint32", object},
+    }
+    HISTORIC_DEMOGRAPHY_DATA_TYPES = {
+        "region_id": "string",
+        "year": "uint16",
+        "population": "uint32",
+        "age_distribution": {"uint32", object},
+        "age_pyramid": {"uint32", object},
+    }
 
-class Demography(Plugin):
+    def extend_dataframe(self, df, attr, extra=("",), name=None):
+        src: pd.DataFrame = getattr(self, attr)
+        name = name or attr
+        if src is pd.NA:
+            df[(name, *extra)] = pd.NA
+            return df
+        src.columns = multi_index(name, src.columns)
+        return pd.concat([df, src], axis=1)
+
+    @sk.lazy
+    def population(self):
+        if self.age_distribution is pd.NA:
+            raise ValueError("must provide population or age distribution")
+        return self.age_distribution.sum(axis=1).astype("uint32")
+
+    @sk.lazy
+    def age_distribution(self):
+        if self.age_pyramid is pd.NA:
+            return self.pd.NA
+        return (self.age_pyramid["female"] + self.age_pyramid["male"]).astype("uint32")
+
+    @sk.lazy
+    def age_pyramid(self):
+        return pd.NA
+
+    @sk.lazy
+    def demography(self):
+        df = pd.DataFrame({("population", ""): self.population})
+        df = self.extend_dataframe(df, "age_distribution")
+        df = self.extend_dataframe(df, "age_pyramid")
+        df.columns = pd.MultiIndex.from_tuples(df.columns)
+        return df.fillna(pd.NA)
+
+    @sk.lazy
+    def historic_population(self):
+        df = self.historic_age_distribution
+        if df is pd.NA:
+            raise ValueError("must provide population or age distribution")
+        return df.sum(axis=1).astype("uint32")
+
+    @sk.lazy
+    def historic_age_distribution(self):
+        df = self.historic_age_pyramid
+        if df is pd.NA:
+            return self.pd.NA
+        return (df["female"] + df["male"]).astype("uint32")
+
+    @sk.lazy
+    def historic_age_pyramid(self):
+        return pd.NA
+
+    @sk.lazy
+    def historic_demography(self):
+        df = pd.DataFrame({("population", ""): self.historic_population})
+        df = self.extend_dataframe(
+            df, "historic_age_distribution", name="age_distribution"
+        )
+        df.columns = pd.MultiIndex.from_tuples((*t, "") for t in df.columns)
+        df = self.extend_dataframe(
+            df, "historic_age_pyramid", ("", ""), name="age_pyramid"
+        )
+        df.columns = pd.MultiIndex.from_tuples(df.columns)
+        df = (
+            df.reset_index()
+            .rename(columns={"id": "region_id"})
+            .astype({("region_id", "", ""): "string", ("year", "", ""): "uint16"})
+        )
+        return df
+
+    def collect(self):
+        return {
+            "demography": self.demography,
+            "historic_demography": self.historic_demography,
+        }
+
+
+@Collector.register("historic_demography")
+class HistoricDemographyCollector(Collector):
+    duplicate_indexes = ["region_id", "year"]
+    auto_index = True
+
+
+class DemographyPlugin(db.Plugin):
     """
     Demography plugin gather information from various data sources concerning
     basic demographic parameters of a population.
@@ -59,90 +120,21 @@ class Demography(Plugin):
     * age_pyramid: Age distribution disaggregated by sex
     """
 
-    population: int = Column(
-        aggregation=Fill.SUM_CHILDREN,
-        description="Total population (estimated for 2020).",
-    )
-    age_distribution: int = Column(
-        index=pd.Index(sk.nums(0, 5, ..., 100)),
-        aggregation=Fill.SUM_CHILDREN,
-        description="Age distribution in groups of 5 years.",
-    )
-    age_pyramid: int = Column(
-        index=pd.Index(sk.nums(0, 5, ..., 100)),
-        columns=["male", "female"],
-        aggregation=Fill.SUM_CHILDREN,
-        description="Age distribution disaggregated by sex (male/female).",
-    )
-
-    def age_pyramid__value(self, db, ref, infer=False) -> pd.DataFrame:
-        """
-        Return the age pyramid for the given region.
-        """
-        try:
-            return self.value(db, "age_pyramid", ref)
-        except LookupError:
-            if not infer:
-                raise
-
-        ages = self.value(db, "age_distribution", ref)
-        if infer is True:
-            male = ages // 2
-        else:
-            male = (ages * infer).astype(int)
-        female = ages - male
-        return pd.DataFrame({"male": male, "female": female})
+    name = "demography"
+    tables = {"demography": db.Demography, "historic_demography": db.HistoricDemography}
+    data_tables = {"demography"}
 
 
-def age_distribution(df):
+def multi_index(prefix, idxs):
     """
-    Return age_distribution for given region or collection of regions.
+    Add same prefix level in all entries of index.
     """
-    data, is_row = loader("mundi_demography", "age-distribution", df)
-    data.name = "age_distribution"
-    return data
-
-
-def population(df):
-    """
-    Return population for given region or collection of regions.
-    """
-    data, is_row = loader("mundi_demography", "population", df)
-    if not is_row:
-        return data["population"]
+    if idxs.nlevels == 1:
+        tuples = ((prefix, idx) for idx in idxs)
     else:
-        return np.sum(data)
+        tuples = ((prefix, *idx) for idx in idxs)
+    return pd.MultiIndex.from_tuples(tuples)
 
 
-def loader(package: ModRef, db_name, idx) -> Tuple[pd.DataFrame, bool]:
-    """
-    Load distribution from package.
-
-    Return a tuple of (Data, is_row). The boolean "is_row" tells
-    the returned data concerns a collection of items or a single row in the
-    database.
-    """
-
-    db = database(package, db_name + ".pkl.gz")
-
-    if isinstance(idx, (pd.DataFrame, pd.Series)):
-        idx = idx.index
-    elif isinstance(idx, str):
-        idx = mundi.code(idx)
-        df, _ = loader(package, db_name, [idx])
-        return df.iloc[0], True
-
-    # Try to get from index
-    reindex = db.reindex(idx)
-    return reindex, False
-
-
-@lru_cache(32)
-def database(package, name):
-    """Lazily load db from name"""
-
-    if isinstance(package, str):
-        package = sys.modules[package]
-    path = Path(package.__file__).parent.absolute()
-    db_path = path / "databases" / name
-    return pd.read_pickle(db_path)
+if __name__ == "__main__":
+    DemographyPlugin.cli()
