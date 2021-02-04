@@ -49,7 +49,7 @@ class DemographyData(DataIO):
     @sk.lazy
     def age_distribution(self):
         if self.age_pyramid is pd.NA:
-            return self.pd.NA
+            return pd.NA
         return (self.age_pyramid["female"] + self.age_pyramid["male"]).astype("uint32")
 
     @sk.lazy
@@ -75,7 +75,7 @@ class DemographyData(DataIO):
     def historic_age_distribution(self):
         df = self.historic_age_pyramid
         if df is pd.NA:
-            return self.pd.NA
+            return pd.NA
         return (df["female"] + df["male"]).astype("uint32")
 
     @sk.lazy
@@ -129,21 +129,29 @@ class DemographyPlugin(db.Plugin):
     }
 
     def to_distribution(self, raw):
+        """
+        Convert raw Series of bytes content into a dataframe with
+        age_distribution.
+        """
         if raw is None:
             return None
         data = np.fromstring(raw, dtype="uint32")
-        N = 5 * len(data)
-        index = pd.RangeIndex(0, N, 5, name="age")
+        n = 5 * len(data)
+        index = pd.RangeIndex(0, n, 5, name="age")
         return pd.Series(data, index=index, name="age_distribution")
 
     def to_pyramid(self, raw):
+        """
+        Convert raw Series of bytes content into a dataframe with
+        age_pyramid.
+        """
         if raw is None:
             return None
         data = np.fromstring(raw, dtype="uint32")
         female = data[: len(data) // 2]
         male = data[len(female) :]
-        N = 5 * len(female)
-        index = pd.RangeIndex(0, N, 5, name="age")
+        n = 5 * len(female)
+        index = pd.RangeIndex(0, n, 5, name="age")
         return pd.DataFrame({"female": female, "male": male}, index=index)
 
 

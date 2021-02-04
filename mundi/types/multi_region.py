@@ -17,18 +17,18 @@ AGGREGATE_METHOD = {
 }
 
 
-class CompositePydemicProperty(PydemicProperty):
-    region: "CompositeRegion"
-
-    @cached(ttl="epidemic_curve")
-    def epidemic_curve(self, disease=None, **kwargs) -> pd.DataFrame:
-        fn = get_disease(disease).epidemic_curve
-        curves = (fn(r, **kwargs) for r in self.region.regions)
-        return self.region.aggregate_values(curves, "sum")
-
-
-class CompositePyplotProperty(PyplotProperty):
-    region: "CompositeRegion"
+# class CompositePydemicProperty(PydemicProperty):
+#     region: "CompositeRegion"
+#
+#     @cached(ttl="epidemic_curve")
+#     def epidemic_curve(self, disease=None, **kwargs) -> pd.DataFrame:
+#         fn = get_disease(disease).epidemic_curve
+#         curves = (fn(r, **kwargs) for r in self.region.regions)
+#         return self.region.aggregate_values(curves, "sum")
+#
+#
+# class CompositePyplotProperty(PyplotProperty):
+#     region: "CompositeRegion"
 
 
 class CompositeRegion(Region):
@@ -40,8 +40,8 @@ class CompositeRegion(Region):
     regions: FrozenSet[Region]
     _keys: FrozenSet[str]
 
-    pydemic = property(CompositePydemicProperty)
-    plot = property(CompositePyplotProperty)
+    # pydemic = property(CompositePydemicProperty)
+    # plot = property(CompositePyplotProperty)
 
     @property
     def id(self):
