@@ -12,4 +12,4 @@ class HealthcarePlugin(db.Plugin):
     """
 
     name = "healthcare"
-    tables = {"healthcare": db.Healthcare}
+    table_map = {"healthcare": db.Healthcare}

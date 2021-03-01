@@ -1,12 +1,11 @@
 from types import ModuleType
 from typing import Union
 
-import numpy as np
 import pandas as pd
 import sidekick.api as sk
 
 from .. import db
-from ..pipeline import DataIO, Collector
+from ..pipeline import DataIO, Collector, HDF5Importer
 
 ModRef = Union[str, ModuleType]
 
@@ -16,98 +15,113 @@ class DemographyData(DataIO):
     Base data extractor class for demography plugin.
     """
 
-    DEMOGRAPHY_DATA_TYPES = {
-        "population": "uint32",
-        "age_distribution": {"uint32", object},
-        "age_pyramid": {"uint32", object},
+    dtype = "uint32"
+    na_value = 2 ** 32 - 1
+    _age_distribution_range = range(0, 101, 5)
+    _age_distribution_types = {i: "uint32" for i in _age_distribution_range}
+    table_dtypes = {
+        "demography": {"population": "uint32"},
+        "historic_demography": {"population": "uint32"},
+        "age_distributions": {
+            "all": _age_distribution_types,
+            "male": _age_distribution_types,
+            "female": _age_distribution_types,
+        },
+        # 'historic_age_distributions': {
+        #     "all": "uint32", "male": "uint32", "female": "uint32"
+        # },
     }
-    HISTORIC_DEMOGRAPHY_DATA_TYPES = {
-        "region_id": "string",
-        "year": "uint16",
-        "population": "uint32",
-        "age_distribution": {"uint32", object},
-        "age_pyramid": {"uint32", object},
-    }
-
-    def extend_dataframe(self, df, attr, extra=("", ""), name=None):
-        src: pd.DataFrame = getattr(self, attr)
-        name = name or attr
-        if src is pd.NA:
-            df[(name, *extra)] = pd.NA
-            return df
-        src.columns = multi_index(name, src.columns)
-        if src.columns.nlevels == 2:
-            src.columns = pd.MultiIndex.from_tuples((*t, "") for t in src.columns)
-        return pd.concat([df, src], axis=1)
-
-    @sk.lazy
-    def population(self):
-        if self.age_distribution is pd.NA:
-            raise ValueError("must provide population or age distribution")
-        return self.age_distribution.sum(axis=1).astype("uint32")
-
-    @sk.lazy
-    def age_distribution(self):
-        if self.age_pyramid is pd.NA:
-            return pd.NA
-        return (self.age_pyramid["female"] + self.age_pyramid["male"]).astype("uint32")
-
-    @sk.lazy
-    def age_pyramid(self):
-        return pd.NA
 
     @sk.lazy
     def demography(self):
-        df = pd.DataFrame({("population", "", ""): self.population})
-        df = self.extend_dataframe(df, "age_distribution")
-        df = self.extend_dataframe(df, "age_pyramid")
-        df.columns = pd.MultiIndex.from_tuples(df.columns)
-        return df.fillna(pd.NA)
+        return pd.DataFrame({"population": self.population})
+
+    @sk.lazy
+    def population(self) -> pd.DataFrame:
+        df = self.age_distribution.sum(axis=1).astype(self.dtype)
+        df.index.name = "id"
+        return df
+
+    @sk.lazy
+    def age_distributions(self):
+        return {
+            "all": self.age_distribution,
+            "female": self.age_pyramid["female"],
+            "male": self.age_pyramid["male"],
+        }
+
+    @sk.lazy
+    def age_distribution(self) -> pd.DataFrame:
+        df = (self.age_pyramid["female"] + self.age_pyramid["male"]).astype(self.dtype)
+        df.index.name = "id"
+        return df
+
+    @sk.lazy
+    def age_pyramid(self) -> pd.DataFrame:
+        df = self.empty_age_pyramid()
+        df.index = df.index = pd.Index([], name="id")
+        return df
+
+    @sk.lazy
+    def historic_demography(self):
+        return pd.DataFrame({"population": self.historic_population})
 
     @sk.lazy
     def historic_population(self):
-        df = self.historic_age_distribution
-        if df is pd.NA:
-            raise ValueError("must provide population or age distribution")
-        return df.sum(axis=1).astype("uint32")
+        df = self.historic_age_distribution.sum(axis=1).astype(self.dtype)
+        df.index.names = ["region_id", "year"]
+        return df
+
+    @sk.lazy
+    def historic_age_distributions(self):
+        return {
+            "all": self.historic_age_distribution,
+            "female": self.historic_age_pyramid["female"],
+            "male": self.historic_age_pyramid["male"],
+        }
 
     @sk.lazy
     def historic_age_distribution(self):
         df = self.historic_age_pyramid
-        if df is pd.NA:
-            return pd.NA
-        return (df["female"] + df["male"]).astype("uint32")
+        df = (df["female"] + df["male"]).astype(self.dtype)
+        df.index.names = ["id", "year"]
+        return df
 
     @sk.lazy
     def historic_age_pyramid(self):
-        return pd.NA
-
-    @sk.lazy
-    def historic_demography(self):
-        df = pd.DataFrame({("population", "", ""): self.historic_population})
-        df = self.extend_dataframe(
-            df, "historic_age_distribution", name="age_distribution"
-        )
-        df = self.extend_dataframe(df, "historic_age_pyramid", name="age_pyramid")
-        df.columns = pd.MultiIndex.from_tuples(df.columns)
-        df = (
-            df.reset_index()
-            .rename(columns={"id": "region_id"})
-            .astype({("region_id", "", ""): "string", ("year", "", ""): "uint16"})
-        )
+        df = self.empty_age_pyramid()
+        df.index = pd.MultiIndex.from_tuples([], names=["id", "year"])
         return df
 
-    def collect(self):
-        return {
-            "demography": self.demography,
-            "historic_demography": self.historic_demography,
-        }
+    def age_distribution_columns(self) -> pd.MultiIndex:
+        return pd.MultiIndex.from_tuples(range(0, 101, 5), names=("age",))
+
+    def age_pyramid_columns(self) -> pd.MultiIndex:
+        cols = [
+            *(("female", i) for i in range(0, 101, 5)),
+            *(("male", i) for i in range(0, 101, 5)),
+        ]
+        return pd.MultiIndex.from_tuples(cols, names=("gender", "age"))
+
+    def empty_age_distribution(self, **kwargs) -> pd.DataFrame:
+        return self._empty_dataframe(self.age_distribution_columns())
+
+    def empty_age_pyramid(self, **kwargs) -> pd.DataFrame:
+        return self._empty_dataframe(self.age_pyramid_columns())
+
+    def _empty_dataframe(self, columns: pd.Index, index=None) -> pd.DataFrame:
+        n = len(columns)
+        m = 0 if index is None else len(index)
+        return pd.DataFrame(
+            [[pd.NA] * n] * m, dtype=self.dtype, columns=columns, index=index
+        )
 
 
-@Collector.register("historic_demography")
-class HistoricDemographyCollector(Collector):
-    duplicate_indexes = ["region_id", "year"]
-    auto_index = True
+@Collector.register("age_distributions", universe=db.Universe.REGION)
+@Collector.register("historic_demography", universe=db.Universe.HISTORIC)
+@Collector.register("demography", universe=db.Universe.REGION)
+class DemographyCollector(Collector):
+    DEFAULT_FILL_POLICY = Collector.FILL_SUM_CHILDREN
 
 
 class DemographyPlugin(db.Plugin):
@@ -121,38 +135,17 @@ class DemographyPlugin(db.Plugin):
     """
 
     name = "demography"
-    tables = {"demography": db.Demography, "historic_demography": db.HistoricDemography}
-    data_tables = {"demography"}
-    transformers = {
-        "age_distribution": "to_distribution",
-        "age_pyramid": "to_pyramid",
+    tables = [
+        db.Demography.info,
+        db.AgeDistributionsInfo,
+        # db.HistoricDemography.info,
+        # db.HistoricAgeDistributionsInfo,
+    ]
+    importers = {
+        "age_distributions": HDF5Importer,
+        "historic_age_distributions": HDF5Importer,
     }
-
-    def to_distribution(self, raw):
-        """
-        Convert raw Series of bytes content into a dataframe with
-        age_distribution.
-        """
-        if raw is None:
-            return None
-        data = np.fromstring(raw, dtype="uint32")
-        n = 5 * len(data)
-        index = pd.RangeIndex(0, n, 5, name="age")
-        return pd.Series(data, index=index, name="age_distribution")
-
-    def to_pyramid(self, raw):
-        """
-        Convert raw Series of bytes content into a dataframe with
-        age_pyramid.
-        """
-        if raw is None:
-            return None
-        data = np.fromstring(raw, dtype="uint32")
-        female = data[: len(data) // 2]
-        male = data[len(female) :]
-        n = 5 * len(female)
-        index = pd.RangeIndex(0, n, 5, name="age")
-        return pd.DataFrame({"female": female, "male": male}, index=index)
+    data_tables = {"demography"}
 
 
 def multi_index(prefix, idxs):

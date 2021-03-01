@@ -14,22 +14,24 @@ class RegionData(DataIO, ABC):
     Validates data for the main plugin.
     """
 
-    REGION_DATA_TYPES = {
-        "name": "string",
-        "type": "string",
-        "subtype": "string",
-        "short_code": "string",
-        "numeric_code": "string",
-        "long_code": "string",
-        "country_id": "string",
-        "parent_id": "string",
-        "level": np.dtype("uint8"),
-        "region": "string",
-    }
-    REGION_M2M_DATA_TYPES = {
-        "child_id": "string",
-        "parent_id": "string",
-        "relation": "string",
+    table_dtypes = {
+        "region": {
+            "name": "string",
+            "type": "string",
+            "subtype": "string",
+            "short_code": "string",
+            "numeric_code": "string",
+            "long_code": "string",
+            "country_id": "string",
+            "parent_id": "string",
+            "level": np.dtype("uint8"),
+            "region": "string",
+        },
+        "region_m2m": {
+            "child_id": "string",
+            "parent_id": "string",
+            "relation": "string",
+        },
     }
 
     def fill_region(self, data: pd.DataFrame, **kwargs) -> pd.DataFrame:
@@ -52,7 +54,7 @@ class RegionData(DataIO, ABC):
         return self.assign(data, **kwargs).astype(types)
 
 
-@Collector.register("region_m2m")
+@Collector.register("region_m2m", universe=db.Universe.ARBITRARY)
 class RegionM2MCollector(Collector):
     """
     Specialized collector for the region_m2m table.
@@ -93,10 +95,10 @@ class RegionPlugin(db.Plugin):
     """
 
     name = "region"
-    tables = {
-        "region": db.Region,
-        "region_m2m": db.RegionM2M,
-    }
+    tables = [
+        db.Region.info,
+        db.RegionM2M.info,
+    ]
     data_tables = {"region"}
     data_url = "http://github.com/pydemic/mundi-data/{table}.pkl.gz"
 
