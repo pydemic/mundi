@@ -1,13 +1,17 @@
+import gzip
+import pickle
 from abc import ABC
+from collections import defaultdict
 from functools import cmp_to_key
 from pathlib import Path
-from typing import List
+from typing import List, Iterable, Optional, Dict
 
 import pandas as pd
-import sidekick.api as sk
 
+from .. import db
+from ..filling_policies import FillPolicy, apply_filling_policy
 from ..logging import log
-from ..utils import read_file, dataframe_to_bytes
+from ..utils import read_file
 
 
 class Collector(ABC):
@@ -16,54 +20,46 @@ class Collector(ABC):
     the final SQL database.
     """
 
-    TABLE_MAPPER = {}
+    REGISTRY = {}
+    FILL_NONE = FillPolicy.NONE
+    FILL_INHERIT = FillPolicy.INHERIT
+    FILL_SUM_CHILDREN = FillPolicy.SUM_CHILDREN
+    FILL_MAX_CHILDREN = FillPolicy.MAX_CHILDREN
+    FILL_MIN_CHILDREN = FillPolicy.MIN_CHILDREN
+    DEFAULT_FILL_POLICY = FILL_NONE
+
+    _init = False
     path: Path
-    table: str
-    duplicate_indexes = "id"
-    auto_index = False
+    info: db.TableInfo
     keep_duplicate = "last"
+    sort_column: str = None
+    fill_policy_map: dict = None
+    auto_index: bool = False
+    max_size: Optional[int]
 
     @classmethod
-    def cli(cls, click=sk.import_later("click")):
-        """
-        Main CLI interface for data collectors.
-        """
-
-        @click.command()
-        @click.argument("path")
-        @click.option("--table", "-t", default="region")
-        @click.option("--show", "-s", is_flag=True)
-        @click.option("--verbose", "-v", is_flag=True, help="show debug messages")
-        def collect(path, table, show, verbose):
-            collector = cls(path, table=table)
-            if verbose:
-                log.setLevel("DEBUG")
-            if show:
-                print(collector.load())
-            else:
-                collector.process()
-
-        collect()
-
-    @classmethod
-    def register(cls, table):
+    def register(cls, table, universe: db.Universe):
         """
         Register collector class to the given table.
         """
+        info = db.Universe.from_string(universe).table_info(table)
 
         def decorator(collector_cls):
-            cls.TABLE_MAPPER[table] = collector_cls
+            cls.REGISTRY[info] = collector_cls
             return collector_cls
 
         return decorator
 
-    def __init__(self, path, table):
-        self.path = Path(path)
-        self.table = table
+    def __init__(self, path, info: db.TableInfo, max_size: int = None):
+        if not self._init:
+            self.path = Path(path)
+            self.info = info
+            self.max_size = max_size
+        self._init = True
 
-    def __new__(cls, path, table):
+    def __new__(cls, path, info: db.TableInfo, max_size=None):
         if cls is Collector:
-            cls = Collector.TABLE_MAPPER.get(table, Collector)
+            cls = Collector.REGISTRY.get(info, Collector)
         return object().__new__(cls)
 
     def load(self):
@@ -78,12 +74,29 @@ class Collector(ABC):
         """
 
         chunks = self.load_chunks()
-        table = self.prepare_table(chunks)
-        n = len(table)
-        log.info(f"collected {n} rows for {self.table}")
+        try:
+            (chunk_type,) = set(map(type, chunks.values()))
+        except IndexError:
+            if chunks:
+                raise ValueError("chunks of different types")
+            raise ValueError("empty list of chunks")
+
+        if chunk_type is dict:
+            pending = defaultdict(dict)
+            for k, tables in chunks.items():
+                for k_, v in tables.items():
+                    pending[k_][k] = v
+            table = {k: self.prepare_table(v) for k, v in pending.items()}
+            n = max(map(len, table.values()))
+            m = len(table)
+            log.info(f"collected {m} tables of {n} rows for {self.info.name}")
+        else:
+            table = self.prepare_table(chunks)
+            n = len(table)
+            log.info(f"collected {n} rows for {self.info.name}")
         return table
 
-    def load_chunks(self) -> List[pd.DataFrame]:
+    def load_chunks(self) -> Dict[str, pd.DataFrame]:
         """
         Load list of chunks.
         """
@@ -92,70 +105,119 @@ class Collector(ABC):
             raise ValueError("could not find a chunks/ directory in path.")
 
         chunks = []
-        for filename in path.iterdir():
+        size = 0
+        for filename in sort_region_names(path.iterdir()):
             tb, _, tail = str(filename.name).partition("-")
-            if tb != self.table:
+            if tb != self.info.name:
                 continue
 
             region, _, ext = tail.partition(".")
-            suffix, _, region = region.rpartition("-")
 
             data = read_file(filename)
             n = len(data)
             log.info(f"loading chunk file: {filename} ({n} rows)")
-            chunks.append((region, suffix, data))
+            chunks.append((region, data))
+
+            size += len(data)
+            if self.max_size is not None and size > self.max_size:
+                break
 
         if not chunks:
-            raise ValueError(f"no chunk found for {self.table!r} table")
+            raise ValueError(f"no chunk found for {self.info.name!r} table")
 
         chunks.sort(key=cmp_to_key(self._chunk_cmp))
-        return [chunk for _, _, chunk in chunks]
+        return {region: chunk for region, chunk in chunks}
 
-    def prepare_column(self, col, data):
+    def fill_policy(self, col: str) -> FillPolicy:
         """
-        Prepare column in multi-index chunks
+        Return fill policy for column
         """
-        if isinstance(data, pd.DataFrame):
-            return dataframe_to_bytes(data, name=col)
-        return data
+        if self.fill_policy_map is None:
+            return self.DEFAULT_FILL_POLICY
+        return self.fill_policy_map.get(col, self.DEFAULT_FILL_POLICY)
 
-    def prepare_chunk(self, chunk: pd.DataFrame) -> pd.DataFrame:
+    def fill_missing(self, table: pd.DataFrame):
         """
-        Prepare chunk to be included in concatenation.
+        Fill missing data for all columns of table using the given policy.
         """
-        if chunk.columns.nlevels > 1:
-            columns = set(chunk.columns.get_level_values(0))
-            data = {}
-            for col in columns:
-                data[col] = self.prepare_column(col, chunk[col])
-            return pd.DataFrame(data)
+        columns = defaultdict(list)
+        for col in table.columns:
+            policy = self.fill_policy(col)
+            columns[policy].append(table[col])
 
-        return chunk
+        if len(columns) == 1:
+            policy, _ = columns.popitem()
+            log.info(f'filling data [{self.info.name}]: {policy}')
+            return apply_filling_policy(table, policy)
+        else:
+            raise NotImplementedError("multiple policies")
 
-    def prepare_table(self, chunks: List[pd.DataFrame]) -> pd.DataFrame:
+    def prepare_table(self, chunks: Dict[str, pd.DataFrame]) -> pd.DataFrame:
         """
         Join list of chunks in a single dataframe, normalizing result.
 
         Default implementation simply remove duplicates, keeping only the last
         observed value.
         """
-        table = pd.concat([self.prepare_chunk(chunk) for chunk in chunks])
-        table.index.name = "id"
-        data = table.reset_index(drop=self.auto_index).drop_duplicates(
-            self.duplicate_indexes, keep=self.keep_duplicate
-        )
-        if not self.auto_index:
-            data = data.set_index("id")
-        return data
+        (ra, a), *rest = chunks.items()
+        for (rb, b) in rest:
+            if (a.dtypes != b.dtypes).all():
+                raise TypeError(
+                    f"region {a} and {b} have conflicting chunk types:\n"
+                    f"{a.dtypes}\n{b.dtypes}"
+                )
+            if a.index.names != b.index.names:
+                raise TypeError(
+                    f"[{self.info.name}] region {ra} and {rb} have conflicting index "
+                    f"names:\n"
+                    f"  {ra}: {a.index.names}\n"
+                    f"  {rb}: {b.index.names}"
+                )
 
-    def process(self) -> None:
+        chunk_list = list(chunks.values())
+
+        if self.max_size is not None:
+            n = self.max_size
+            chunk_list, chunk_list_ = [], chunk_list
+            for chunk in chunk_list_:
+                chunk = chunk.iloc[:n]
+                chunk_list.append(chunk)
+                n -= len(chunk)
+                if n <= 0:
+                    break
+
+        table: pd.DataFrame = pd.concat(chunk_list)
+        table.index.name = chunk_list[0].index.name
+
+        if self.auto_index:
+            table = table.reset_index(drop=True)
+        elif self.keep_duplicate is not None:
+            indexes = table.index.names
+            columns = table.columns
+            table = table.reset_index()
+            table = table.drop_duplicates(indexes, keep=self.keep_duplicate)
+            table = table.set_index(indexes)
+            table.columns = columns
+
+        if self.sort_column is not None:
+            table = table.sort_values(self.sort_column)
+
+        return self.fill_missing(table)
+
+    def process(self, data=None) -> None:
         """
         Load and save data to <path>/databases/<table>.pkl.gz
         """
-        data = self.load()
-        path = self.path / "databases" / (self.table + ".pkl.gz")
+        if data is None:
+            data = self.load()
+        path = self.path / "databases" / (self.info.name + ".pkl.gz")
         path.parent.mkdir(exist_ok=True, parents=True)
-        data.to_pickle(str(path))
+
+        if hasattr(data, "to_pickle"):
+            data.to_pickle(str(path))
+        else:
+            with gzip.open(str(path), "wb") as fd:
+                pickle.dump(data, fd)
 
     def _chunk_cmp(self, a, b):
         """
@@ -163,13 +225,13 @@ class Collector(ABC):
         database followed by the more specific ones, which may override data
         inserted by previous rows.
         """
-        region_a, suffix_a, data_a = a
-        region_b, suffix_b, data_b = b
+        region_a, data_a = a
+        region_b, data_b = b
 
-        if region_a == "XX" and region_b != "XX":
+        if region_a == "XX":
             return -1
-        elif region_a == "XX" and region_b == "XX":
-            return -1 if not suffix_a or suffix_a < suffix_b else 1
+        elif region_b == "XX":
+            return 1
         else:
             level_a = chunk_level(data_a)
             level_b = chunk_level(data_b)
@@ -189,10 +251,21 @@ def chunk_level(data):
     try:
         levels = data["level"]
     except KeyError:
-        raise NotImplementedError
-    else:
-        return levels.mean()
+        if data.index.name == "id":
+            levels = data.mundi["level"]
+        else:
+            return float("inf")
+    return levels.mean()
 
 
-if __name__ == "__main__":
-    Collector.cli()
+def sort_region_names(names: Iterable[Path]) -> List[Path]:
+    """
+    Sort region names forcing world (XX) showing before other regions.
+    """
+
+    def key(p):
+        base, _, ext = p.name.partition(".")
+        table, _, region = base.rpartition("-")
+        return region != "XX", len(base)  # False (0) < True (1)
+
+    return sorted(names, key=key)

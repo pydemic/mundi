@@ -34,4 +34,4 @@ database.
 """
 from .collector import Collector
 from .data import Data, DataIO, find_prepare_scripts, execute_prepare_script
-from .importer import Importer
+from .importer import Importer, SQLImporter, HDF5Importer

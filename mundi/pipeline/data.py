@@ -1,11 +1,13 @@
 import contextlib
+import gzip
 import io
 import os
+import pickle
 import sys
 import time
-from abc import ABC, abstractmethod
+from abc import ABC
 from pathlib import Path
-from typing import Dict, Iterator
+from typing import Dict, Iterator, List
 
 import pandas as pd
 import sidekick.api as sk
@@ -45,6 +47,7 @@ class Data(ABC):
     script_name: str
     plugin_name: str
     region_name: str
+    table_dtypes: Dict[str, dict]
     _as_script = True
     _path = None
 
@@ -57,7 +60,10 @@ class Data(ABC):
         def main(show=False, validate=False, table=None):
             data = cls(**kwargs)
             if show:
-                values = data.collect()
+                if table:
+                    values = {table: data.collect_table(table)}
+                else:
+                    values = data.collect()
                 if table is not None:
                     values = {table: values[table]}
                 for k, v in values.items():
@@ -81,7 +87,13 @@ class Data(ABC):
                     with pd.option_context(
                         "display.max_rows", None, "display.max_columns", None
                     ):
-                        print(data.dtypes, end="\n\n")
+                        if isinstance(data, dict):
+                            for key, table in data.items():
+                                print(f"\nKEY: {key}")
+                                print(table.dtypes)
+                            print()
+                        else:
+                            print(data.dtypes, end="\n\n")
 
             else:
                 data.save()
@@ -104,43 +116,62 @@ class Data(ABC):
 
         main()
 
-    def __init__(self, path=None):
+    def __init__(self, path=None, table_dtypes=None):
         if path is None:
             cls = type(self)
             if cls._path is not None:
                 path = cls._path
             else:
-                path, _ = sys.modules[cls.__module__].__file__
-                path = Path(path).parent
+                path = Path(sys.modules[cls.__module__].__file__).parent
 
         path = Path(path)
         self.path = path
         self.plugin_name = path.name
         self.region_name = path.parent.name
 
-    @abstractmethod
+        if table_dtypes is None:
+            if not hasattr(self, "table_dtypes"):
+                self.table_dtypes = {}
+        else:
+            self.table_dtypes = table_dtypes
+
     def collect(self) -> Dict[str, pd.DataFrame]:
         """
         Main method that collect data and return a dictionary from table names
         to their corresponding data.
         """
-        raise NotImplementedError("must be implemented in sub-classes")
+        return {k: self.collect_table(k) for k in self.collected_tables()}
+
+    def collect_table(self, table):
+        """
+        Collect table from name.
+        """
+        return getattr(self, table)
+
+    def collected_tables(self) -> List[str]:
+        """
+        Return a list of collected tables.
+        """
+        return list(self.table_dtypes)
 
     def validate(self, table: pd.DataFrame, name: str = None) -> pd.DataFrame:
         """
         Validate table and prepare it to be saved.
         """
 
-        attr = f"{name.upper()}_DATA_TYPES"
         try:
-            dtypes = getattr(self, attr)
-        except AttributeError:
-            raise NotImplementedError(f"class must implement {attr} dictionary")
+            dtypes = self.table_dtypes[name]
+        except KeyError:
+            raise NotImplementedError(
+                f"class does not declare an table_dtypes dictionary"
+            )
         else:
-            if dtypes is not None:
-                table = check_column_types(dtypes, table)
+            if dtypes is None:
+                pass
+            elif isinstance(table, dict):
+                table = check_column_types_ex(dtypes, table, name=name)
 
-        return sk.pipe(table, check_unique_index, check_no_object_columns)
+        return sk.pipe(table, check_unique_index_ex, check_no_object_columns_ex)
 
     def save(self):
         """
@@ -155,11 +186,19 @@ class Data(ABC):
         for table, data in self.collect().items():
             path = template.format(table=table)
             data = self.validate(data, table)
-            data.to_pickle(path)
+            if isinstance(data, dict):
+                self._save_pickle(data, path)
+                keys = list(data.keys())
+                log.info(f"[mundi.data]: {keys} tables saved to {path}")
+            else:
+                data.to_pickle(path)
+                rows, cols = data.shape
+                log.info(str(data.dtypes))
+                log.info(f"[mundi.data]: {rows}x{cols} data saved to {path}")
 
-            rows, cols = data.shape
-            log.info(str(data.dtypes))
-            log.info(f"[mundi.data]: {rows}x{cols} data saved to {path}")
+    def _save_pickle(self, data, path):
+        with gzip.open(path, "wb") as fd:
+            pickle.dump(data, fd)
 
 
 class DataIO(Data, ABC):
@@ -206,17 +245,53 @@ class DataIO(Data, ABC):
     safe_concat = staticmethod(safe_concat)
 
     # Data validation
-    check_column_types = staticmethod(check_column_types)
-    check_unique_index = staticmethod(check_unique_index)
-    check_no_object_columns = staticmethod(check_no_object_columns)
+    def check_column_types(self, types, table, *, name="<table>"):
+        return check_column_types_ex(types, table, name=name)
+
+    def check_unique_index(self, table):
+        return check_unique_index_ex(table)
+
+    def check_no_object_columns(self, table):
+        return check_no_object_columns_ex(table)
 
 
-def find_prepare_scripts(path: Path) -> Iterator[Path]:
+def check_column_types_ex(types, table, name="<unknown>"):
+    """
+    Expand check_column_types to accept a dictionary of tables.
+    """
+    if isinstance(table, dict):
+        out = {}
+        for k, data in table.items():
+            out[k] = check_column_types(types[k], data, name=f"{name}/{k}")
+        return out
+    return check_column_types(types, table, name=name)
+
+
+def check_unique_index_ex(table):
+    """
+    Expand check_unique_index to accept a dictionary of tables.
+    """
+    if isinstance(table, dict):
+        return {k: check_unique_index(v) for k, v in table.items()}
+    return check_unique_index(table)
+
+
+def check_no_object_columns_ex(table):
+    """
+    Expand check_no_object_columns to accept a dictionary of tables.
+    """
+    if isinstance(table, dict):
+        return {k: check_no_object_columns(v) for k, v in table.items()}
+    return check_no_object_columns(table)
+
+
+def find_prepare_scripts(path: Path, verbose: bool = False) -> Iterator[Path]:
     """
     Return an iterator with (plugin, region, path) with the location of all
     prepare.py plugins under the current mundi-data path.
     """
-    print("scripts")
+    if verbose:
+        print("scripts")
     for region in sort_region_names(os.listdir(path)):
         for plugin in sort_plugin_names(os.listdir(path / region)):
             prepare = (path / region / plugin / "prepare.py").absolute()
@@ -224,13 +299,9 @@ def find_prepare_scripts(path: Path) -> Iterator[Path]:
                 yield plugin, region, prepare
 
 
-def _main():
-    for part in find_prepare_scripts(config.mundi_data_path() / "data"):
-        plugin, region, path = part
-        print(f"{plugin}[{region}]")
-
-
-def execute_prepare_script(path: Path, verbose: bool = False) -> None:
+def execute_prepare_script(
+    path: Path, verbose: bool = False, plugin="<plugin>", region="<region>"
+) -> None:
     """
     Execute all prepare scripts in package.
     """
@@ -256,7 +327,9 @@ def execute_prepare_script(path: Path, verbose: bool = False) -> None:
             finally:
                 Data._path = None
     except Exception as ex:
-        raise RuntimeError(f"script failed with error: {ex}") from ex
+        raise RuntimeError(
+            f"script failed with error ([{plugin}.{region}]): \n" f"{ex}"
+        ) from ex
     finally:
         Data._as_script = True
         os.chdir(cwd)
@@ -270,6 +343,12 @@ def execute_prepare_script(path: Path, verbose: bool = False) -> None:
     dt = time.time() - t0
     if verbose:
         print(f"Script executed in {dt:3.2} seconds.\n", flush=True)
+
+
+def _main():
+    for part in find_prepare_scripts(config.mundi_data_path() / "data"):
+        plugin, region, path = part
+        print(f"{plugin}[{region}]")
 
 
 if __name__ == "__main__":
