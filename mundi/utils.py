@@ -1,13 +1,18 @@
+import datetime
 import os
 from collections import Counter
 from pathlib import Path
-from typing import Union, Dict, Any, Iterable, List
+from typing import Union, Dict, Any, Iterable, List, TypeVar
 
 import pandas as pd
 from sidekick import api as sk
 
 EXT_KINDS = {".pkl.gz": "pickle", ".pkl": "pickle", ".csv": "csv", ".csv.gz": "csv"}
 
+
+#
+# Bug fixes
+#
 
 # TODO: is it a bug? report it? check which versions are affected by it
 def fix_string_columns_bug(df):
@@ -34,6 +39,9 @@ def fix_string_columns_bug(df):
     return df[columns]
 
 
+#
+# IO operations
+#
 def read_file(path: Path, kind=None, **kwargs):
     """
     Read file from path.
@@ -43,6 +51,8 @@ def read_file(path: Path, kind=None, **kwargs):
     else:
         method = getattr(pd, f"read_{kind}")
     data = method(path, **kwargs)
+    if isinstance(data, dict):
+        return {k: fix_string_columns_bug(v) for k, v in data.items()}
     return fix_string_columns_bug(data)
 
 
@@ -64,33 +74,13 @@ def reader_from_filename(path: Union[str, Path]):
     return getattr(pd, f"read_{kind}")
 
 
-def assign(data: pd.DataFrame, **values) -> pd.DataFrame:
-    """
-    Assign values to all missing columns specified as keyword arguments.
-
-    Similar to a DataFrame's assign method, but do not overwrite existing
-    columns.
-    """
-
-    def normalize(x):
-        if x is pd.NA or isinstance(x, str):
-            return x, "string"
-        return x if isinstance(x, tuple) else (x, None)
-
-    values = {k: normalize(x) for k, x in values.items()}
-    for col in data.keys():
-        if col in values:
-            del values[col]
-
-    constants = {k: v[0] for k, v in values.items()}
-    types = {k: v[1] for k, v in values.items() if v[1] is not None}
-    return data.assign(**constants).astype(types)
-
-
+#
+# Validation
+#
 def check_unique_index(df: pd.DataFrame) -> pd.DataFrame:
     """
     Assert that dataframe has a unique index and return an error showing
-    repetitions in case it don't.
+    repetitions in case it doesn't.
     """
     if df.index.is_unique:
         return df
@@ -115,7 +105,9 @@ def check_no_object_columns(df: pd.DataFrame) -> pd.DataFrame:
 
 
 @sk.curry(2)
-def check_column_types(types: Dict[str, Any], table: pd.DataFrame) -> pd.DataFrame:
+def check_column_types(
+    types: Dict[str, Any], table: pd.DataFrame, *, name="<unknown>"
+) -> pd.DataFrame:
     """
     Check if table has all types.
 
@@ -143,8 +135,10 @@ def check_column_types(types: Dict[str, Any], table: pd.DataFrame) -> pd.DataFra
                     pass
 
         except KeyError:
-            print(table.dtypes)
-            raise ValueError(f"missing column: {col!r} (dtype = {expected})")
+            raise ValueError(
+                f"for dataframe {name!r}:\n{table.dtypes}\n"
+                f"missing column: {col!r} (dtype = {expected})"
+            )
 
         if isinstance(col_data, pd.Series):
             dtype = col_data.dtype
@@ -153,12 +147,17 @@ def check_column_types(types: Dict[str, Any], table: pd.DataFrame) -> pd.DataFra
             if len(dtypes) == 0:
                 dtype = expected
             elif len(dtypes) > 1:
-                msg = f"sub-dataframe {col} is not of a uniform type. Got {dtypes}"
-                raise ValueError(msg)
+                raise ValueError(
+                    f"for dataframe {name!r}:\n{table.dtypes}\n"
+                    f"sub-dataframe {col} is not of a uniform type. Got {dtypes}"
+                )
             else:
                 (dtype,) = dtypes
         else:
-            raise TypeError(f"invalid type for column: {type(col_data)}")
+            raise TypeError(
+                f"for dataframe {name!r}:\n{table.dtypes}\n"
+                f"invalid type for column: {type(col_data)}"
+            )
 
         # Handle string columns. This seems to be a bug in pandas that do
         # not recognize pd.StringDtype as a normal dtype.
@@ -168,10 +167,10 @@ def check_column_types(types: Dict[str, Any], table: pd.DataFrame) -> pd.DataFra
         except TypeError:
             is_different = True
         if is_different:
-            print(table["region_id", ""])
-            print(col_data, type(col_data), col_data.dtypes, table.dtypes, sep="\n\n")
-            msg = f"invalid type for column {col!r}: expect {expected}, got {dtype}"
-            raise ValueError(msg)
+            raise ValueError(
+                f"for dataframe {name!r}:\n{table.dtypes}\n"
+                f"invalid type for column {col!r}: expect {expected}, got {dtype}"
+            )
 
     if table.columns.nlevels == 1:
         extra = set(table.columns)
@@ -180,9 +179,37 @@ def check_column_types(types: Dict[str, Any], table: pd.DataFrame) -> pd.DataFra
     extra -= set(types)
 
     if extra:
-        raise ValueError(f"invalid columns: {extra}")
+        raise ValueError(
+            f"for dataframe {name!r}:\n{table.dtypes}\n" f"invalid columns: {extra}"
+        )
 
     return table[list(types)]
+
+
+#
+# Dataframe transformations
+#
+def assign(data: pd.DataFrame, **values) -> pd.DataFrame:
+    """
+    Assign values to all missing columns specified as keyword arguments.
+
+    Similar to a DataFrame's assign method, but do not overwrite existing
+    columns.
+    """
+
+    def normalize(x):
+        if x is pd.NA or isinstance(x, str):
+            return x, "string"
+        return x if isinstance(x, tuple) else (x, None)
+
+    values = {k: normalize(x) for k, x in values.items()}
+    for col in data.keys():
+        if col in values:
+            del values[col]
+
+    constants = {k: v[0] for k, v in values.items()}
+    types = {k: v[1] for k, v in values.items() if v[1] is not None}
+    return data.assign(**constants).astype(types)
 
 
 def safe_concat(*args):
@@ -217,15 +244,157 @@ def safe_concat(*args):
             if is_different:
                 msg = f'column "{col}" at arg {i} should be {dtypes[col]}, got {dtype}'
                 raise TypeError(msg)
-    return pd.concat(frames)
+
+    df = pd.concat(frames)
+    df.index.name = frames[0].index.name
+    return df
 
 
-def sort_region_names(lst: Iterable[str]) -> List[str]:
+#
+# Data frame and series conversions
+#
+def dataframe_to_bytes(df: pd.DataFrame, **kwargs) -> pd.Series:
+    """
+    Convert dataframe to series with a single column that stores data as bytes.
+    """
+    rows = [row.tobytes() for row in df.astype("Int32").values]
+    return pd.Series(rows, index=df.index, **kwargs)
+
+
+def dataframe_from_bytes(series: pd.Series, **kwargs) -> pd.DataFrame:
+    """
+    Create a dataframe from a series of bytes rows.
+
+    This inverts :func:`dataframe_from_bytes`.
+    """
+    raise NotImplementedError
+
+
+def row_from_bytes(data: bytes, **kwargs) -> pd.Series:
+    """
+    Return a single series object from bytes.
+
+    This inverts a single row of :func:`dataframe_from_bytes`.
+    """
+    raise NotImplementedError
+
+
+#
+# Indexes
+#
+def to_index_level(
+    index: pd.Index, level: int, reverse: bool = False, fill: Any = "", names=None
+) -> pd.Index:
+    """
+    Create a multi index with the minimum given level filling tuple with 'fill'
+    value.
+
+    Args:
+        index:
+            Sequence or index.
+        level:
+            Minimum level or resulting index.
+        reverse:
+            If True, include fill elements to the beginning of each element.
+        fill:
+            Value used to fill empty elements of index
+        names:
+            List of names passed to the multi index constructor.
+    """
+    if index.nlevels >= level:
+        if names is None:
+            return index
+        return pd.MultiIndex.from_tuples(index, names=names)
+    elif isinstance(index, pd.MultiIndex):
+        data = index.to_list()
+    else:
+        data = [(x,) for x in index]
+
+    extra = (fill,) * (level - index.nlevels)
+    if reverse:
+        data = [(*extra, *x) for x in data]
+    else:
+        data = [(*x, *extra) for x in data]
+    return pd.MultiIndex.from_tuples(data, names=names)
+
+
+def with_index_level(
+    data: pd.DataFrame,
+    level: int,
+    reverse: bool = False,
+    fill: Any = "",
+    names=None,
+    axis=0,
+) -> pd.DataFrame:
+    """
+    Similar to :func:`to_index_level`, but works on dataframes indexes (axis=0)
+    or columns (axis=1).
+    """
+    if axis == 0:
+        data = data.copy(deep=False)
+        data.index = to_index_level(data.index, level, reverse, fill, names)
+    elif axis == 1:
+        data = data.copy(deep=False)
+        data.columns = to_index_level(data.columns, level, reverse, fill, names)
+    else:
+        raise ValueError(f"invalid axis: {axis}")
+    return data
+
+
+def index_roots(index: pd.Index) -> list:
+    """
+    Return root elements of index removing duplicates.
+    """
+    if index.nlevels == 1:
+        return [*index]
+    return [*sk.dedupe(index.get_level_values(0))]
+
+
+def add_index_level(data, level, **kwargs):
+    if isinstance(data, pd.Index):
+        n = data.nlevels
+        return to_index_level(data, n + 1, fill=level, reverse=True, **kwargs)
+    elif isinstance(data, (pd.DataFrame, pd.Series)):
+        axis = kwargs.get("axis", 0)
+        n = data.index.nlevels if axis == 0 else data.columns.nlevels
+        return with_index_level(data, n + 1, fill=level, reverse=True, **kwargs)
+    else:
+        raise TypeError
+
+
+#
+# Dates
+#
+def today(n=0) -> datetime.date:
+    """
+    Return the date today.
+    """
+    date = now().date()
+    if n:
+        return date + datetime.timedelta(days=n)
+    return date
+
+
+def now() -> datetime.datetime:
+    """
+    Return a datetime timestamp.
+    """
+    return datetime.datetime.now()
+
+
+#
+# Plugin system
+#
+T = TypeVar("T", str, Path)
+
+
+def sort_region_names(lst: Iterable[T]) -> List[T]:
     """
     Sort a list of regions, prioritizing the world region XX.
     """
 
     def key(r):
+        r = str(r)
         return len(r), not r.startswith("XX"), r.upper()
 
     return sorted(lst, key=key)
@@ -242,13 +411,13 @@ def sort_plugin_names(lst: Iterable[str]) -> List[str]:
     return sorted(lst, key=key)
 
 
-def dataframe_to_bytes(df: pd.DataFrame, **kwargs) -> pd.Series:
-    """
-    Convert dataframe to series with a single column that stores data as bytes.
-    """
-    rows = [row.tobytes() for row in df.values]
-    return pd.Series(rows, index=df.index, **kwargs)
+if __name__ == "__main__":
+    import click
 
+    @click.command()
+    @click.argument("path", type=click.Path())
+    def main(path):
+        df = read_file(path)
+        print(df)
 
-def dataframe_from_bytes(series: pd.Series, **kwargs) -> pd.DataFrame:
-    raise NotImplementedError
+    main()

@@ -13,7 +13,7 @@ def db():
 class TestDataFrameAccessor:
     def test_extract_extra_columns(self, db):
         extra = db.mundi["region"]
-        assert isinstance(extra, pd.Series)
+        assert isinstance(extra, pd.Series), type(extra)
         assert extra.shape == (10,)
 
     def test_extract_multiple_columns(self, db):

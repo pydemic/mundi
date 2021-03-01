@@ -4,14 +4,26 @@ from typing import Union
 
 import numpy as np
 import pandas as pd
+from sqlalchemy import literal_column
 
 from . import db
+from .db.core import column_expressions
 from .types import Region, RegionSet
 
 ISO2 = re.compile(r"[A-Z]{2}")
 ISO3 = re.compile(r"[A-Z]{3}")
 MUNDI_CODE = re.compile(r"[A-Z]{2}-\w+(:\w+)*")
 TYPES_HIERARCHY = ["state", "city", "district", "region"]
+REGION_UNIVERSE = db.Universe.REGION
+RegionModel = db.Region
+
+
+def filter_region(*args):
+    return db.session().query(RegionModel).filter(*args)
+
+
+def filter_country(*args):
+    return filter_region(*args, RegionModel.type == "country")
 
 
 def regions(country=None, **kwargs) -> RegionSet:
@@ -22,14 +34,20 @@ def regions(country=None, **kwargs) -> RegionSet:
         raise TypeError("cannot specify both 'country' and 'country_id'")
     elif country:
         kwargs["country_id"] = country_id(country)
-    return RegionSet(db.query(**kwargs).values("id"))
+
+    query = REGION_UNIVERSE.query(RegionModel, **kwargs)
+    return RegionSet(query.values(RegionModel.id))
 
 
 def regions_dataframe(cols=("name",), **kwargs) -> pd.DataFrame:
     """
     Query the regions/sub-divisions database, returning a dataframe.
     """
-    return pd.DataFrame(db.query(**kwargs).values("id", *cols)).set_index("id")
+    query = REGION_UNIVERSE.query(RegionModel, **kwargs)
+    cols = column_expressions(REGION_UNIVERSE, cols)
+    return pd.DataFrame(
+        query.values(RegionModel.id, *(col.expression for col in cols))
+    ).set_index("id")
 
 
 def countries(**kwargs) -> RegionSet:
@@ -59,12 +77,13 @@ def region(*args, country=None, **kwargs) -> Region:
             return ref
         return Region(code(ref))
     else:
-        row = db.query(**kwargs).first()
+        row = REGION_UNIVERSE.query(RegionModel, **kwargs).first()
         if row is None:
             raise LookupError("not found")
     return Region(row.id)
 
 
+# noinspection PyUnresolvedReferences
 @lru_cache(1024)
 def country_id(ref: str) -> str:
     """
@@ -72,6 +91,8 @@ def country_id(ref: str) -> str:
 
     Similar to the code() function, but only accept valid countries.
     """
+    m = RegionModel
+
     if isinstance(ref, Region):
         if ref.type != "country":
             raise ValueError(f"region is not a country: {ref}")
@@ -80,33 +101,33 @@ def country_id(ref: str) -> str:
     ref_ = ref.upper()
     if ISO2.fullmatch(ref_):
         try:
-            res = db.query().get(ref_)
-            if res.type == "country":
-                return res.id
+            row = db.session().query(RegionModel).get(ref_)
+            if row.type == "country":
+                return row.id
         except LookupError:
             pass
 
     elif ISO3.fullmatch(ref_):
         try:
-            res = db.query(long_code=ref_, type="country").first()
-            if res is not None:
-                return res.id
+            row = filter_country(m.long_code == ref_).first()
+            if row is not None:
+                return row.id
         except (LookupError, IndexError):
             pass
 
     if ref.isdigit():
-        res = db.query(numeric_code=ref, type="country").first()
-        if res is not None:
-            return res.id
+        row = filter_country(m.numeric_code == ref).first()
+        if row is not None:
+            return row.id
 
     elif "/" not in ref:
-        res = db.query(name=ref, type="country").first()
-        if res is not None:
-            return res.id
+        row = filter_country(m.name == ref).first()
+        if row is not None:
+            return row.id
 
-        res = db.query(type="country").filter(db.Region.name.ilike(f"%{ref}%")).first()
-        if res is not None:
-            return res.id
+    row = filter_country(m.name.ilike(f"%{ref}%")).first()
+    if row is not None:
+        return row.id
 
     raise LookupError(ref)
 
@@ -126,7 +147,7 @@ def code(ref: Union[Region, str]) -> str:
 
     ref_ = ref.upper()
     if MUNDI_CODE.fullmatch(ref_):
-        res = db.query().get(ref_)
+        res = db.session().query(RegionModel).get(ref_)
         if res is not None:
             return res.id
         country, _, division = ref.partition("-")
@@ -141,34 +162,43 @@ def code(ref: Union[Region, str]) -> str:
     return _subdivision_code(country, division)
 
 
+# noinspection PyUnresolvedReferences
 @lru_cache(32_768)
 def _subdivision_code(country: str, subdivision: str) -> str:
     """
     Return the mundi code for the given subdivision of a country.
     """
+    m = RegionModel
+    country_query = m.country_id == country
+
     if subdivision.isdigit():
-        res = db.query(numeric_code=subdivision, country_id=country).first()
+        res = filter_region(
+            m.numeric_code == subdivision, country_query
+        ).first()
         return f"{country}-{res.name}"
 
     else:
         for lookup in ["short_code", "long_code"]:
-            kwargs = {lookup: subdivision, "country_id": country}
+            filters = getattr(m, lookup) == subdivision, country_query
             try:
-                res = db.query(**kwargs).first()
+                res = filter_region(*filters).first()
                 if res is not None:
                     return res.id
             except LookupError:
                 pass
 
-        values = list(
-            db.query(country_id=country, name=subdivision).values("id", "type", "subtype")
-        ) or list(
-            db.query(country_id=country)
-            .filter(db.Region.name.ilike(f"%{subdivision}%"))
-            .values("id", "type", "subtype")
-        )
+        values = pd.DataFrame(
+            list(
+                filter_region(country_query, m.name == subdivision)
+                    .values(m.id, m.type, m.subtype)
+            )
+            or list(
+                filter_region(
+                    m.country_id == country, m.name.ilike(f"%{subdivision}%")
+                ).values(m.id, m.type, m.subtype)
+            )
+        ).set_index("id")
 
-        values = pd.DataFrame(values).set_index("id")
         if len(values) == 1:
             return values.index[0]
         elif len(values) > 1:

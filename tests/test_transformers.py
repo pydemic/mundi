@@ -1,7 +1,7 @@
 import pandas as pd
 from pandas.testing import assert_frame_equal
 
-from mundi import transforms
+from mundi import filling_policies
 
 
 class TestTransforms:
@@ -17,7 +17,7 @@ class TestTransforms:
             columns=["id", "x", "y"],
         ).set_index("id")
 
-        agg = transforms.sum_children(df, relation="all")
+        agg = filling_policies.sum_children(df, relation="all")
         print(agg)
         assert_frame_equal(
             agg,

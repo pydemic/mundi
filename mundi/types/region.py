@@ -4,6 +4,7 @@ from weakref import WeakValueDictionary
 
 import pandas as pd
 import sidekick.api as sk
+from sqlalchemy import literal
 
 from .. import db
 
@@ -19,6 +20,7 @@ class Region:
     """
 
     name: str
+    _get_column = staticmethod(db.Universe.REGION.column)
 
     def __new__(cls, ref, unsafe=False):
         if not isinstance(ref, str):
@@ -40,7 +42,8 @@ class Region:
 
     def __getitem__(self, key):
         try:
-            value = get_scalar_field(self.id, key)
+            column = self._get_column(key)
+            value = column.get(self.id)
         except AttributeError as ex:
             raise RuntimeError(ex) from ex
         self.__dict__[key] = value
@@ -122,7 +125,7 @@ class Region:
         return RegionSet(ids, name=name)
 
     def children_dataframe(
-        self, relation="default", columns=("name",), *, deep=False
+            self, relation="default", columns=("name",), *, deep=False
     ) -> pd.DataFrame:
         """
         Return a dataframe with all children.
@@ -143,11 +146,12 @@ class Region:
                         memo.add(ref)
 
         table = db.RegionM2M
-        query_args = [table.parent_id == self.id]
+        query_args = [table.parent_id == literal(self.id)]
         if relation is not None:
             query_args.append(table.relation == relation)
 
-        for (ref,) in db.query(table).filter(*query_args).values("child_id"):
+        query = db.session().query(table).filter(*query_args).values(table.child_id)
+        for (ref,) in query:
             yield ref
 
     def parents(self):
@@ -182,10 +186,3 @@ def as_region(region) -> Region:
         return Region(region)
     else:
         return region
-
-
-def get_scalar_field(ref, field):
-    (row,) = db.values_for([ref], field)
-    (value,) = row
-    transformer = db.get_transformer(field)
-    return transformer(value)

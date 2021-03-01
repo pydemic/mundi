@@ -1,13 +1,48 @@
+import enum
+
 import pandas as pd
 
+import mundi.db.core
+import mundi.db.tables
 from . import db
 
 
-def sum_children(data, relation="default"):
+class FillPolicy(enum.IntEnum):
+    """
+    Define strategy of filling columns.
+    """
+
+    NONE = 0
+    INHERIT = 1
+    SUM_CHILDREN = 2
+    MAX_CHILDREN = 4
+    MIN_CHILDREN = 8
+
+
+POLICY_FUNCTIONS = {
+    FillPolicy.NONE: lambda df: df.copy(),
+    FillPolicy.SUM_CHILDREN: lambda df: sum_children(df),
+    FillPolicy.MAX_CHILDREN: lambda df: agg_children(df, "max"),
+    FillPolicy.MIN_CHILDREN: lambda df: agg_children(df, "min"),
+}
+
+
+def apply_filling_policy(table: pd.DataFrame, policy: FillPolicy) -> pd.DataFrame:
+    """
+    Apply filling policy to table.
+    """
+    try:
+        fn = POLICY_FUNCTIONS[policy]
+    except KeyError:
+        raise ValueError(f"invalid policy: {policy}")
+    return fn(table)
+
+
+def sum_children(data: pd.DataFrame, relation="default") -> pd.DataFrame:
     """
     Fill values by summing the contents of children.
     """
-    return agg_children(data, "sum", relation)
+    return agg_children(data, "sum", relation).astype(data.dtypes)
 
 
 def agg_children(data: pd.DataFrame, agg="sum", relation="default") -> pd.DataFrame:
@@ -25,11 +60,11 @@ def agg_children(data: pd.DataFrame, agg="sum", relation="default") -> pd.DataFr
     while True:
         m2m = pd.DataFrame(
             list(
-                db.session()
+                mundi.db.core.session()
                 .query(db.RegionM2M)
                 .filter(db.RegionM2M.relation == relation)
                 .filter(db.RegionM2M.child_id.in_(data.index))
-                .values("child_id", "parent_id")
+                .values(db.RegionM2M.child_id, db.RegionM2M.parent_id)
             )
         )
         if len(m2m) == 0:

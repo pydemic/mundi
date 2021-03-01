@@ -1,13 +1,12 @@
 from functools import partial
-from itertools import chain
-from operator import attrgetter
-from typing import Union, Sequence
+from typing import Union
 
 import pandas as pd
 
 from .. import db
 
 Pandas = Union[pd.Series, pd.DataFrame]
+REGION_UNIVERSE = db.Universe.REGION
 
 
 @pd.api.extensions.register_dataframe_accessor("mundi")
@@ -24,19 +23,40 @@ class MundiDataFrameAccessor:
         if isinstance(key, tuple):
             left, right = key
             if left is ...:
-                return pd.concat([self._data, self[right]], axis=1)
+                other = self[right if isinstance(right, list) else [right]]
+                return pd.concat([self._data, other], axis=1)
             elif right is ...:
-                return pd.concat([self[left], self._data], axis=1)
+                other = self[left if isinstance(left, list) else [left]]
+                return pd.concat([other, self._data], axis=1)
             else:
                 raise IndexError(f"invalid index: {key}")
 
-        index = self._data.index
         if isinstance(key, list):
-            values = db.values_for(index, *key, null=pd.NA)
-            table = pd.DataFrame(list(values), columns=key, index=index)
+            return self._get_columns(key)
         else:
-            return self[[key]][key]
-        return table.reindex(index)
+            return self._get_column(key)
+
+    def _get_column(self, column, force_dataframe=False) -> Pandas:
+        """
+        Retrieve column as series or dataframe.
+        """
+        try:
+            col = REGION_UNIVERSE.column(column)
+        except ValueError:
+            raise KeyError(column)
+
+        pks = self._data.index
+        out = col.select(pks)
+        if force_dataframe and not isinstance(out, pd.DataFrame):
+            return pd.DataFrame({column: out})
+        return out
+
+    def _get_columns(self, columns) -> pd.DataFrame:
+        """
+        Retrieve columns as dataframe.
+        """
+        cols = [self._get_column(col, force_dataframe=True) for col in columns]
+        return pd.concat(cols, axis=1)
 
     def filter(self, **kwargs):
         """

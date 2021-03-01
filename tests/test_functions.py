@@ -11,7 +11,7 @@ class TestMundiFunctions:
 
     @pytest.fixture
     def countries(self):
-        return mundi.countries(["br", "it", "cn"])
+        return mundi.countries_dataframe(["br", "it", "cn"])
 
     def test_country_id(self):
         assert mundi.country_id("BR") == "BR"
@@ -60,18 +60,16 @@ class TestMundiFunctions:
         assert len(db) == 255
 
     def test_load_countries_is_an_alias_to_regions(self):
+        db1 = mundi.regions_dataframe(type="country")
+        db2 = mundi.countries_dataframe()
+        assert_frame_equal(db1, db2)
+
         db1 = mundi.regions(type="country")
         db2 = mundi.countries()
         assert db1 == db2
 
-        db1 = mundi.regions_dataframe(type="country")
-        db2 = mundi.countries_dataframe()
-
-        assert_frame_equal(db1, db2)
-
     def test_load_states_from_regions(self):
-        db = mundi.regions(type="state", country="BR")
-        print(db)
+        db = mundi.regions_dataframe(type="state", country_id="BR")
         assert len(db) == 27
 
 
