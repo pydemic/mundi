@@ -66,12 +66,12 @@ class Countries(DemographyData):
             .max("year")
             .drop(columns="year")
             .fillna(0)
-            .astype("uint32")
+            .astype(self.dtype)
         )
 
     @sk.lazy
     def historic_age_distribution(self):
-        return self.data_source.fillna(0).astype("uint32")
+        return self.data_source.fillna(0).astype(self.dtype)
 
 
 if __name__ == "__main__":

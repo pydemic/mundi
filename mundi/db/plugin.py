@@ -3,19 +3,16 @@ import time
 from abc import ABC
 from collections import defaultdict
 from pathlib import Path
-from typing import Dict, TypeVar, Type, List, Union, Callable
+from typing import Dict, TypeVar, Type, List
 
-import pandas as pd
 import pkg_resources
 import sidekick.api as sk
-from sqlalchemy import Column
-from sqlalchemy.orm.properties import ColumnProperty
 
-from .database import Base
+from . import Table, SqlColumn
 from .. import config
+from .. import db
 from ..logging import log
 from ..pipeline import Collector, Importer, find_prepare_scripts, execute_prepare_script
-from ..utils import read_file
 
 PLUGIN_INSTANCES = {}
 PLUGIN_SUBCLASSES = []
@@ -28,12 +25,10 @@ class Plugin(ABC):
     """
 
     name: str
-    tables: Dict[str, Base]
-    data_tables: List[Type[Base]] = None
+    tables: List[db.TableInfo] = None
+    data_tables: List[Type[Table]] = None
     collectors: Dict[str, Type[Collector]] = defaultdict(lambda: Collector)
     importers: Dict[str, Type[Importer]] = defaultdict(lambda: Importer)
-    transformers: Dict[str, Union[str, Callable]] = None
-    columns: Dict[str, Column] = None
     prefix: str = ""
 
     @classmethod
@@ -43,6 +38,13 @@ class Plugin(ABC):
         """
 
         from .. import db
+
+        def select_tables(plugin, table):
+            if table:
+                select = set(table.split(","))
+                yield from sk.filter(lambda x: x.name in select, plugin .tables)
+            else:
+                yield from plugin.tables
 
         @click.group()
         def cli():
@@ -68,18 +70,23 @@ class Plugin(ABC):
             "--verbose", "-v", is_flag=True, default=False, help="Verbose output"
         )
         @click.option("--table", "-t", help="Select specific table")
-        def collect(path, verbose, table):
+        @click.option(
+            "--max-size", "-m", type=int, help="set maximum size of collected chunks"
+        )
+        def collect(path, verbose, table, max_size):
+            opts = {"verbose": verbose, "max_size": max_size}
             if path is None:
                 path = config.mundi_data_path() / "build"
             else:
                 path = Path(path)
             plugin = cls.instance()
 
-            if table is None:
-                for table in plugin.tables:
-                    plugin.collect(path, table, verbose=verbose)
-            else:
-                plugin.collect(path, table, verbose=verbose)
+            for table in select_tables(plugin, table):
+                try:
+                    plugin.collect(path, table, **opts)
+                except Exception as ex:
+                    msg = f"error collecting table {plugin.name}.{table}: {ex}"
+                    raise RuntimeError(msg) from ex
 
         @cli.command("import")
         @click.option("--path", "-p", help="Location of mundi-path")
@@ -94,14 +101,9 @@ class Plugin(ABC):
                 path = Path(path)
 
             plugin = cls.instance()
-            if table:
-                tables = table.split(",")
-            else:
-                tables = list(plugin.tables)
-
             db.create_tables()
-            for table in tables:
-                plugin.reload(path, table, verbose=verbose)
+            for table in select_tables(plugin, table):
+                plugin.import_data(path, table, verbose=verbose)
 
         return cli()
 
@@ -134,32 +136,6 @@ class Plugin(ABC):
         for plugin in plugins:
             plugin.register()
 
-    @classmethod
-    def get_column(cls, column: str):
-        """
-        Return the column associated with the given column name.
-        """
-        for plugin in PLUGIN_INSTANCES.values():
-            try:
-                return plugin.columns[column]
-            except KeyError:
-                pass
-
-        raise ValueError(f"no column named {column}")
-
-    @classmethod
-    def get_transformer(cls, column: str):
-        """
-        Return the column associated with the given column name.
-        """
-        for plugin in PLUGIN_INSTANCES.values():
-            try:
-                return plugin.transformers[column]
-            except KeyError:
-                pass
-
-        return lambda x: x
-
     def __init_subclass__(cls, **kwargs):
         PLUGIN_SUBCLASSES.append(cls)
 
@@ -182,46 +158,31 @@ class Plugin(ABC):
         """
         Execute all prepare.py scripts in the given path.
         """
-        for part in find_prepare_scripts(path):
+        for part in find_prepare_scripts(path, verbose=verbose):
             plugin, region, path = part
             if plugin != self.name:
                 continue
-            execute_prepare_script(path, verbose=verbose)
+            execute_prepare_script(path, verbose=verbose, plugin=plugin, region=region)
 
-    def collect(self, path, table, verbose=False):
+    def collect(self, path: Path, info: db.TableInfo, verbose: bool = False, **kwargs):
         """
         Collect chunks for the given table.
-        """
-        with _timing(f"collecting {table!r}...", verbose):
-            collector = self.collectors[table](path, table)
-            collector.process()
 
-    def reload(self, path, table, verbose=False):
+        Extra keyword arguments are forwarded to the collector class constructor.
+        """
+        with _timing(f"collecting {info.name!r}...", verbose):
+            collector_cls = self.collectors.get(info.name, Collector)
+            collector = collector_cls(path, info, **kwargs)
+            return collector.process()
+
+    def import_data(self, path: Path, table: db.TableInfo, verbose: bool = False):
         """
         Reload data in path and save in the SQL database under table.
         """
-        with _timing(f"saving to db {table!r}...", verbose):
-            importer = self.importers[table](path, table)
-            importer.clear()
-            for chunk in importer.load_chunks():
-                importer.save(chunk)
-
-    def save_data(self, data, table, verbose=False):
-        """
-        Save collected data into database.
-        """
-        with _timing(f"saving to db {table!r}...", verbose):
-            importer = self.importers[table](".", table)
-            importer.clear()
-            importer.save(data)
-
-    def load_data(self, table, verbose=False) -> pd.DataFrame:
-        """
-        Load data from disk or from URL.
-        """
-        with _timing(f"loading table {table!r}...", verbose):
-            uri, is_remote = config.mundi_data_uri(table)
-            return read_file(uri)
+        with _timing(f"saving to db {table.name!r}...", verbose):
+            importer_cls = self.importers.get(table.name, Importer)
+            importer = importer_cls(path, table)
+            importer.save()
 
     #
     # Plugin registry
@@ -231,32 +192,6 @@ class Plugin(ABC):
         Register itself in the plugins registry that maps fields to SQL queries
         to the database.
         """
-
-        if self.data_tables is None:
-            self.data_tables = list(self.tables)
-
-        # Fill the columns attribute, if empty
-        if self.columns is None:
-            self.columns = columns = {}
-            prefix = self.prefix
-            for table_name in self.data_tables:
-                table = self.tables[table_name]
-                for attr, prop in table.__mapper__.attrs.items():
-                    key = prefix + attr
-                    if key in columns:
-                        continue
-                    if isinstance(prop, ColumnProperty):
-                        columns[key] = prop.expression
-
-        if self.transformers is None:
-            self.transformers = {}
-        for k, fn in self.transformers.items():
-            if isinstance(fn, str):
-                self.transformers[k] = getattr(self, fn)
-
-    #
-    # Query terms
-    #
 
 
 @contextlib.contextmanager

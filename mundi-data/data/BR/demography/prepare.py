@@ -4,7 +4,7 @@ import sidekick.api as sk
 from mundi.plugins.demography import DemographyData
 
 
-class BrazillianDemography(DemographyData):
+class BrazilianDemography(DemographyData):
     """
     Demographic data from Brazilian sub-divisions.
 
@@ -35,12 +35,15 @@ class BrazillianDemography(DemographyData):
     @sk.lazy
     def age_pyramid(self):
         df: pd.DataFrame = self.raw_historic_age_pyramid.demography.now()
-        return df.demography.unpivot_pyramid("gender").astype("uint32")
+        df = df.demography.unpivot_pyramid("gender").astype(self.dtype)
+        df.columns = self.age_pyramid_columns()
+        return df
 
     @sk.lazy
     def historic_age_pyramid(self):
         df = self.raw_historic_age_pyramid.demography.unpivot_pyramid("gender")
-        return df.astype("uint32")
+        df.columns = self.age_pyramid_columns()
+        return df.astype(self.dtype)
 
 
 def fix_columns(df, name):
@@ -54,4 +57,4 @@ def fix_columns(df, name):
 
 
 if __name__ == "__main__":
-    BrazillianDemography.cli()
+    BrazilianDemography.cli()

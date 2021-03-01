@@ -259,7 +259,7 @@ class Brazil(RegionData):
 
     @sk.lazy
     def region(self):
-        return self.safe_concat(
+        df = self.safe_concat(
             [
                 self.region_macros,
                 self.region_states,
@@ -267,6 +267,8 @@ class Brazil(RegionData):
                 self.region_SUS_macros,
             ]
         )
+        df.index.name = "id"
+        return df
 
     @sk.lazy
     def region_m2m_sus_cities(self):
@@ -288,12 +290,6 @@ class Brazil(RegionData):
     @sk.lazy
     def region_m2m(self):
         return self.safe_concat([self.region_m2m_sus_cities])
-
-    def collect(self) -> Dict[str, pd.DataFrame]:
-        return {
-            "region": self.region,
-            "region_m2m": self.region_m2m,
-        }
 
 
 if __name__ == "__main__":
