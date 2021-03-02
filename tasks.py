@@ -2,15 +2,30 @@ from invoke import task
 
 
 @task
+def test_all(ctx):
+    test(ctx)
+    doctest(ctx)
+    code_style(ctx)
+
+
+@task
 def test(ctx):
     ctx.run("pytest tests/ --cov", pty=True)
+
+
+@task
+def doctest(ctx):
     ctx.run("sphinx-build docs/ build/docs/ -b doctest", pty=True)
+
+
+@task
+def code_style(ctx):
     ctx.run("black --check .", pty=True)
     ctx.run("pycodestyle", pty=True)
 
 
 @task
-def prepare_data(ctx, fast=False):
+def bootstrap(ctx, fast=False):
     if not fast:
         ctx.run("python -m mundi.plugins.region prepare -v")
     ctx.run("python -m mundi.plugins.region collect -v -t region")

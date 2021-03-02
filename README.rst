@@ -2,8 +2,8 @@
 Mundi
 =====
 
-Mundi is a simple package that provides information about all countries in the world as
-as a convenient set of classes and Pandas dataframes. It uses information provided by the
+Mundi is a simple package that provides information about countries and sub-regions with a convenient
+set of classes and Pandas integration. It uses information provided by the
 popular pycountry package and supplement it with several other data sources using
 plugins.
 
@@ -18,11 +18,80 @@ contribute to the project).
 Usage
 =====
 
-Install Mundi using ``pip install mundi`` or your method of choice. Now, you can just import
-it and load the desired information. Mundi exposes collections of entries as dataframes,
-and single entries (rows in those dataframes) as Series objects.
+Install Mundi using ``pip install mundi`` or your preferred method of choice. Now, import
+it and load the desired information. Mundi exposes collections of entries as RegionSet's,
+dataframes, and single entries Region objects.
+
+For instance, we can get the list of all countries in the world using the mundi.countries() function.
 
 >>> import mundi
+>>> mundi.countries()
+RegionSet({'AD', 'AE', 'AF', 'AG', ...})
+
+The resulting object, a region set, is a set-like structure with the list all matched
+regions. The :func:`mundi.countries` function accept filtering using keyword arguments,
+like the query bellow that fetches all South American countries (XSA is the code for
+South America).
+
+>>> countries = mundi.countries(parent_id='XSA')
+
+The resulting RegionSet can be easily queried and converted to dataframes. We can,
+for instance, aggregate total population or find the region with the largest or
+smallest populations quite easily.
+
+>>> countries.aggregate('population')
+453164000
+>>> countries.max('population')
+Region('BR', name='Brazil')
+
+It is often convenient to tabulate data in a RegionSet to a dataframe.
+The ``to_dataframe`` method creates a table with the selected columns,
+generating the corresponding dataframe.
+
+>>> (countries.to_dataframe(['name', 'population'])
+...     .dropna()
+...     .sort_values('population', ascending=False)
+... )  # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+                                 name   population
+id
+BR                             Brazil  226817000.0
+CO                           Colombia   53035000.0
+AR                          Argentina   45305000.0
+PE                               Peru   34726000.0
+VE  Venezuela, Bolivarian Republic of   31022000.0
+CL                              Chile   20134000.0
+EC                            Ecuador   17646000.0
+BO    Bolivia, Plurinational State of   11687000.0
+PY                           Paraguay    7219000.0
+UY                            Uruguay    3682000.0
+GY                             Guyana     975000.0
+SR                           Suriname     616000.0
+GF                      French Guiana     300000.0
+
+Individual regions can be fetched from a RegionSet by indexing it with
+its unique string identifier.
+
+>>> countries["BR"]
+Region('BR', name='Brazil')
+
+More generally, they can also be queried with the ``mundi.region()``
+function, either by providing an specific country code or a more
+complex query.
+
+>>> br = mundi.region(parent_id="XSA", population__gt=200_000_000); br
+Region('BR', name='Brazil')
+
+Properties are accessed either as keys or as attributes
+
+>>> br.region == br['region'] == 'latin-america'
+True
+>>> br.population
+226817000
+
+
+Using dataframes
+================
+
 >>> df = mundi.countries_dataframe(); df  # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
                 name
 id
@@ -48,11 +117,6 @@ BR-AP                Amapá
 BR-BA                Bahia
 ...
 
-If you want a single country or single region, use the ``mundi.region()`` function,
-which returns a Region object, that in many ways behave like a row of a dataframe.
-
->>> br = mundi.region("BR"); br
-Region('BR', name='Brazil')
 
 The library creates a custom ``.mundi`` accessor that exposes additional
 methods not present in regular data frames. The most important of those is
@@ -71,13 +135,6 @@ AX                    None         NaN
 [255 rows x 2 columns]
 
 
-Each region also exhibit those values as attributes
-
->>> br.region
-'latin-america'
->>> br.population
-226817000
-
 It is also possible to keep the columns of the original dataframe using
 the ellipsis syntax
 
@@ -91,7 +148,6 @@ AI           Anguilla                None         NaN
 AX      Åland Islands                None         NaN
 ...
 [255 rows x 3 columns]
-
 
 
 The ``.mundi`` accessor is also able to select countries over mundi columns,

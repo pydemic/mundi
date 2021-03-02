@@ -1,12 +1,20 @@
+import pickle
+
 import pandas as pd
 import pytest
 
-from mundi import Region
+import mundi
+from mundi import Region, RegionSet
 
 
 class TestRegion:
     def test_regions_are_unique(self):
         assert id(Region("BR")) == id(Region("BR"))
+
+    def test_pickled_instances_retain_identity(self):
+        br_data = pickle.dumps(Region("BR"))
+        assert pickle.loads(br_data) is pickle.loads(br_data)
+        assert pickle.loads(br_data) is Region("BR")
 
     def test_region_basic_usage(self):
         br = Region("BR")
@@ -74,3 +82,26 @@ class TestRegion:
         print(br.age_pyramid)
         assert isinstance(br.age_distribution, pd.Series)
         assert isinstance(br.age_pyramid, pd.DataFrame)
+
+
+class TestRegionSet:
+    def test_region_set_representation(self):
+        rs = RegionSet({"AR", "BR"})
+        assert repr(rs) == "RegionSet({'AR', 'BR'})"
+        assert str(rs) == (
+            "Region Set\n"
+            "  name     : None\n"
+            "  regions  : AR, BR"
+        )
+
+        rs = mundi.regions(country="BR", type="state")
+        assert repr(rs) == "RegionSet({'BR-AC', 'BR-AL', 'BR-AM', 'BR-AP', ...})"
+        assert str(rs) == (
+            "Region Set\n"
+            "  name     : None\n"
+            "  regions  : BR-AC, BR-AL, BR-AM, BR-AP, (23 more)"
+        )
+
+    def test_region_set_aggregation(self):
+        x, y = rs = RegionSet({"AR", "BR"})
+        assert rs.aggregate('population') == x.population + y.population

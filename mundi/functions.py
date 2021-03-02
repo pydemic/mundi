@@ -4,7 +4,6 @@ from typing import Union
 
 import numpy as np
 import pandas as pd
-from sqlalchemy import literal_column
 
 from . import db
 from .db.core import column_expressions
@@ -15,6 +14,7 @@ ISO3 = re.compile(r"[A-Z]{3}")
 MUNDI_CODE = re.compile(r"[A-Z]{2}-\w+(:\w+)*")
 TYPES_HIERARCHY = ["state", "city", "district", "region"]
 REGION_UNIVERSE = db.Universe.REGION
+REGION_CACHE = {'XX', 'XAF', 'XAN', 'XAS', 'XEU', 'XOC', 'XNA', 'XSA'}
 RegionModel = db.Region
 
 
@@ -35,15 +35,15 @@ def regions(country=None, **kwargs) -> RegionSet:
     elif country:
         kwargs["country_id"] = country_id(country)
 
-    query = REGION_UNIVERSE.query(RegionModel, **kwargs)
-    return RegionSet(query.values(RegionModel.id))
+    query = REGION_UNIVERSE.query(RegionModel, join='auto', **kwargs)
+    return RegionSet(r[0] for r in query.values(RegionModel.id))
 
 
 def regions_dataframe(cols=("name",), **kwargs) -> pd.DataFrame:
     """
     Query the regions/sub-divisions database, returning a dataframe.
     """
-    query = REGION_UNIVERSE.query(RegionModel, **kwargs)
+    query = REGION_UNIVERSE.query(RegionModel, join='auto', **kwargs)
     cols = column_expressions(REGION_UNIVERSE, cols)
     return pd.DataFrame(
         query.values(RegionModel.id, *(col.expression for col in cols))
@@ -67,6 +67,9 @@ def countries_dataframe(cols=("name",), **kwargs) -> pd.DataFrame:
 def region(*args, country=None, **kwargs) -> Region:
     """
     Query the regions/sub-divisions database.
+
+    If called with a single string argument, create a region from id, if the
+    given id is valid.
     """
     if country:
         kwargs["country_id"] = country_id(country)
@@ -77,7 +80,7 @@ def region(*args, country=None, **kwargs) -> Region:
             return ref
         return Region(code(ref))
     else:
-        row = REGION_UNIVERSE.query(RegionModel, **kwargs).first()
+        row = REGION_UNIVERSE.query(RegionModel, join='auto', **kwargs).first()
         if row is None:
             raise LookupError("not found")
     return Region(row.id)
@@ -139,6 +142,9 @@ def code(ref: Union[Region, str]) -> str:
     """
     if isinstance(ref, Region):
         return ref.id
+
+    if ref in REGION_CACHE:
+        return ref
 
     try:
         return country_id(ref)

@@ -22,6 +22,12 @@ class TestMundiFunctions:
         assert mundi.country_id("Brazil") == "BR"
         assert mundi.country_id("brazil") == "BR"
 
+    def test_region_can_load_continents(self):
+        world = mundi.region('XX')
+        assert world.name == 'World'
+        for child in world.children():
+            assert mundi.region(child.id)
+
     def test_code_function(self):
         assert mundi.code("Brazil") == "BR"
         assert mundi.code("brazil") == "BR"

@@ -1,10 +1,12 @@
 import dataclasses
+import operator
 from enum import Enum
 from functools import lru_cache
 from typing import Tuple, Callable, Union, Any, List, Dict, cast, Type, Iterable, Iterator
 
 import pandas as pd
 from sidekick import api as sk
+from sqlalchemy import Column as _Column
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.orm.attributes import QueryableAttribute
@@ -14,6 +16,14 @@ from .. import config
 from ..config import mundi_db_engine, mundi_db_path
 
 create_tables_executed = False
+COMPARATOR_FUNCTIONS = {
+    "gt": operator.gt,
+    "ge": operator.ge,
+    "lt": operator.lt,
+    "le": operator.le,
+    "eq": operator.eq,
+    "ne": operator.ne,
+}
 
 
 class Universe(Enum):
@@ -94,7 +104,7 @@ class Universe(Enum):
         except KeyError:
             raise ValueError(f'no column "{self.value}.{ref}" reference')
 
-    def query(self, model: Type["Table"], *filters, **filter_dict):
+    def query(self, model: Type["Table"], join=None, *filters, **filter_dict):
         """
         Query model in universe using a list of filters.
 
@@ -103,6 +113,17 @@ class Universe(Enum):
         """
         models = model if isinstance(model, (tuple, list)) else (model,)
         query = session().query(*models)
+
+        if join == 'auto':
+            models = set()
+            for col in filter_dict:
+                m = self.column(col.split('__')[0]).model
+                if m is not model:
+                    models.add(m)
+            query = query.join(*models)
+        elif join:
+            query = query.join(*join)
+
         filters = (*filters, *map(self._to_filter, filter_dict.items()))
         if filters:
             return query.filter(*filters)
@@ -112,15 +133,18 @@ class Universe(Enum):
         key, value = item
         name, *mods = key.split("__")
 
-        if mods:
-            raise NotImplementedError
-
         column = cast(SqlColumn, self.column(name))
         if not column.is_queryable:
             raise ValueError(f"column {name} do not accept queries")
 
-        return column.expression == value
+        if mods:
+            comparator = COMPARATOR_FUNCTIONS[mods.pop()]
+            chain = mods
+            if chain:
+                raise NotImplementedError
+            return comparator(column.expression, value)
 
+        return column.expression == value
 
 @dataclasses.dataclass(frozen=True)
 class TableInfo:
@@ -279,7 +303,7 @@ class SqlColumn(Column):
     is_queryable = True
 
     @sk.lazy
-    def expression(self) -> QueryableAttribute:
+    def expression(self) -> _Column:
         """
         Expression element
         """

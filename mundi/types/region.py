@@ -34,11 +34,8 @@ class Region:
     def __hash__(self):
         return hash(self.id)
 
-    def __getstate__(self):
-        return self.id
-
-    def __setstate__(self, ref):
-        self.__dict__["id"] = ref
+    def __getnewargs__(self):
+        return self.id,
 
     def __getitem__(self, key):
         try:
@@ -89,19 +86,21 @@ class Region:
     #
     # Conversions
     #
-    def to_dict(self, *fields: str) -> dict:
+    def to_dict(self, fields: str = ('name',)) -> dict:
         """
         Convert Region to a dictionary including all requested attributes.
         """
-        get = self._get_field
-        return {"id": self.id, "name": self.name, **{f: get(f) for f in fields}}
+        out = {"id": self.id}
+        for field in fields:
+            out[field] = self[field]
+        return out
 
-    def to_series(self, *fields: str) -> pd.Series:
+    def to_series(self, fields: str = ('name',)) -> pd.Series:
         """
         Convert Region to a pandas Series element including the requested
         attributes.
         """
-        return pd.Series(self.to_dict(*fields))
+        return pd.Series(self.to_dict(fields))
 
     #
     # Hierarchies
@@ -182,7 +181,7 @@ def as_region(region) -> Region:
     """
     Convert string to Region.
     """
-    if isinstance(region, str):
-        return Region(region)
-    else:
+    if isinstance(region, Region):
         return region
+    else:
+        return Region(region)
