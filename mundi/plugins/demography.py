@@ -138,14 +138,38 @@ class DemographyPlugin(db.Plugin):
     tables = [
         db.Demography.info,
         db.AgeDistributionsInfo,
-        # db.HistoricDemography.info,
-        # db.HistoricAgeDistributionsInfo,
     ]
     importers = {
         "age_distributions": HDF5Importer,
         "historic_age_distributions": HDF5Importer,
     }
     data_tables = {"demography"}
+
+    def validate_tables(self, tables):
+        region = db.Universe.REGION
+        population = tables[region, 'demography']['population']
+        both = tables[region, 'all']
+        female = tables[region, 'female']
+        male = tables[region, 'male']
+
+        msg = 'Male and female parts of pyramid are not synchronized'
+        assert len(female) == len(male), msg
+
+        mask: pd.Series = (both.sum(1) != population).values
+        if len(mask):
+            print(pd.DataFrame({
+                'population': population[mask],
+                'sum': both.sum(axis=1)[mask],
+            }))
+            raise ValueError('Population not consistent with age_distribution')
+
+        mask: pd.Series = (both != male + female).values
+        if len(mask):
+            print(pd.DataFrame({
+                'population': population[mask],
+                'sum': both.sum(axis=1)[mask],
+            }))
+            raise ValueError('Population not consistent with age_distribution')
 
 
 def multi_index(prefix, idxs):

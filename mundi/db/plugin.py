@@ -3,12 +3,13 @@ import time
 from abc import ABC
 from collections import defaultdict
 from pathlib import Path
-from typing import Dict, TypeVar, Type, List
+from typing import Dict, TypeVar, Type, List, Union, Tuple
 
+import pandas as pd
 import pkg_resources
 import sidekick.api as sk
 
-from . import Table, SqlColumn
+from . import Table, Universe
 from .. import config
 from .. import db
 from ..logging import log
@@ -17,6 +18,7 @@ from ..pipeline import Collector, Importer, find_prepare_scripts, execute_prepar
 PLUGIN_INSTANCES = {}
 PLUGIN_SUBCLASSES = []
 T = TypeVar("T")
+Data = Union[Dict[str, pd.DataFrame], pd.DataFrame]
 
 
 class Plugin(ABC):
@@ -42,7 +44,7 @@ class Plugin(ABC):
         def select_tables(plugin, table):
             if table:
                 select = set(table.split(","))
-                yield from sk.filter(lambda x: x.name in select, plugin .tables)
+                yield from sk.filter(lambda x: x.name in select, plugin.tables)
             else:
                 yield from plugin.tables
 
@@ -81,9 +83,13 @@ class Plugin(ABC):
                 path = Path(path)
             plugin = cls.instance()
 
+            if table is None:
+                plugin.collect_all(path, **opts)
+                return
+
             for table in select_tables(plugin, table):
                 try:
-                    plugin.collect(path, table, **opts)
+                    plugin.collect_table(path, table, **opts)
                 except Exception as ex:
                     msg = f"error collecting table {plugin.name}.{table}: {ex}"
                     raise RuntimeError(msg) from ex
@@ -103,7 +109,7 @@ class Plugin(ABC):
             plugin = cls.instance()
             db.create_tables()
             for table in select_tables(plugin, table):
-                plugin.import_data(path, table, verbose=verbose)
+                plugin.import_table(path, table, verbose=verbose)
 
         return cli()
 
@@ -164,7 +170,8 @@ class Plugin(ABC):
                 continue
             execute_prepare_script(path, verbose=verbose, plugin=plugin, region=region)
 
-    def collect(self, path: Path, info: db.TableInfo, verbose: bool = False, **kwargs):
+    def collect_table(self, path: Path, info: db.TableInfo, verbose: bool = False,
+                      **kwargs) -> Data:
         """
         Collect chunks for the given table.
 
@@ -175,14 +182,50 @@ class Plugin(ABC):
             collector = collector_cls(path, info, **kwargs)
             return collector.process()
 
-    def import_data(self, path: Path, table: db.TableInfo, verbose: bool = False):
+    def collect_all(self, path: Path, **kwargs) -> Dict[Tuple[Universe, str], pd.DataFrame]:
         """
-        Reload data in path and save in the SQL database under table.
+        Collect all tables in the plugin.
+        """
+        out = {}
+        for info in self.tables:
+            result = self.collect_table(path, info, **kwargs)
+            if isinstance(result, dict):
+                out.update({(info.universe, k): v for k, v in result.items()})
+            else:
+                out[info.universe, info.name] = result
+
+        try:
+            self.validate_tables(out)
+        except (ValueError, AssertionError) as ex:
+            msg = f'[{self.name}] error validating table: {ex}'
+            raise ValueError(msg) from ex
+
+        return out
+
+    def validate_tables(self, tables: Dict[Tuple[Universe, str], pd.DataFrame]):
+        """
+        Raise either ValueError or AssertionError if collected data is invalid.
+
+        This validation can cross information from different tables. Internal
+        validation should be done by the corresponding collector classes.
+        """
+
+    def import_table(self, path: Path, table: db.TableInfo,
+                     verbose: bool = False) -> None:
+        """
+        Import data in path and save in the SQL database under the given table.
         """
         with _timing(f"saving to db {table.name!r}...", verbose):
             importer_cls = self.importers.get(table.name, Importer)
             importer = importer_cls(path, table)
             importer.save()
+
+    def import_all(self, path: Path, **kwargs) -> None:
+        """
+        Import data from all tables and save in the SQL database.
+        """
+        for info in self.tables:
+            self.import_table(path, info, **kwargs)
 
     #
     # Plugin registry

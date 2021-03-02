@@ -4,7 +4,8 @@ from abc import ABC
 from collections import defaultdict
 from functools import cmp_to_key
 from pathlib import Path
-from typing import List, Iterable, Optional, Dict
+from typing import List, Iterable, Optional, Dict, Union
+import sidekick.api as sk
 
 import pandas as pd
 
@@ -36,6 +37,7 @@ class Collector(ABC):
     fill_policy_map: dict = None
     auto_index: bool = False
     max_size: Optional[int]
+    table_name: str = sk.delegate_to('info.name')
 
     @classmethod
     def register(cls, table, universe: db.Universe):
@@ -94,7 +96,18 @@ class Collector(ABC):
             table = self.prepare_table(chunks)
             n = len(table)
             log.info(f"collected {n} rows for {self.info.name}")
+
+        try:
+            self.validate(table)
+        except ValueError as ex:
+            msg = f'validation error during processing of {self.table_name}:\n{ex}'
+            raise ValueError(msg) from ex
         return table
+
+    def validate(self, table: Union[pd.DataFrame, Dict[str, pd.DataFrame]]):
+        """
+        Validate data and raise a ValueError if some error is found.
+        """
 
     def load_chunks(self) -> Dict[str, pd.DataFrame]:
         """
@@ -204,7 +217,7 @@ class Collector(ABC):
 
         return self.fill_missing(table)
 
-    def process(self, data=None) -> None:
+    def process(self, data=None) -> Union[pd.DataFrame, Dict[str, pd.DataFrame]]:
         """
         Load and save data to <path>/databases/<table>.pkl.gz
         """
@@ -218,6 +231,7 @@ class Collector(ABC):
         else:
             with gzip.open(str(path), "wb") as fd:
                 pickle.dump(data, fd)
+        return data
 
     def _chunk_cmp(self, a, b):
         """
