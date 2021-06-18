@@ -1,0 +1,195 @@
+Country Comparison :: Commercial bank prime lending rate
+
+1       Madagascar                                                       60.00        31 December 2017 est.
+2       Brazil                                                           46.92        31 December 2017 est.
+3       Malawi                                                           38.10        31 December 2017 est.
+4       Ghana                                                            30.35        31 December 2017 est.
+5       Tajikistan                                                       30.00        31 December 2017 est.
+6       Yemen                                                            30.00        31 December 2017 est.
+7       Gambia, The                                                      29.00        31 December 2017 est.
+8       Mozambique                                                       27.86        31 December 2017 est.
+9       Argentina                                                        26.58        31 December 2017 est.
+10      Guinea                                                           22.20        31 December 2017 est.
+11      Uganda                                                           21.28        31 December 2017 est.
+12      Venezuela                                                        21.10        31 December 2017 est.
+13      Congo, Democratic Republic of the                                20.62        31 December 2017 est.
+14      Mongolia                                                         20.01        31 December 2017 est.
+15      Sao Tome and Principe                                            19.61        31 December 2017 est.
+16      Honduras                                                         19.26        31 December 2017 est.
+17      Turkmenistan                                                     19.00        31 December 2017 est.
+18      Laos                                                             18.50        31 December 2017 est.
+19      Kyrgyzstan                                                       18.49        31 December 2017 est.
+20      Egypt                                                            18.18        31 December 2017 est.
+21      Iran                                                             18.00        31 December 2017 est.
+22      Zimbabwe                                                         18.00        31 December 2017 est.
+23      Sierra Leone                                                     17.92        31 December 2017 est.
+24      Tanzania                                                         17.62        31 December 2017 est.
+25      Nigeria                                                          17.58        31 December 2017 est.
+26      Rwanda                                                           17.17        31 December 2017 est.
+27      Mauritania                                                       17.00        31 December 2017 est.
+28      Paraguay                                                         17.00        31 December 2017 est.
+29      Peru                                                             16.60        31 December 2017 est.
+30      Ukraine                                                          16.38        31 December 2017 est.
+31      Uzbekistan                                                       16.00        31 December 2016 est.
+32      Angola                                                           15.82        31 December 2017 est.
+33      Turkey                                                           15.77        31 December 2017 est.
+34      Micronesia, Federated States of                                  15.73        31 December 2017 est.
+35      Central African Republic                                         15.50        31 December 2017 est.
+36      Chad                                                             15.50        31 December 2017 est.
+37      Afghanistan                                                      15.00        31 December 2016 est.
+38      Bhutan                                                           15.00        31 December 2017 est.
+39      Equatorial Guinea                                                15.00        31 December 2017 est.
+40      Gabon                                                            15.00        31 December 2017 est.
+41      Jamaica                                                          14.91        31 December 2017 est.
+42      Cayman Islands                                                   14.90        31 December 2017 est.
+43      Burundi                                                          14.80        31 December 2017 est.
+44      Congo, Republic of the                                           14.60        31 December 2017 est.
+45      Curacao                                                          14.50        31 December 2011 est.
+46      Suriname                                                         14.43        31 December 2017 est.
+47      Armenia                                                          14.41        31 December 2017 est.
+48      Kazakhstan                                                       14.17        31 December 2017 est.
+49      Syria                                                            14.00        31 December 2017 est.
+50      Dominican Republic                                               13.91        31 December 2017 est.
+51      Uruguay                                                          13.83        31 December 2017 est.
+52      Colombia                                                         13.69        31 December 2017 est.
+53      Kenya                                                            13.67        31 December 2017 est.
+54      Ethiopia                                                         13.50        31 December 2017 est.
+55      South Sudan                                                      13.38        December 2017
+56      Liberia                                                          13.30        31 December 2017 est.
+57      Timor-Leste                                                      13.29        31 December 2017 est.
+58      Haiti                                                            13.10        31 December 2017 est.
+59      Guatemala                                                        13.05        31 December 2017 est.
+60      Burma                                                            13.00        31 December 2017 est.
+61      Cameroon                                                         13.00        31 December 2017 est.
+62      Guyana                                                           13.00        31 December 2017 est.
+63      Sudan                                                            13.00        31 December 2017 est.
+64      Azerbaijan                                                       12.70        31 December 2017 est.
+65      Iraq                                                             12.70        31 December 2017 est.
+66      Zambia                                                           12.50        31 December 2017 est.
+67      Seychelles                                                       12.24        31 December 2017 est.
+68      Sri Lanka                                                        11.60        31 December 2017 est.
+69      Lesotho                                                          11.58        31 December 2017 est.
+70      Georgia                                                          11.49        31 December 2017 est.
+71      Costa Rica                                                       11.37        31 December 2017 est.
+72      Djibouti                                                         11.30        31 December 2017 est.
+73      Nepal                                                            11.30        31 December 2017 est.
+74      Indonesia                                                        11.07        31 December 2017 est.
+75      Cambodia                                                         10.92        31 December 2017 est.
+76      Nicaragua                                                        10.80        31 December 2017 est.
+77      Eswatini                                                         10.75        31 December 2017 est.
+78      Solomon Islands                                                  10.70        31 December 2017 est.
+79      Tuvalu                                                           10.60        31 December 2013 est.
+80      Russia                                                           10.55        31 December 2017 est.
+81      Comoros                                                          10.50        31 December 2017 est.
+82      Maldives                                                         10.50        31 December 2012 est.
+83      South Africa                                                     10.38        31 December 2017 est.
+84      Moldova                                                          10.36        31 December 2017 est.
+85      Namibia                                                          10.04        31 December 2017 est.
+86      Belarus                                                           9.66        31 December 2017 est.
+87      Bangladesh                                                        9.54        31 December 2017 est.
+88      India                                                             9.51        31 December 2017 est.
+89      Cabo Verde                                                        9.50        31 December 2017 est.
+90      Anguilla                                                          9.48        31 December 2017 est.
+91      Belize                                                            9.46        31 December 2017 est.
+92      Antigua and Barbuda                                               9.31        31 December 2017 est.
+93      Saint Kitts and Nevis                                             9.09        31 December 2017 est.
+94      Trinidad and Tobago                                               9.00        31 December 2017 est.
+95      Samoa                                                             8.76        31 December 2017 est.
+96      Saint Vincent and the Grenadines                                  8.75        31 December 2017 est.
+97      Jordan                                                            8.65        31 December 2017 est.
+98      Mauritius                                                         8.50        31 December 2017 est.
+99      Papua New Guinea                                                  8.40        31 December 2017 est.
+100     Saint Lucia                                                       8.34        31 December 2017 est.
+101     Grenada                                                           8.31        31 December 2017 est.
+102     Saudi Arabia                                                      8.30        31 December 2017 est.
+103     Lebanon                                                           8.29        31 December 2017 est.
+104     Albania                                                           8.22        31 December 2017 est.
+105     Serbia                                                            8.20        31 December 2017 est.
+106     Bolivia                                                           8.11        31 December 2017 est.
+107     Barbados                                                          8.10        31 December 2017 est.
+108     Dominica                                                          8.08        31 December 2017 est.
+109     Algeria                                                           8.00        31 December 2017 est.
+110     Tonga                                                             8.00        31 December 2017 est.
+111     Ecuador                                                           7.92        31 December 2017 est.
+112     Panama                                                            7.52        31 December 2017 est.
+113     Mexico                                                            7.34        31 December 2017 est.
+114     Tunisia                                                           7.31        31 December 2016 est.
+115     Libya                                                             7.30        31 December 2017 est.
+116     Iceland                                                           7.26        31 December 2017 est.
+117     Vietnam                                                           7.07        31 December 2017 est.
+118     Aruba                                                             7.00        31 December 2017 est.
+119     Pakistan                                                          6.98        31 December 2017 est.
+120     Montserrat                                                        6.95        31 December 2017 est.
+121     Botswana                                                          6.88        31 December 2017 est.
+122     Kosovo                                                            6.83        31 December 2017 est.
+123     Montenegro                                                        6.81        31 December 2017 est.
+124     El Salvador                                                       6.47        31 December 2017 est.
+125     Macedonia                                                         6.21        31 December 2017 est.
+126     United Arab Emirates                                              6.00        31 December 2017 est.
+127     San Marino                                                        5.92        31 December 2011 est.
+128     West Bank                                                         5.80        31 December 2017 est.
+129     Fiji                                                              5.74        31 December 2017 est.
+130     Philippines                                                       5.63        31 December 2017 est.
+131     Morocco                                                           5.60        31 December 2017 est.
+132     Romania                                                           5.57        31 December 2017 est.
+133     Brunei                                                            5.50        31 December 2017 est.
+134     Guinea-Bissau                                                     5.50        31 December 2017 est.
+135     Bulgaria                                                          5.41        31 December 2017 est.
+136     Cote d'Ivoire                                                     5.40        31 December 2017 est.
+137     Niger                                                             5.40        31 December 2017 est.
+138     Senegal                                                           5.40        31 December 2017 est.
+139     Bahrain                                                           5.33        31 December 2017 est.
+140     Benin                                                             5.30        31 December 2017 est.
+141     Burkina Faso                                                      5.30        31 December 2017 est.
+142     Togo                                                              5.30        31 December 2016 est.
+143     Singapore                                                         5.28        31 December 2017 est.
+144     Greece                                                            5.25        31 December 2017 est.
+145     Macau                                                             5.25        31 December 2017 est.
+146     Australia                                                         5.24        31 December 2017 est.
+147     Mali                                                              5.20        31 December 2017 est.
+148     Oman                                                              5.20        31 December 2017 est.
+149     New Zealand                                                       5.10        31 December 2017 est.
+150     Hong Kong                                                         5.00        31 December 2017 est.
+151     Puerto Rico                                                       5.00        31 December 2017 est.
+152     Qatar                                                             4.95        31 December 2017 est.
+153     Poland                                                            4.80        31 December 2017 est.
+154     Kuwait                                                            4.68        31 December 2017 est.
+155     Malaysia                                                          4.61        31 December 2017 est.
+156     Chile                                                             4.60        31 December 2017 est.
+157     Thailand                                                          4.42        31 December 2017 est.
+158     Bosnia and Herzegovina                                            4.38        31 December 2017 est.
+159     United Kingdom                                                    4.38        31 December 2017 est.
+160     China                                                             4.35        31 December 2017 est.
+161     Bahamas, The                                                      4.25        31 December 2017 est.
+162     Croatia                                                           4.23        31 December 2017 est.
+163     Estonia                                                           4.20        31 December 2017 est.
+164     Cyprus                                                            4.13        31 December 2017 est.
+165     United States                                                     4.10        31 December 2017 est.
+166     Ireland                                                           4.08        31 December 2017 est.
+167     Malta                                                             3.70        31 December 2017 est.
+168     Czechia                                                           3.59        31 December 2017 est.
+169     Israel                                                            3.50        31 December 2017 est.
+170     Korea, South                                                      3.48        31 December 2017 est.
+171     Portugal                                                          3.21        31 December 2017 est.
+172     Canada                                                            3.20        31 December 2017 est.
+173     Vanuatu                                                           3.20        31 December 2017 est.
+174     Italy                                                             3.00        31 December 2017 est.
+175     Norway                                                            2.89        31 December 2017 est.
+176     Denmark                                                           2.84        31 December 2017 est.
+177     Lithuania                                                         2.80        31 December 2017 est.
+178     Taiwan                                                            2.63        31 December 2017 est.
+179     Switzerland                                                       2.60        31 December 2017 est.
+180     Slovenia                                                          2.59        31 December 2017 est.
+181     Latvia                                                            2.58        31 December 2017 est.
+182     Slovakia                                                          2.44        31 December 2017 est.
+183     Belgium                                                           2.08        31 December 2017 est.
+184     Spain                                                             2.03        31 December 2017 est.
+185     Sweden                                                            1.93        31 December 2017 est.
+186     Luxembourg                                                        1.90        31 December 2017 est.
+187     Germany                                                           1.67        31 December 2017 est.
+188     Finland                                                           1.61        31 December 2017 est.
+189     Austria                                                           1.57        31 December 2017 est.
+190     Hungary                                                           1.48        31 December 2017 est.
+191     Japan                                                             1.48        31 December 2017 est.
+192     Netherlands                                                       1.33        31 December 2017 est.
+193     France                                                            1.29        31 December 2017 est.

@@ -1,0 +1,157 @@
+Country Comparison :: Military expenditures
+
+1       Oman                                                             13.73        2016
+2       South Sudan                                                      10.93        2015
+3       Saudi Arabia                                                      9.85        2016
+4       Congo, Republic of the                                            7.17        2016
+5       Algeria                                                           5.81        2017
+6       Israel                                                            5.62        2017
+7       United Arab Emirates                                              4.86        2017
+8       Kuwait                                                            4.83        2015
+9       Jordan                                                            4.80        2017
+10      Bahrain                                                           4.59        2015
+11      Namibia                                                           4.44        2016
+12      Russia                                                            4.24        2017
+13      Armenia                                                           4.09        2016
+14      Burma                                                             4.08        2015
+15      Niger                                                             4.00        2016
+16      Yemen                                                             3.97        2014
+17      Azerbaijan                                                        3.64        2016
+18      Iraq                                                              3.63        2016
+19      Pakistan                                                          3.56        2016
+20      Colombia                                                          3.50        2018 est.
+21      Ukraine                                                           3.50        2017
+22      Botswana                                                          3.37        2016
+23      United States                                                     3.29        2016
+24      Morocco                                                           3.20        2017
+25      Kyrgyzstan                                                        3.15        2016
+26      Singapore                                                         3.12        2017
+27      Cuba                                                              3.08        2015
+28      Mauritania                                                        2.97        2016
+29      Angola                                                            2.95        2016
+30      Lebanon                                                           2.91        2017
+31      Brunei                                                            2.87        2017
+32      Sudan                                                             2.83        2016
+33      Chad                                                              2.79        2016
+34      Korea, South                                                      2.70        2017
+35      Iran                                                              2.69        2015
+36      Mali                                                              2.63        2016
+37      Timor-Leste                                                       2.56        2015
+38      Guinea                                                            2.49        2016
+39      India                                                             2.47        2016
+40      Vietnam                                                           2.44        2016
+41      Greece                                                            2.40        2017
+42      Georgia                                                           2.23        2016
+43      Burundi                                                           2.21        2016
+44      United Kingdom                                                    2.20        2016
+45      Zimbabwe                                                          2.20        2016
+46      Estonia                                                           2.17        2016
+47      Sri Lanka                                                         2.14        2017
+48      Tunisia                                                           2.03        2017
+49      Australia                                                         2.00        2016
+50      China                                                             2.00        2017
+51      Lithuania                                                         2.00        2018
+52      Poland                                                            1.99        2017
+53      Senegal                                                           1.89        2017 est.
+54      Chile                                                             1.87        2016
+55      Togo                                                              1.86        2016
+56      Cambodia                                                          1.85        2016
+57      Lesotho                                                           1.85        2016
+58      Uruguay                                                           1.85        2016
+59      Eswatini                                                          1.81        2016
+60      France                                                            1.79        2017
+61      Cyprus                                                            1.78        2016
+62      Guinea-Bissau                                                     1.76        2015
+63      Turkey                                                            1.73        2016
+64      Ecuador                                                           1.70        2017
+65      Latvia                                                            1.70        2017
+66      Montenegro                                                        1.70        2018
+67      Egypt                                                             1.67        2016
+68      Norway                                                            1.61        2018
+69      Cameroon                                                          1.60        2016
+70      Honduras                                                          1.59        2016
+71      Uganda                                                            1.57        2016
+72      Bulgaria                                                          1.53        2017
+73      Zambia                                                            1.53        2016
+74      Nepal                                                             1.52        2016
+75      Bolivia                                                           1.50        2017 est.
+76      Thailand                                                          1.50        2017
+77      Gambia, The                                                       1.48        2015
+78      Bangladesh                                                        1.44        2017
+79      Gabon                                                             1.43        2016
+80      Guyana                                                            1.42        2016
+81      Romania                                                           1.42        2016
+82      Kenya                                                             1.40        2017
+83      Portugal                                                          1.36        2018
+84      Netherlands                                                       1.35        2018
+85      Congo, Democratic Republic of the                                 1.34        2016
+86      Serbia                                                            1.34        2017 est.
+87      Brazil                                                            1.32        2016
+88      Canada                                                            1.29        2017
+89      Seychelles                                                        1.29        2016
+90      Philippines                                                       1.28        2016
+91      Croatia                                                           1.27        2017
+92      Paraguay                                                          1.25        2016
+93      Germany                                                           1.24        2017
+94      Burkina Faso                                                      1.23        2016
+95      Finland                                                           1.23        2018
+96      Albania                                                           1.22        2017
+97      Denmark                                                           1.21        2018
+98      Rwanda                                                            1.21        2016
+99      Tajikistan                                                        1.19        2017
+100     Cote d'Ivoire                                                     1.18        2016
+101     Belize                                                            1.17        2016
+102     Slovakia                                                          1.16        2017 est.
+103     Benin                                                             1.14        2016
+104     Tanzania                                                          1.14        2016
+105     Italy                                                             1.12        2017
+106     Trinidad and Tobago                                               1.12        2016
+107     Malaysia                                                          1.11        2017
+108     New Zealand                                                       1.10        2017
+109     South Africa                                                      1.07        2016
+110     Mozambique                                                        1.03        2016
+111     Hungary                                                           1.01        2016
+112     Sweden                                                            1.00        2017
+113     Venezuela                                                         1.00        2015
+114     Bosnia and Herzegovina                                            0.99        2016
+115     Czechia                                                           0.98        2016
+116     Fiji                                                              0.98        2016
+117     Slovenia                                                          0.98        2017
+118     Argentina                                                         0.95        2016
+119     Belarus                                                           0.93        2017
+120     Belgium                                                           0.93        2018
+121     Japan                                                             0.93        2016
+122     Spain                                                             0.93        2018
+123     Macedonia                                                         0.90        2017
+124     Peru                                                              0.90        2017
+125     Afghanistan                                                       0.89        2016
+126     El Salvador                                                       0.87        2016
+127     Indonesia                                                         0.84        2017
+128     Jamaica                                                           0.82        2016
+129     Kazakhstan                                                        0.82        2016
+130     Sierra Leone                                                      0.81        2016
+131     Kosovo                                                            0.79        2016
+132     Mongolia                                                          0.72        2017
+133     Switzerland                                                       0.71        2016
+134     Ethiopia                                                          0.67        2016
+135     Papua New Guinea                                                  0.66        2014
+136     Dominican Republic                                                0.64        2016
+137     Cabo Verde                                                        0.63        2016
+138     Liberia                                                           0.62        2016
+139     Malawi                                                            0.61        2016
+140     Nicaragua                                                         0.61        2017
+141     Austria                                                           0.58        2018
+142     Mexico                                                            0.58        2016
+143     Luxembourg                                                        0.55        2018
+144     Madagascar                                                        0.53        2017
+145     Malta                                                             0.53        2016
+146     Nigeria                                                           0.43        2016
+147     Ghana                                                             0.40        2017
+148     Guatemala                                                         0.37        2017
+149     Moldova                                                           0.37        2017
+150     Ireland                                                           0.34        2016
+151     Laos                                                              0.20        2013
+152     Mauritius                                                         0.19        2016
+153     Equatorial Guinea                                                 0.18        2016
+154     Iceland                                                           0.10        2016
+155     Somalia                                                           0.00        2016

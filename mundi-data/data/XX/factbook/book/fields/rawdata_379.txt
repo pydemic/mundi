@@ -1,0 +1,240 @@
+Country Comparison :: Airports
+
+1       United States                                                   13,513        2013
+2       Brazil                                                           4,093        2013
+3       Mexico                                                           1,714        2013
+4       Canada                                                           1,467        2013
+5       Russia                                                           1,218        2013
+6       Argentina                                                        1,138        2013
+7       Bolivia                                                            855        2013
+8       Colombia                                                           836        2013
+9       Paraguay                                                           799        2013
+10      Indonesia                                                          673        2013
+11      South Africa                                                       566        2013
+12      Papua New Guinea                                                   561        2013
+13      Germany                                                            539        2013
+14      China                                                              507        2013
+15      Chile                                                              481        2013
+16      Australia                                                          480        2013
+17      France                                                             464        2013
+18      United Kingdom                                                     460        2013
+19      Venezuela                                                          444        2013
+20      Ecuador                                                            432        2013
+21      India                                                              346        2013
+22      Iran                                                               319        2013
+23      Guatemala                                                          291        2013
+24      Philippines                                                        247        2013
+25      Sweden                                                             231        2013
+26      Saudi Arabia                                                       214        2013
+27      Congo, Democratic Republic of the                                  198        2013
+28      Kenya                                                              197        2013
+29      Zimbabwe                                                           196        2013
+30      Peru                                                               191        2013
+31      Ukraine                                                            187        2013
+32      Angola                                                             176        2013
+33      Japan                                                              175        2013
+34      Tanzania                                                           166        2013
+35      Costa Rica                                                         161        2013
+36      Algeria                                                            157        2016
+37      Pakistan                                                           151        2013
+38      Spain                                                              150        2013
+39      Finland                                                            148        2013
+40      Nicaragua                                                          147        2013
+41      Libya                                                              146        2013
+42      Cuba                                                               133        2017
+43      Uruguay                                                            133        2013
+44      Oman                                                               132        2013
+45      Italy                                                              129        2013
+46      Czechia                                                            128        2013
+47      Poland                                                             126        2013
+48      New Zealand                                                        123        2013
+49      Guyana                                                             117        2013
+50      Panama                                                             117        2013
+51      Malaysia                                                           114        2013
+52      Namibia                                                            112        2013
+53      Korea, South                                                       111        2013
+54      Honduras                                                           103        2013
+55      Iraq                                                               102        2013
+56      Thailand                                                           101        2013
+57      Mozambique                                                          98        2013
+58      Turkey                                                              98        2013
+59      Iceland                                                             96        2013
+60      Kazakhstan                                                          96        2013
+61      Norway                                                              95        2013
+62      Syria                                                               90        2013
+63      Zambia                                                              88        2013
+64      South Sudan                                                         85        2013
+65      Egypt                                                               83        2013
+66      Madagascar                                                          83        2013
+67      Korea, North                                                        82        2013
+68      Denmark                                                             80        2013
+69      Greece                                                              77        2013
+70      Botswana                                                            74        2013
+71      Sudan                                                               74        2013
+72      Croatia                                                             69        2013
+73      Bulgaria                                                            68        2013
+74      El Salvador                                                         68        2013
+75      Belarus                                                             65        2013
+76      Burma                                                               64        2013
+77      Portugal                                                            64        2013
+78      Switzerland                                                         63        2013
+79      Bahamas, The                                                        61        2013
+80      Lithuania                                                           61        2013
+81      Somalia                                                             61        2013
+82      Chad                                                                59        2013
+83      Ethiopia                                                            57        2013
+84      Yemen                                                               57        2013
+85      Morocco                                                             55        2013
+86      Suriname                                                            55        2013
+87      French Polynesia                                                    54        2013
+88      Nigeria                                                             54        2013
+89      Uzbekistan                                                          53        2013
+90      Austria                                                             52        2013
+91      Belize                                                              47        2013
+92      Israel                                                              47        2013
+93      Nepal                                                               47        2013
+94      Uganda                                                              47        2013
+95      Romania                                                             45        2013
+96      Vietnam                                                             45        2013
+97      Gabon                                                               44        2013
+98      Mongolia                                                            44        2013
+99      Afghanistan                                                         43        2016
+100     United Arab Emirates                                                43        2013
+101     Latvia                                                              42        2013
+102     Belgium                                                             41        2013
+103     Hungary                                                             41        2013
+104     Laos                                                                41        2013
+105     Ireland                                                             40        2013
+106     Central African Republic                                            39        2013
+107     Azerbaijan                                                          37        2013
+108     Taiwan                                                              37        2013
+109     Dominican Republic                                                  36        2013
+110     Solomon Islands                                                     36        2013
+111     Slovakia                                                            35        2013
+112     Cameroon                                                            33        2013
+113     Malawi                                                              32        2013
+114     Vanuatu                                                             31        2013
+115     Mauritania                                                          30        2013
+116     Niger                                                               30        2013
+117     Liberia                                                             29        2013
+118     Netherlands                                                         29        2013
+119     Puerto Rico                                                         29        2013
+120     Tunisia                                                             29        2013
+121     Fiji                                                                28        2013
+122     Jamaica                                                             28        2013
+123     Kyrgyzstan                                                          28        2013
+124     Congo, Republic of the                                              27        2013
+125     Cote d'Ivoire                                                       27        2013
+126     Serbia                                                              26        2013
+127     Turkmenistan                                                        26        2013
+128     Mali                                                                25        2013
+129     New Caledonia                                                       25        2013
+130     Bosnia and Herzegovina                                              24        2013
+131     Lesotho                                                             24        2013
+132     Tajikistan                                                          24        2013
+133     Antarctica                                                          23        2013
+134     Burkina Faso                                                        23        2013
+135     Georgia                                                             22        2013
+136     Senegal                                                             20        2013
+137     Kiribati                                                            19        2013
+138     Sri Lanka                                                           19        2013
+139     Bangladesh                                                          18        2013
+140     Estonia                                                             18        2013
+141     Jordan                                                              18        2013
+142     Cambodia                                                            16        2013
+143     Guinea                                                              16        2013
+144     Slovenia                                                            16        2013
+145     Cyprus                                                              15        2013
+146     Greenland                                                           15        2013
+147     Marshall Islands                                                    15        2013
+148     Eswatini                                                            14        2013
+149     Haiti                                                               14        2013
+150     Seychelles                                                          14        2013
+151     Djibouti                                                            13        2013
+152     Eritrea                                                             13        2013
+153     Armenia                                                             11        2013
+154     Cook Islands                                                        11        2013
+155     Ghana                                                               10        2013
+156     Macedonia                                                           10        2013
+157     Cabo Verde                                                           9        2013
+158     Maldives                                                             9        2013
+159     Singapore                                                            9        2013
+160     Guinea-Bissau                                                        8        2013
+161     Lebanon                                                              8        2013
+162     Sierra Leone                                                         8        2013
+163     Togo                                                                 8        2013
+164     Turks and Caicos Islands                                             8        2013
+165     Burundi                                                              7        2013
+166     Equatorial Guinea                                                    7        2013
+167     Falkland Islands (Islas Malvinas)                                    7        2013
+168     Kuwait                                                               7        2013
+169     Moldova                                                              7        2013
+170     Rwanda                                                               7        2013
+171     Benin                                                                6        2013
+172     Kosovo                                                               6        2013
+173     Micronesia, Federated States of                                      6        2013
+174     Qatar                                                                6        2013
+175     Saint Vincent and the Grenadines                                     6        2013
+176     Timor-Leste                                                          6        2013
+177     Tonga                                                                6        2013
+178     Western Sahara                                                       6        2013
+179     Guam                                                                 5        2013
+180     Mauritius                                                            5        2013
+181     Montenegro                                                           5        2013
+182     Northern Mariana Islands                                             5        2013
+183     Albania                                                              4        2016
+184     Bahrain                                                              4        2013
+185     British Virgin Islands                                               4        2013
+186     Comoros                                                              4        2013
+187     French Southern and Antarctic Lands                                  4        2013
+188     Samoa                                                                4        2013
+189     Spratly Islands                                                      4        2013
+190     Svalbard                                                             4        2013
+191     Trinidad and Tobago                                                  4        2013
+192     American Samoa                                                       3        2016
+193     Antigua and Barbuda                                                  3        2013
+194     Cayman Islands                                                       3        2013
+195     Grenada                                                              3        2013
+196     Palau                                                                3        2013
+197     Anguilla                                                             2        2013
+198     Bhutan                                                               2        2013
+199     Dominica                                                             2        2013
+200     Guernsey                                                             2        2013
+201     Hong Kong                                                            2        2013
+202     Luxembourg                                                           2        2013
+203     Saint Helena, Ascension, and Tristan da Cunha                        2        2015
+204     Saint Kitts and Nevis                                                2        2013
+205     Saint Lucia                                                          2        2013
+206     Saint Pierre and Miquelon                                            2        2013
+207     Sao Tome and Principe                                                2        2013
+208     Virgin Islands                                                       2        2013
+209     Wallis and Futuna                                                    2        2013
+210     West Bank                                                            2        2013
+211     Akrotiri                                                             1        2017
+212     Aruba                                                                1        2013
+213     Barbados                                                             1        2013
+214     Bermuda                                                              1        2013
+215     British Indian Ocean Territory                                       1        2013
+216     Brunei                                                               1        2013
+217     Christmas Island                                                     1        2013
+218     Cocos (Keeling) Islands                                              1        2013
+219     Curacao                                                              1        2017
+220     Faroe Islands                                                        1        2013
+221     Gambia, The                                                          1        2013
+222     Gaza Strip                                                           1        2013
+223     Gibraltar                                                            1        2013
+224     Isle of Man                                                          1        2013
+225     Jan Mayen                                                            1        2013
+226     Jersey                                                               1        2013
+227     Macau                                                                1        2013
+228     Malta                                                                1        2013
+229     Montserrat                                                           1        2013
+230     Nauru                                                                1        2013
+231     Niue                                                                 1        2013
+232     Norfolk Island                                                       1        2013
+233     Paracel Islands                                                      1        2013
+234     Saint Barthelemy                                                     1        2013
+235     Saint Martin                                                         1        2013
+236     Sint Maarten                                                         1        2013
+237     Tuvalu                                                               1        2013
+238     Wake Island                                                          1        2018

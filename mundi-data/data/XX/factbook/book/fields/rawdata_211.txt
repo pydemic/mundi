@@ -1,0 +1,230 @@
+Country Comparison :: GDP - per capita (PPP)
+
+1       Liechtenstein                                                 $139,100        2009 est.
+2       Qatar                                                         $124,100        2017 est.
+3       Monaco                                                        $115,700        2015 est.
+4       Macau                                                         $110,000        2017 est.
+5       Luxembourg                                                    $105,100        2017 est.
+6       Bermuda                                                        $99,400        2016 est.
+7       Singapore                                                      $94,100        2017 est.
+8       Isle of Man                                                    $84,600        2014 est.
+9       Brunei                                                         $78,900        2017 est.
+10      Ireland                                                        $73,200        2017 est.
+11      Norway                                                         $72,100        2017 est.
+12      Falkland Islands (Islas Malvinas)                              $70,800        2015 est.
+13      United Arab Emirates                                           $68,600        2017 est.
+14      Sint Maarten                                                   $66,800        2014 est.
+15      Kuwait                                                         $65,800        2017 est.
+16      Switzerland                                                    $62,100        2017 est.
+17      Gibraltar                                                      $61,700        2014 est.
+18      Hong Kong                                                      $61,500        2017 est.
+19      United States                                                  $59,800        2017 est.
+20      San Marino                                                     $59,000        2017 est.
+21      Jersey                                                         $56,600        2016 est.
+22      Saudi Arabia                                                   $54,500        2017 est.
+23      Netherlands                                                    $53,900        2017 est.
+24      Guernsey                                                       $52,500        2014 est.
+25      Iceland                                                        $52,200        2017 est.
+26      Sweden                                                         $51,200        2017 est.
+27      Germany                                                        $50,800        2017 est.
+28      Taiwan                                                         $50,500        2017 est.
+29      Australia                                                      $50,400        2017 est.
+30      Denmark                                                        $50,100        2017 est.
+31      Austria                                                        $50,000        2017 est.
+32      Andorra                                                        $49,900        2015 est.
+33      Bahrain                                                        $49,000        2017 est.
+34      Canada                                                         $48,400        2017 est.
+35      Belgium                                                        $46,600        2017 est.
+36      Saint Pierre and Miquelon                                      $46,200        2006 est.
+37      Oman                                                           $46,000        2017 est.
+38      Finland                                                        $44,500        2017 est.
+39      United Kingdom                                                 $44,300        2017 est.
+40      France                                                         $44,100        2017 est.
+41      Cayman Islands                                                 $43,800        2004 est.
+42      Japan                                                          $42,900        2017 est.
+43      Malta                                                          $41,900        2017 est.
+44      Greenland                                                      $41,800        2015 est.
+45      Faroe Islands                                                  $40,000        2014 est.
+46      Korea, South                                                   $39,500        2017 est.
+47      Puerto Rico                                                    $39,400        2017 est.
+48      New Zealand                                                    $39,000        2017 est.
+49      Spain                                                          $38,400        2017 est.
+50      Italy                                                          $38,200        2017 est.
+51      Aruba                                                          $37,500        2017 est.
+52      Equatorial Guinea                                              $37,400        2017 est.
+53      Cyprus                                                         $37,200        2017 est.
+54      Virgin Islands                                                 $37,000        2016 est.
+55      Israel                                                         $36,400        2017 est.
+56      Guam                                                           $35,600        2016 est.
+57      Czechia                                                        $35,500        2017 est.
+58      Slovenia                                                       $34,500        2017 est.
+59      British Virgin Islands                                         $34,200        2017 est.
+60      Montserrat                                                     $34,000        2011 est.
+61      Slovakia                                                       $33,100        2017 est.
+62      Bahamas, The                                                   $32,400        2017 est.
+63      Lithuania                                                      $32,400        2017 est.
+64      Estonia                                                        $31,700        2017 est.
+65      Trinidad and Tobago                                            $31,300        2017 est.
+66      New Caledonia                                                  $31,100        2015 est.
+67      Portugal                                                       $30,500        2017 est.
+68      Hungary                                                        $29,600        2017 est.
+69      Poland                                                         $29,600        2017 est.
+70      Seychelles                                                     $29,300        2017 est.
+71      Malaysia                                                       $29,100        2017 est.
+72      Turks and Caicos Islands                                       $29,100        2007 est.
+73      Saint Kitts and Nevis                                          $28,200        2017 est.
+74      Russia                                                         $27,900        2017 est.
+75      Greece                                                         $27,800        2017 est.
+76      Latvia                                                         $27,700        2017 est.
+77      Turkey                                                         $27,000        2017 est.
+78      Antigua and Barbuda                                            $26,400        2017 est.
+79      Kazakhstan                                                     $26,300        2017 est.
+80      Panama                                                         $25,400        2017 est.
+81      Croatia                                                        $24,700        2017 est.
+82      Chile                                                          $24,600        2017 est.
+83      Romania                                                        $24,600        2017 est.
+84      Northern Mariana Islands                                       $24,500        2016 est.
+85      Uruguay                                                        $22,400        2017 est.
+86      Mauritius                                                      $22,300        2017 est.
+87      Bulgaria                                                       $21,800        2017 est.
+88      Argentina                                                      $20,900        2017 est.
+89      Iran                                                           $20,100        2017 est.
+90      Mexico                                                         $19,900        2017 est.
+91      Lebanon                                                        $19,600        2017 est.
+92      Saint Martin                                                   $19,300        2005 est.
+93      Maldives                                                       $19,200        2017 est.
+94      Belarus                                                        $18,900        2017 est.
+95      Barbados                                                       $18,600        2017 est.
+96      Turkmenistan                                                   $18,200        2017 est.
+97      Gabon                                                          $18,100        2017 est.
+98      Thailand                                                       $17,900        2017 est.
+99      Montenegro                                                     $17,800        2017 est.
+100     Azerbaijan                                                     $17,500        2017 est.
+101     Botswana                                                       $17,000        2017 est.
+102     Dominican Republic                                             $17,000        2017 est.
+103     French Polynesia                                               $17,000        2015 est.
+104     Costa Rica                                                     $16,900        2017 est.
+105     China                                                          $16,700        2017 est.
+106     Cook Islands                                                   $16,700        2016 est.
+107     Iraq                                                           $16,700        2017 est.
+108     Brazil                                                         $15,600        2017 est.
+109     Algeria                                                        $15,200        2017 est.
+110     Grenada                                                        $15,100        2017 est.
+111     Serbia                                                         $15,100        2017 est.
+112     Curacao                                                        $15,000        2004 est.
+113     Macedonia                                                      $14,900        2017 est.
+114     Suriname                                                       $14,900        2017 est.
+115     Palau                                                          $14,700        2017 est.
+116     Colombia                                                       $14,400        2017 est.
+117     Saint Lucia                                                    $14,400        2017 est.
+118     South Africa                                                   $13,600        2017 est.
+119     Peru                                                           $13,500        2017 est.
+120     Mongolia                                                       $13,000        2017 est.
+121     Sri Lanka                                                      $12,900        2017 est.
+122     Bosnia and Herzegovina                                         $12,800        2017 est.
+123     Paraguay                                                       $12,800        2017 est.
+124     Egypt                                                          $12,700        2017 est.
+125     Albania                                                        $12,500        2017 est.
+126     Venezuela                                                      $12,500        2017 est.
+127     Indonesia                                                      $12,400        2017 est.
+128     Cuba                                                           $12,300        2016 est.
+129     Nauru                                                          $12,300        2017 est.
+130     Anguilla                                                       $12,200        2008 est.
+131     Tunisia                                                        $11,900        2017 est.
+132     Ecuador                                                        $11,500        2017 est.
+133     Saint Vincent and the Grenadines                               $11,500        2017 est.
+134     American Samoa                                                 $11,200        2016 est.
+135     Namibia                                                        $11,200        2017 est.
+136     Dominica                                                       $11,000        2017 est.
+137     Kosovo                                                         $10,900        2017 est.
+138     Georgia                                                        $10,700        2017 est.
+139     Eswatini                                                       $10,100        2017 est.
+140     Fiji                                                            $9,800        2017 est.
+141     Libya                                                           $9,600        2017 est.
+142     Armenia                                                         $9,500        2017 est.
+143     Jamaica                                                         $9,200        2017 est.
+144     Jordan                                                          $9,200        2017 est.
+145     Bhutan                                                          $9,000        2017 est.
+146     Ukraine                                                         $8,800        2017 est.
+147     Morocco                                                         $8,600        2017 est.
+148     Philippines                                                     $8,400        2017 est.
+149     Belize                                                          $8,300        2017 est.
+150     Guatemala                                                       $8,200        2017 est.
+151     Guyana                                                          $8,100        2017 est.
+152     El Salvador                                                     $8,000        2017 est.
+153     Saint Helena, Ascension, and Tristan da Cunha                   $7,800        FY09/10 est.
+154     Bolivia                                                         $7,600        2017 est.
+155     Laos                                                            $7,400        2017 est.
+156     India                                                           $7,200        2017 est.
+157     Cabo Verde                                                      $7,000        2017 est.
+158     Uzbekistan                                                      $6,900        2017 est.
+159     Vietnam                                                         $6,900        2017 est.
+160     Angola                                                          $6,800        2017 est.
+161     Congo, Republic of the                                          $6,800        2017 est.
+162     Moldova                                                         $6,700        2017 est.
+163     Burma                                                           $6,300        2017 est.
+164     Timor-Leste                                                     $6,000        2017 est.
+165     Nicaragua                                                       $5,900        2017 est.
+166     Nigeria                                                         $5,900        2017 est.
+167     Tonga                                                           $5,900        2017 est.
+168     Niue                                                            $5,800        2003 est.
+169     Samoa                                                           $5,700        2017 est.
+170     Honduras                                                        $5,600        2017 est.
+171     Pakistan                                                        $5,400        2017 est.
+172     Ghana                                                           $4,700        2017 est.
+173     Mauritania                                                      $4,500        2017 est.
+174     Sudan                                                           $4,300        2017 est.
+175     West Bank                                                       $4,300        2014 est.
+176     Bangladesh                                                      $4,200        2017 est.
+177     Cambodia                                                        $4,000        2017 est.
+178     Zambia                                                          $4,000        2017 est.
+179     Cote d'Ivoire                                                   $3,900        2017 est.
+180     Tuvalu                                                          $3,800        2017 est.
+181     Wallis and Futuna                                               $3,800        2004 est.
+182     Cameroon                                                        $3,700        2017 est.
+183     Kyrgyzstan                                                      $3,700        2017 est.
+184     Papua New Guinea                                                $3,700        2017 est.
+185     Djibouti                                                        $3,600        2017 est.
+186     Marshall Islands                                                $3,600        2017 est.
+187     Kenya                                                           $3,500        2017 est.
+188     Senegal                                                         $3,500        2017 est.
+189     Micronesia, Federated States of                                 $3,400        2017 est.
+190     Lesotho                                                         $3,300        2017 est.
+191     Sao Tome and Principe                                           $3,200        2017 est.
+192     Tajikistan                                                      $3,200        2017 est.
+193     Tanzania                                                        $3,200        2017 est.
+194     Syria                                                           $2,900        2015 est.
+195     Nepal                                                           $2,700        2017 est.
+196     Vanuatu                                                         $2,700        2017 est.
+197     Gambia, The                                                     $2,600        2017 est.
+198     Western Sahara                                                  $2,500        2007 est.
+199     Yemen                                                           $2,500        2017 est.
+200     Uganda                                                          $2,400        2017 est.
+201     Benin                                                           $2,300        2017 est.
+202     Chad                                                            $2,300        2017 est.
+203     Zimbabwe                                                        $2,300        2017 est.
+204     Ethiopia                                                        $2,200        2017 est.
+205     Guinea                                                          $2,200        2017 est.
+206     Mali                                                            $2,200        2017 est.
+207     Solomon Islands                                                 $2,200        2017 est.
+208     Rwanda                                                          $2,100        2017 est.
+209     Afghanistan                                                     $2,000        2017 est.
+210     Kiribati                                                        $2,000        2017 est.
+211     Burkina Faso                                                    $1,900        2017 est.
+212     Guinea-Bissau                                                   $1,900        2017 est.
+213     Haiti                                                           $1,800        2017 est.
+214     Korea, North                                                    $1,700        2015 est.
+215     Togo                                                            $1,700        2017 est.
+216     Comoros                                                         $1,600        2017 est.
+217     Eritrea                                                         $1,600        2017 est.
+218     Madagascar                                                      $1,600        2017 est.
+219     Sierra Leone                                                    $1,600        2017 est.
+220     South Sudan                                                     $1,600        2017 est.
+221     Liberia                                                         $1,300        2017 est.
+222     Mozambique                                                      $1,300        2017 est.
+223     Malawi                                                          $1,200        2017 est.
+224     Niger                                                           $1,200        2017 est.
+225     Tokelau                                                         $1,000        1993 est.
+226     Congo, Democratic Republic of the                                 $800        2017 est.
+227     Burundi                                                           $700        2017 est.
+228     Central African Republic                                          $700        2017 est.

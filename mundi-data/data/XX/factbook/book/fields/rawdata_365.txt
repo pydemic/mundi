@@ -1,0 +1,67 @@
+Country Comparison :: HIV/AIDS - deaths
+
+1       Nigeria                                                        150,000        2017 est.
+2       South Africa                                                   110,000        2017 est.
+3       Mozambique                                                      70,000        2017 est.
+4       India                                                           69,000        2017 est.
+5       Indonesia                                                       39,000        2017 est.
+6       Tanzania                                                        32,000        2017 est.
+7       Kenya                                                           28,000        2017 est.
+8       Uganda                                                          26,000        2017 est.
+9       Cameroon                                                        24,000        2017 est.
+10      Cote d'Ivoire                                                   24,000        2017 est.
+11      Zimbabwe                                                        22,000        2017 est.
+12      Congo, Democratic Republic of the                               17,000        2017 est.
+13      Malawi                                                          17,000        2017 est.
+14      Ghana                                                           16,000        2017 est.
+15      Zambia                                                          16,000        2017 est.
+16      Ethiopia                                                        15,000        2017 est.
+17      Thailand                                                        15,000        2017 est.
+18      Brazil                                                          14,000        2017 est.
+19      Angola                                                          13,000        2017 est.
+20      South Sudan                                                     12,000        2017 est.
+21      Ukraine                                                          9,000        2017 est.
+22      Vietnam                                                          8,600        2017 est.
+23      Burma                                                            6,700        2017 est.
+24      Mali                                                             6,300        2017 est.
+25      Pakistan                                                         6,200        2017 est.
+26      Central African Republic                                         5,200        2017 est.
+27      Guinea                                                           5,100        2017 est.
+28      Congo, Republic of the                                           4,900        2017 est.
+29      Lesotho                                                          4,900        2017 est.
+30      Haiti                                                            4,700        2017 est.
+31      Togo                                                             4,700        2017 est.
+32      Colombia                                                         4,400        2017 est.
+33      Malaysia                                                         4,400        2017 est.
+34      Botswana                                                         4,100        2017 est.
+35      Mexico                                                           4,000        2017 est.
+36      Eswatini                                                         3,500        2017 est.
+37      Iran                                                             3,500        2017 est.
+38      Chad                                                             3,100        2017 est.
+39      Rwanda                                                           3,100        2017 est.
+40      Burkina Faso                                                     2,900        2017 est.
+41      Namibia                                                          2,700        2017 est.
+42      Dominican Republic                                               2,600        2017 est.
+43      Sierra Leone                                                     2,600        2017 est.
+44      Sudan                                                            2,600        2017 est.
+45      Benin                                                            2,500        2017 est.
+46      Liberia                                                          2,500        2017 est.
+47      Venezuela                                                        2,500        2016 est.
+48      Peru                                                             2,100        2017 est.
+49      Senegal                                                          2,100        2017 est.
+50      Argentina                                                        2,000        2017 est.
+51      Guatemala                                                        2,000        2017 est.
+52      Equatorial Guinea                                                1,900        2017 est.
+53      Guinea-Bissau                                                    1,900        2017 est.
+54      Uzbekistan                                                       1,900        2017 est.
+55      Niger                                                            1,800        2017 est.
+56      Burundi                                                          1,700        2017 est.
+57      Madagascar                                                       1,600        2017 est.
+58      Jamaica                                                          1,500        2017 est.
+59      Cambodia                                                         1,300        2017 est.
+60      Gabon                                                            1,300        2017 est.
+61      Nepal                                                            1,300        2017 est.
+62      Bangladesh                                                       1,100        2017 est.
+63      Gambia, The                                                      1,100        2017 est.
+64      Papua New Guinea                                                 1,100        2017 est.
+65      Honduras                                                         1,000        2017 est.

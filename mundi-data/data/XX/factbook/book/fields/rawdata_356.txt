@@ -1,0 +1,226 @@
+Country Comparison :: Total fertility rate
+
+1       Niger                                                             6.35        2018 est.
+2       Angola                                                            6.09        2018 est.
+3       Burundi                                                           5.93        2018 est.
+4       Chad                                                              5.90        2018 est.
+5       Mali                                                              5.90        2018 est.
+6       Somalia                                                           5.70        2018 est.
+7       Uganda                                                            5.62        2018 est.
+8       Zambia                                                            5.58        2018 est.
+9       Malawi                                                            5.43        2018 est.
+10      South Sudan                                                       5.34        2018 est.
+11      Afghanistan                                                       5.02        2018 est.
+12      Mozambique                                                        5.02        2018 est.
+13      Liberia                                                           5.00        2018 est.
+14      Guinea                                                            4.98        2018 est.
+15      Ethiopia                                                          4.91        2018 est.
+16      Nigeria                                                           4.85        2018 est.
+17      Sudan                                                             4.85        2018 est.
+18      Guinea-Bissau                                                     4.81        2018 est.
+19      Burkina Faso                                                      4.77        2018 est.
+20      Tanzania                                                          4.71        2018 est.
+21      Sierra Leone                                                      4.69        2018 est.
+22      Benin                                                             4.67        2018 est.
+23      Timor-Leste                                                       4.67        2018 est.
+24      Cameroon                                                          4.58        2018 est.
+25      Congo, Democratic Republic of the                                 4.54        2018 est.
+26      Togo                                                              4.32        2018 est.
+27      Equatorial Guinea                                                 4.29        2018 est.
+28      Congo, Republic of the                                            4.26        2018 est.
+29      Central African Republic                                          4.25        2018 est.
+30      Senegal                                                           4.20        2018 est.
+31      Sao Tome and Principe                                             4.11        2018 est.
+32      Gaza Strip                                                        3.97        2018 est.
+33      Zimbabwe                                                          3.97        2018 est.
+34      Ghana                                                             3.96        2018 est.
+35      Madagascar                                                        3.95        2018 est.
+36      Iraq                                                              3.94        2018 est.
+37      Eritrea                                                           3.90        2018 est.
+38      Cote d'Ivoire                                                     3.83        2018 est.
+39      Mauritania                                                        3.79        2018 est.
+40      Western Sahara                                                    3.79        2018 est.
+41      Rwanda                                                            3.75        2018 est.
+42      Gabon                                                             3.52        2018 est.
+43      Yemen                                                             3.48        2018 est.
+44      Gambia, The                                                       3.42        2018 est.
+45      Egypt                                                             3.41        2018 est.
+46      Comoros                                                           3.21        2018 est.
+47      Namibia                                                           3.21        2018 est.
+48      West Bank                                                         3.20        2018 est.
+49      Jordan                                                            3.14        2018 est.
+50      Solomon Islands                                                   3.09        2018 est.
+51      Tonga                                                             3.03        2018 est.
+52      Philippines                                                       2.99        2018 est.
+53      Marshall Islands                                                  2.98        2018 est.
+54      Papua New Guinea                                                  2.97        2018 est.
+55      Vanuatu                                                           2.97        2018 est.
+56      Tuvalu                                                            2.93        2018 est.
+57      Guam                                                              2.92        2018 est.
+58      Guatemala                                                         2.87        2018 est.
+59      Kenya                                                             2.81        2018 est.
+60      Belize                                                            2.80        2018 est.
+61      Oman                                                              2.80        2018 est.
+62      Nauru                                                             2.76        2018 est.
+63      Northern Mariana Islands                                          2.76        2018 est.
+64      Algeria                                                           2.66        2018 est.
+65      Haiti                                                             2.66        2018 est.
+66      Laos                                                              2.65        2018 est.
+67      Samoa                                                             2.64        2018 est.
+68      Eswatini                                                          2.63        2018 est.
+69      Israel                                                            2.63        2018 est.
+70      Honduras                                                          2.61        2018 est.
+71      Kyrgyzstan                                                        2.59        2018 est.
+72      Lesotho                                                           2.59        2018 est.
+73      Tajikistan                                                        2.59        2018 est.
+74      Bolivia                                                           2.58        2018 est.
+75      American Samoa                                                    2.57        2018 est.
+76      Pakistan                                                          2.55        2018 est.
+77      Botswana                                                          2.53        2018 est.
+78      Malaysia                                                          2.48        2018 est.
+79      Cambodia                                                          2.47        2018 est.
+80      Syria                                                             2.44        2018 est.
+81      India                                                             2.40        2018 est.
+82      Fiji                                                              2.37        2018 est.
+83      Micronesia, Federated States of                                   2.37        2018 est.
+84      Kuwait                                                            2.35        2018 est.
+85      Faroe Islands                                                     2.34        2018 est.
+86      Kiribati                                                          2.34        2018 est.
+87      Venezuela                                                         2.30        2018 est.
+88      Dominican Republic                                                2.28        2018 est.
+89      Panama                                                            2.28        2018 est.
+90      Djibouti                                                          2.27        2018 est.
+91      South Africa                                                      2.26        2018 est.
+92      Argentina                                                         2.25        2018 est.
+93      Kazakhstan                                                        2.22        2018 est.
+94      Mexico                                                            2.22        2018 est.
+95      Cabo Verde                                                        2.21        2018 est.
+96      Tunisia                                                           2.17        2018 est.
+97      Cook Islands                                                      2.16        2018 est.
+98      Bangladesh                                                        2.15        2018 est.
+99      Ecuador                                                           2.15        2018 est.
+100     Burma                                                             2.13        2018 est.
+101     Peru                                                              2.10        2018 est.
+102     Jamaica                                                           2.09        2018 est.
+103     Morocco                                                           2.09        2018 est.
+104     Indonesia                                                         2.08        2018 est.
+105     Nepal                                                             2.07        2018 est.
+106     France                                                            2.06        2018 est.
+107     Turkmenistan                                                      2.06        2018 est.
+108     Virgin Islands                                                    2.06        2018 est.
+109     Sri Lanka                                                         2.05        2018 est.
+110     Mongolia                                                          2.04        2018 est.
+111     Saudi Arabia                                                      2.04        2018 est.
+112     Sint Maarten                                                      2.04        2018 est.
+113     Curacao                                                           2.03        2018 est.
+114     Dominica                                                          2.03        2018 est.
+115     Libya                                                             2.03        2018 est.
+116     New Zealand                                                       2.01        2018 est.
+117     Grenada                                                           2.00        2018 est.
+118     Turkey                                                            2.00        2018 est.
+119     Antigua and Barbuda                                               1.99        2018 est.
+120     Iceland                                                           1.99        2018 est.
+121     Colombia                                                          1.98        2018 est.
+122     Greenland                                                         1.97        2018 est.
+123     Guyana                                                            1.97        2018 est.
+124     Iran                                                              1.96        2018 est.
+125     Ireland                                                           1.96        2018 est.
+126     Bahamas, The                                                      1.94        2018 est.
+127     Korea, North                                                      1.94        2018 est.
+128     Bermuda                                                           1.92        2018 est.
+129     Isle of Man                                                       1.92        2018 est.
+130     New Caledonia                                                     1.92        2018 est.
+131     Gibraltar                                                         1.90        2018 est.
+132     Paraguay                                                          1.90        2018 est.
+133     Suriname                                                          1.90        2018 est.
+134     Azerbaijan                                                        1.89        2018 est.
+135     Costa Rica                                                        1.89        2018 est.
+136     Qatar                                                             1.89        2018 est.
+137     United Kingdom                                                    1.88        2018 est.
+138     Bhutan                                                            1.87        2018 est.
+139     French Polynesia                                                  1.87        2018 est.
+140     Nicaragua                                                         1.87        2018 est.
+141     Sweden                                                            1.87        2018 est.
+142     United States                                                     1.87        2017 est.
+143     Norway                                                            1.85        2018 est.
+144     Seychelles                                                        1.85        2018 est.
+145     Cayman Islands                                                    1.84        2018 est.
+146     El Salvador                                                       1.84        2018 est.
+147     Aruba                                                             1.83        2018 est.
+148     Chile                                                             1.79        2018 est.
+149     Uruguay                                                           1.79        2018 est.
+150     Vietnam                                                           1.79        2018 est.
+151     Belgium                                                           1.78        2018 est.
+152     Denmark                                                           1.78        2018 est.
+153     Netherlands                                                       1.78        2018 est.
+154     Saint Vincent and the Grenadines                                  1.78        2018 est.
+155     Australia                                                         1.77        2018 est.
+156     Brunei                                                            1.77        2018 est.
+157     Saint Kitts and Nevis                                             1.77        2018 est.
+158     Georgia                                                           1.76        2018 est.
+159     Brazil                                                            1.75        2018 est.
+160     Finland                                                           1.75        2018 est.
+161     Uzbekistan                                                        1.75        2018 est.
+162     Anguilla                                                          1.74        2018 est.
+163     Mauritius                                                         1.74        2018 est.
+164     Saint Lucia                                                       1.74        2018 est.
+165     Bahrain                                                           1.73        2018 est.
+166     United Arab Emirates                                              1.73        2018 est.
+167     Lebanon                                                           1.72        2018 est.
+168     Maldives                                                          1.72        2018 est.
+169     Wallis and Futuna                                                 1.72        2018 est.
+170     Cuba                                                              1.71        2018 est.
+171     Palau                                                             1.70        2018 est.
+172     Trinidad and Tobago                                               1.70        2018 est.
+173     Turks and Caicos Islands                                          1.70        2018 est.
+174     Liechtenstein                                                     1.69        2018 est.
+175     Barbados                                                          1.68        2018 est.
+176     Jersey                                                            1.66        2018 est.
+177     Armenia                                                           1.64        2018 est.
+178     Luxembourg                                                        1.62        2018 est.
+179     Russia                                                            1.61        2018 est.
+180     Canada                                                            1.60        2018 est.
+181     China                                                             1.60        2018 est.
+182     Estonia                                                           1.60        2018 est.
+183     Lithuania                                                         1.60        2018 est.
+184     Saint Helena, Ascension, and Tristan da Cunha                     1.59        2018 est.
+185     Slovenia                                                          1.58        2018 est.
+186     Guernsey                                                          1.57        2018 est.
+187     Moldova                                                           1.57        2018 est.
+188     Saint Pierre and Miquelon                                         1.57        2018 est.
+189     Switzerland                                                       1.56        2018 est.
+190     Ukraine                                                           1.55        2018 est.
+191     Monaco                                                            1.54        2018 est.
+192     Albania                                                           1.52        2018 est.
+193     Latvia                                                            1.52        2018 est.
+194     Thailand                                                          1.52        2018 est.
+195     San Marino                                                        1.51        2018 est.
+196     Spain                                                             1.50        2018 est.
+197     Belarus                                                           1.49        2018 est.
+198     Macedonia                                                         1.49        2018 est.
+199     Austria                                                           1.48        2018 est.
+200     Malta                                                             1.48        2018 est.
+201     Bulgaria                                                          1.47        2018 est.
+202     Cyprus                                                            1.47        2018 est.
+203     Czechia                                                           1.46        2018 est.
+204     Germany                                                           1.46        2018 est.
+205     Hungary                                                           1.45        2018 est.
+206     Italy                                                             1.45        2018 est.
+207     Greece                                                            1.44        2018 est.
+208     Serbia                                                            1.44        2018 est.
+209     Japan                                                             1.42        2018 est.
+210     Slovakia                                                          1.42        2018 est.
+211     Andorra                                                           1.41        2018 est.
+212     Croatia                                                           1.41        2018 est.
+213     Portugal                                                          1.39        2018 est.
+214     Poland                                                            1.36        2018 est.
+215     Romania                                                           1.36        2018 est.
+216     Montserrat                                                        1.34        2018 est.
+217     Bosnia and Herzegovina                                            1.31        2018 est.
+218     British Virgin Islands                                            1.30        2018 est.
+219     Korea, South                                                      1.27        2018 est.
+220     Puerto Rico                                                       1.21        2018 est.
+221     Hong Kong                                                         1.20        2018 est.
+222     Taiwan                                                            1.13        2018 est.
+223     Macau                                                             0.95        2018 est.
+224     Singapore                                                         0.84        2018 est.

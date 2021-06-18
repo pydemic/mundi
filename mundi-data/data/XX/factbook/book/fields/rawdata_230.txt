@@ -1,0 +1,165 @@
+Country Comparison :: Central bank discount rate
+
+1       Venezuela                                                        29.50        2015
+2       Guinea                                                           22.25        31 December 2005
+3       Ukraine                                                          22.00        23 December 2015
+4       Congo, Democratic Republic of the                                20.00        31 December 2017
+5       Ghana                                                            20.00        31 December 2017
+6       Vanuatu                                                          20.00        31 December 2010
+7       Egypt                                                            19.25        9 July 2017
+8       Mozambique                                                       19.00        4 November 2017
+9       Malawi                                                           16.00        31 December 2017 est.
+10      Mali                                                             16.00        31 December 2010
+11      Sao Tome and Principe                                            16.00        31 December 2009
+12      Tajikistan                                                       16.00        20 March 2017
+13      Azerbaijan                                                       15.00        10 March 2017
+14      Belarus                                                          14.00        19 April 2017
+15      Papua New Guinea                                                 14.00        31 December 2010
+16      Burundi                                                          11.25        31 December 2010
+17      Seychelles                                                       11.17        31 December 2010
+18      Kazakhstan                                                       11.00        10 April 2017
+19      Mongolia                                                         11.00        25 December 2017
+20      Montserrat                                                       10.99        31 December 2010
+21      Kenya                                                            10.00        1 January 2017
+22      Lebanon                                                          10.00        31 December 2017
+23      Russia                                                           10.00        31 December 2016 est.
+24      Suriname                                                         10.00        2013
+25      Burma                                                             9.95        31 December 2010
+26      Belize                                                            9.58        1 November 2017
+27      Libya                                                             9.52        31 December 2010
+28      Madagascar                                                        9.50        31 December 2017
+29      Zambia                                                            9.10        31 December 2012
+30      Angola                                                            9.00        31 December 2014
+31      Gambia, The                                                       9.00        31 December 2009
+32      Mauritania                                                        9.00        31 December 2009
+33      Mauritius                                                         9.00        31 December 2010
+34      Uganda                                                            9.00        February 2018
+35      Uruguay                                                           9.00        31 December 2012
+36      Uzbekistan                                                        9.00        2016
+37      Equatorial Guinea                                                 8.50        31 December 2010
+38      Tanzania                                                          8.25        31 December 2010
+39      Ecuador                                                           8.17        31 December 2011
+40      Rwanda                                                            7.75        31 December 2010
+41      Guatemala                                                         7.53        31 December 2015 est.
+42      Cabo Verde                                                        7.50        31 December 2010
+43      Eswatini                                                          7.25        31 December 2016
+44      Mexico                                                            7.25        31 December 2017
+45      Sri Lanka                                                         7.25        30 November 2017
+46      Zimbabwe                                                          7.17        31 December 2010
+47      Barbados                                                          7.00        2017
+48      Brazil                                                            7.00        31 December 2017 est.
+49      Georgia                                                           7.00        23 September 2015
+50      Maldives                                                          7.00        30 September 2017
+51      Namibia                                                           7.00        12 April 2017
+52      Nepal                                                             7.00        30 July 2017
+53      Lesotho                                                           6.75        2 February 2016
+54      Trinidad and Tobago                                               6.75        4 March 2016 est.
+55      Anguilla                                                          6.50        31 December 2010
+56      Antigua and Barbuda                                               6.50        31 December 2010
+57      Armenia                                                           6.50        14 December 2016
+58      Dominica                                                          6.50        31 December 2010
+59      Grenada                                                           6.50        31 December 2009
+60      Moldova                                                           6.50        31 December 2017
+61      Morocco                                                           6.50        31 December 2010
+62      Saint Kitts and Nevis                                             6.50        31 December 2009
+63      Saint Lucia                                                       6.50        31 December 2010
+64      Saint Vincent and the Grenadines                                  6.50        31 December 2010
+65      Indonesia                                                         6.37        31 December 2010
+66      Honduras                                                          6.25        31 December 2010
+67      Norway                                                            6.25        31 December 2010
+68      Bhutan                                                            6.00        2017 est.
+69      India                                                             6.00        31 December 2017
+70      Iraq                                                              6.00        2016
+71      Pakistan                                                          5.75        15 November 2016
+72      South Africa                                                      5.75        31 December 2014
+73      Tunisia                                                           5.75        31 December 2010
+74      Botswana                                                          5.50        31 December 2016
+75      Guyana                                                            5.50        31 December 2011
+76      Paraguay                                                          5.50        31 December 2012
+77      Iceland                                                           5.40        31 January 2012
+78      Cambodia                                                          5.25        31 December 2007
+79      Turkey                                                            5.25        31 December 2011
+80      Bangladesh                                                        5.00        11 December 2017
+81      Kyrgyzstan                                                        5.00        31 December 2016
+82      Qatar                                                             5.00        16 March 2017
+83      Turkmenistan                                                      5.00        31 December 2014
+84      Colombia                                                          4.75        12 December 2017
+85      Bahamas, The                                                      4.50        1 January 2014
+86      Laos                                                              4.30        31 December 2010
+87      Benin                                                             4.25        31 December 2010
+88      Burkina Faso                                                      4.25        31 December 2010
+89      Cameroon                                                          4.25        31 December 2009
+90      Central African Republic                                          4.25        31 December 2009
+91      Chad                                                              4.25        31 December 2009
+92      Congo, Republic of the                                            4.25        31 December 2009
+93      Cote d'Ivoire                                                     4.25        31 December 2010
+94      Guinea-Bissau                                                     4.25        31 December 2009
+95      Niger                                                             4.25        31 December 2015
+96      Nigeria                                                           4.25        31 December 2010
+97      Peru                                                              4.25        31 December 2016 est.
+98      Vietnam                                                           4.25        7 October 2017
+99      Algeria                                                           4.00        31 December 2010
+100     Jordan                                                            3.75        31 December 2015
+101     Philippines                                                       3.56        31 December 2017
+102     Costa Rica                                                        3.50        31 December 2016 est.
+103     Serbia                                                            3.50        9 October 2017
+104     Chile                                                             3.35        31 December 2015
+105     Jamaica                                                           3.25        31 December 2017
+106     Macedonia                                                         3.25        31 March 2017
+107     Liberia                                                           3.20        2016
+108     Australia                                                         3.00        28 February 2013
+109     Croatia                                                           3.00        31 December 2017
+110     Gabon                                                             3.00        31 December 2010
+111     Malaysia                                                          3.00        31 December 2011
+112     Nicaragua                                                         3.00        31 December 2010
+113     Kuwait                                                            2.75        18 December 2017
+114     Bolivia                                                           2.50        31 December 2017 est.
+115     Saudi Arabia                                                      2.50        31 December 2008
+116     Togo                                                              2.50        31 December 2010
+117     China                                                             2.25        5 December 2017 est.
+118     Singapore                                                         2.15        2017 est.
+119     Oman                                                              2.00        31 December 2010
+120     Comoros                                                           1.93        31 December 2010
+121     Bahrain                                                           1.75        18 December 2017
+122     Fiji                                                              1.75        31 December 2010
+123     Hong Kong                                                         1.75        31 December 2017
+124     New Zealand                                                       1.75        31 December 2017
+125     Romania                                                           1.75        31 December 2017
+126     Korea, South                                                      1.50        31 December 2017 est.
+127     Poland                                                            1.50        31 December 2017
+128     Thailand                                                          1.50        31 December 2016
+129     Taiwan                                                            1.38        31 December 2016
+130     Albania                                                           1.25        31 December 2017
+131     Finland                                                           1.25        31 December 2017
+132     Aruba                                                             1.00        31 December 2010
+133     Canada                                                            1.00        31 December 2010
+134     Hungary                                                           0.90        31 December 2017
+135     Syria                                                             0.75        31 December 2017
+136     Switzerland                                                       0.50        31 December 2016
+137     United States                                                     0.50        31 December 2010
+138     Japan                                                             0.30        31 December 2015
+139     Italy                                                             0.25        31 December 2013
+140     Senegal                                                           0.25        31 December 2010
+141     United Kingdom                                                    0.25        31 December 2016
+142     Israel                                                            0.10        15 December 2015
+143     Czechia                                                           0.05        31 December 2017
+144     Greece                                                            0.05        31 March 2016
+145     Ireland                                                           0.05        31 December 2015
+146     Spain                                                             0.05        10 September 2014
+147     Austria                                                           0.00        31 December 2017
+148     Belgium                                                           0.00        31 December 2017
+149     Bulgaria                                                          0.00        31 December 2017
+150     Cyprus                                                            0.00        31 December 2017
+151     Denmark                                                           0.00        31 December 2017
+152     Estonia                                                           0.00        31 December 2017 est.
+153     France                                                            0.00        31 December 2016
+154     Germany                                                           0.00        31 December 2017
+155     Latvia                                                            0.00        31 December 2017 est.
+156     Lithuania                                                         0.00        31 December 2017 est.
+157     Luxembourg                                                        0.00        31 December 2017
+158     Netherlands                                                       0.00        31 December 2016
+159     Portugal                                                          0.00        2016
+160     Slovakia                                                          0.00        31 December 2017 est.
+161     Slovenia                                                          0.00        31 December 2017
+162     Malta                                                            -0.35        31 December 2016 est.
+163     Sweden                                                           -0.50        31 December 2017

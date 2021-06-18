@@ -1,0 +1,226 @@
+Country Comparison :: Infant mortality rate
+
+1       Afghanistan                                                     108.50        2018 est.
+2       Somalia                                                          93.00        2018 est.
+3       South Sudan                                                      90.40        2018 est.
+4       Central African Republic                                         84.30        2018 est.
+5       Niger                                                            79.40        2018 est.
+6       Chad                                                             71.70        2018 est.
+7       Mali                                                             67.60        2018 est.
+8       Congo, Democratic Republic of the                                66.70        2018 est.
+9       Sierra Leone                                                     66.70        2018 est.
+10      Angola                                                           65.80        2018 est.
+11      Mozambique                                                       64.00        2018 est.
+12      Equatorial Guinea                                                63.30        2018 est.
+13      Nigeria                                                          63.30        2018 est.
+14      Cote d'Ivoire                                                    62.60        2018 est.
+15      Zambia                                                           59.30        2018 est.
+16      Gambia, The                                                      58.40        2018 est.
+17      Comoros                                                          58.30        2018 est.
+18      Burundi                                                          57.40        2018 est.
+19      Guinea                                                           55.30        2018 est.
+20      Guinea-Bissau                                                    54.80        2018 est.
+21      Burkina Faso                                                     54.70        2018 est.
+22      Uganda                                                           54.60        2018 est.
+23      Congo, Republic of the                                           53.50        2018 est.
+24      Benin                                                            51.50        2018 est.
+25      Liberia                                                          50.60        2018 est.
+26      Mauritania                                                       50.50        2018 est.
+27      Western Sahara                                                   50.50        2018 est.
+28      Pakistan                                                         50.40        2018 est.
+29      Cameroon                                                         49.80        2018 est.
+30      Laos                                                             48.40        2018 est.
+31      Ethiopia                                                         48.30        2018 est.
+32      Senegal                                                          48.00        2018 est.
+33      Eswatini                                                         46.60        2018 est.
+34      Cambodia                                                         46.10        2018 est.
+35      Haiti                                                            45.40        2018 est.
+36      Lesotho                                                          44.60        2018 est.
+37      Yemen                                                            44.60        2018 est.
+38      Eritrea                                                          44.40        2018 est.
+39      Djibouti                                                         44.30        2018 est.
+40      Sudan                                                            44.20        2018 est.
+41      Sao Tome and Principe                                            44.10        2018 est.
+42      Malawi                                                           42.10        2018 est.
+43      Togo                                                             40.80        2018 est.
+44      Madagascar                                                       40.10        2018 est.
+45      Tanzania                                                         38.70        2018 est.
+46      India                                                            37.80        2018 est.
+47      Iraq                                                             37.50        2018 est.
+48      Kenya                                                            36.10        2018 est.
+49      Papua New Guinea                                                 35.30        2018 est.
+50      Burma                                                            34.40        2018 est.
+51      Bolivia                                                          34.20        2018 est.
+52      Ghana                                                            34.10        2018 est.
+53      Timor-Leste                                                      33.90        2018 est.
+54      Namibia                                                          33.80        2018 est.
+55      Turkmenistan                                                     33.10        2018 est.
+56      Gabon                                                            32.90        2018 est.
+57      Zimbabwe                                                         31.90        2018 est.
+58      Kiribati                                                         31.10        2018 est.
+59      Tajikistan                                                       30.80        2018 est.
+60      Bangladesh                                                       30.50        2018 est.
+61      Bhutan                                                           30.30        2018 est.
+62      South Africa                                                     29.90        2018 est.
+63      Guyana                                                           29.50        2018 est.
+64      Rwanda                                                           29.10        2018 est.
+65      Botswana                                                         28.60        2018 est.
+66      Tuvalu                                                           28.20        2018 est.
+67      Nepal                                                            26.90        2018 est.
+68      Kyrgyzstan                                                       25.00        2018 est.
+69      Suriname                                                         23.70        2018 est.
+70      Guatemala                                                        23.30        2018 est.
+71      Azerbaijan                                                       23.00        2018 est.
+72      Dominican Republic                                               22.70        2018 est.
+73      Indonesia                                                        21.90        2018 est.
+74      Trinidad and Tobago                                              21.60        2018 est.
+75      Korea, North                                                     21.40        2018 est.
+76      Maldives                                                         21.30        2018 est.
+77      Cabo Verde                                                       21.10        2018 est.
+78      Morocco                                                          21.10        2018 est.
+79      Philippines                                                      20.90        2018 est.
+80      Mongolia                                                         20.50        2018 est.
+81      Micronesia, Federated States of                                  19.10        2018 est.
+82      Kazakhstan                                                       19.00        2018 est.
+83      Algeria                                                          18.90        2018 est.
+84      Marshall Islands                                                 18.70        2018 est.
+85      Egypt                                                            18.30        2018 est.
+86      Paraguay                                                         18.10        2018 est.
+87      Samoa                                                            18.00        2018 est.
+88      Peru                                                             17.80        2018 est.
+89      Nicaragua                                                        17.70        2018 est.
+90      Uzbekistan                                                       17.40        2018 est.
+91      Brazil                                                           16.90        2018 est.
+92      Turkey                                                           16.90        2018 est.
+93      Honduras                                                         16.70        2018 est.
+94      Vietnam                                                          16.70        2018 est.
+95      El Salvador                                                      16.30        2018 est.
+96      Gaza Strip                                                       16.00        2018 est.
+97      Ecuador                                                          15.90        2018 est.
+98      Iran                                                             15.50        2018 est.
+99      Georgia                                                          14.70        2018 est.
+100     Syria                                                            14.40        2018 est.
+101     Solomon Islands                                                  14.30        2018 est.
+102     Vanuatu                                                          13.90        2018 est.
+103     Jordan                                                           13.70        2018 est.
+104     West Bank                                                        13.60        2018 est.
+105     Colombia                                                         13.20        2018 est.
+106     Saint Helena, Ascension, and Tristan da Cunha                    12.80        2018 est.
+107     Cook Islands                                                     12.60        2018 est.
+108     Jamaica                                                          12.40        2018 est.
+109     Oman                                                             12.40        2018 est.
+110     Armenia                                                          12.30        2018 est.
+111     Northern Mariana Islands                                         12.30        2018 est.
+112     Malaysia                                                         12.10        2018 est.
+113     Saudi Arabia                                                     12.10        2018 est.
+114     Belize                                                           12.00        2018 est.
+115     Guam                                                             11.90        2018 est.
+116     Montserrat                                                       11.90        2018 est.
+117     Venezuela                                                        11.90        2018 est.
+118     China                                                            11.80        2018 est.
+119     Antigua and Barbuda                                              11.70        2018 est.
+120     British Virgin Islands                                           11.70        2018 est.
+121     Moldova                                                          11.70        2018 est.
+122     Saint Vincent and the Grenadines                                 11.70        2018 est.
+123     Tunisia                                                          11.70        2018 est.
+124     Albania                                                          11.60        2018 est.
+125     Mexico                                                           11.30        2018 est.
+126     Bahamas, The                                                     11.10        2018 est.
+127     Tonga                                                            10.90        2018 est.
+128     American Samoa                                                   10.80        2018 est.
+129     Saint Lucia                                                      10.60        2018 est.
+130     Libya                                                            10.50        2018 est.
+131     Aruba                                                            10.40        2018 est.
+132     Dominica                                                         10.30        2018 est.
+133     Palau                                                            10.30        2018 est.
+134     Barbados                                                         10.00        2018 est.
+135     Turks and Caicos Islands                                          9.80        2018 est.
+136     Seychelles                                                        9.70        2018 est.
+137     Panama                                                            9.60        2018 est.
+138     Argentina                                                         9.50        2018 est.
+139     Mauritius                                                         9.50        2018 est.
+140     Grenada                                                           9.40        2018 est.
+141     Brunei                                                            9.30        2018 est.
+142     Fiji                                                              9.30        2018 est.
+143     Romania                                                           9.20        2018 est.
+144     Croatia                                                           9.10        2018 est.
+145     Thailand                                                          9.00        2018 est.
+146     Bahrain                                                           8.80        2018 est.
+147     Greenland                                                         8.70        2018 est.
+148     Bulgaria                                                          8.30        2018 est.
+149     Saint Kitts and Nevis                                             8.20        2018 est.
+150     Sri Lanka                                                         8.20        2018 est.
+151     Uruguay                                                           8.10        2018 est.
+152     Sint Maarten                                                      7.90        2018 est.
+153     Costa Rica                                                        7.80        2018 est.
+154     Macedonia                                                         7.80        2018 est.
+155     Cyprus                                                            7.70        2018 est.
+156     Nauru                                                             7.70        2018 est.
+157     Ukraine                                                           7.70        2018 est.
+158     Virgin Islands                                                    7.70        2018 est.
+159     Curacao                                                           7.30        2018 est.
+160     Lebanon                                                           7.20        2018 est.
+161     Kuwait                                                            6.80        2018 est.
+162     Russia                                                            6.70        2018 est.
+163     Chile                                                             6.40        2018 est.
+164     Saint Pierre and Miquelon                                         6.40        2018 est.
+165     Puerto Rico                                                       6.30        2018 est.
+166     Qatar                                                             6.00        2018 est.
+167     Gibraltar                                                         5.80        2018 est.
+168     Cayman Islands                                                    5.70        2018 est.
+169     Serbia                                                            5.70        2018 est.
+170     United States                                                     5.70        2018 est.
+171     United Arab Emirates                                              5.50        2018 est.
+172     Bosnia and Herzegovina                                            5.40        2018 est.
+173     Faroe Islands                                                     5.30        2018 est.
+174     New Caledonia                                                     5.20        2018 est.
+175     Latvia                                                            5.10        2018 est.
+176     Slovakia                                                          5.00        2018 est.
+177     Hungary                                                           4.80        2018 est.
+178     Malta                                                             4.70        2018 est.
+179     French Polynesia                                                  4.60        2018 est.
+180     Canada                                                            4.50        2018 est.
+181     Greece                                                            4.50        2018 est.
+182     Cuba                                                              4.40        2018 est.
+183     New Zealand                                                       4.40        2018 est.
+184     Poland                                                            4.40        2018 est.
+185     San Marino                                                        4.30        2018 est.
+186     Taiwan                                                            4.30        2018 est.
+187     Wallis and Futuna                                                 4.30        2018 est.
+188     Australia                                                         4.20        2018 est.
+189     Liechtenstein                                                     4.20        2018 est.
+190     United Kingdom                                                    4.20        2018 est.
+191     Isle of Man                                                       4.00        2018 est.
+192     Estonia                                                           3.80        2018 est.
+193     Lithuania                                                         3.80        2018 est.
+194     Jersey                                                            3.70        2018 est.
+195     Andorra                                                           3.60        2018 est.
+196     Belarus                                                           3.60        2018 est.
+197     Ireland                                                           3.60        2018 est.
+198     Switzerland                                                       3.60        2018 est.
+199     Netherlands                                                       3.50        2018 est.
+200     Austria                                                           3.40        2018 est.
+201     Belgium                                                           3.40        2018 est.
+202     Germany                                                           3.40        2018 est.
+203     Guernsey                                                          3.40        2018 est.
+204     Israel                                                            3.40        2018 est.
+205     Luxembourg                                                        3.40        2018 est.
+206     Anguilla                                                          3.30        2018 est.
+207     Spain                                                             3.30        2018 est.
+208     Denmark                                                           3.20        2018 est.
+209     France                                                            3.20        2018 est.
+210     Italy                                                             3.20        2018 est.
+211     Macau                                                             3.10        2018 est.
+212     Korea, South                                                      3.00        2018 est.
+213     Hong Kong                                                         2.70        2018 est.
+214     Czechia                                                           2.60        2018 est.
+215     Portugal                                                          2.60        2018 est.
+216     Sweden                                                            2.60        2018 est.
+217     Bermuda                                                           2.50        2018 est.
+218     Finland                                                           2.50        2018 est.
+219     Norway                                                            2.50        2018 est.
+220     Singapore                                                         2.30        2018 est.
+221     Iceland                                                           2.10        2018 est.
+222     Japan                                                             2.00        2018 est.
+223     Monaco                                                            1.80        2018 est.
+224     Slovenia                                                          1.60        2018 est.

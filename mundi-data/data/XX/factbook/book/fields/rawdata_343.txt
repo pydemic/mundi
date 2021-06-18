@@ -1,0 +1,230 @@
+Country Comparison :: Median age
+
+1       Monaco                                                            53.8        
+2       Japan                                                             47.7        
+3       Germany                                                           47.4        
+4       Saint Pierre and Miquelon                                         47.2        
+5       Italy                                                             45.8        
+6       Andorra                                                           44.9        
+7       Greece                                                            44.9        
+8       Hong Kong                                                         44.8        
+9       Saint Barthelemy                                                  44.7        
+10      San Marino                                                        44.7        
+11      Isle of Man                                                       44.4        
+12      Austria                                                           44.2        
+13      Slovenia                                                          44.2        
+14      Guernsey                                                          44.0        
+15      Lithuania                                                         44.0        
+16      Latvia                                                            43.9        
+17      Portugal                                                          43.7        
+18      Bermuda                                                           43.5        
+19      Liechtenstein                                                     43.4        
+20      Croatia                                                           43.3        
+21      Spain                                                             43.1        
+22      Bulgaria                                                          43.0        
+23      Estonia                                                           43.0        
+24      Serbia                                                            42.8        
+25      Hungary                                                           42.7        
+26      Netherlands                                                       42.7        
+27      Finland                                                           42.6        
+28      Bosnia and Herzegovina                                            42.5        
+29      Czechia                                                           42.5        
+30      Switzerland                                                       42.5        
+31      Canada                                                            42.4        
+32      Saint Helena, Ascension, and Tristan da Cunha                     42.4        
+33      Korea, South                                                      42.3        
+34      Puerto Rico                                                       42.2        
+35      Denmark                                                           41.9        
+36      Cuba                                                              41.8        
+37      Malta                                                             41.8        
+38      Romania                                                           41.6        
+39      Belgium                                                           41.5        
+40      France                                                            41.5        
+41      Taiwan                                                            41.3        
+42      Virgin Islands                                                    41.3        
+43      Sint Maarten                                                      41.2        
+44      Poland                                                            41.1        
+45      Sweden                                                            41.1        
+46      Slovakia                                                          41.0        
+47      Ukraine                                                           40.8        
+48      United Kingdom                                                    40.5        
+49      Belarus                                                           40.3        
+50      Cayman Islands                                                    40.2        
+51      Macau                                                             39.8        
+52      Russia                                                            39.8        
+53      Aruba                                                             39.5        
+54      Luxembourg                                                        39.3        
+55      Norway                                                            39.3        
+56      Barbados                                                          38.9        
+57      Montenegro                                                        38.9        
+58      Australia                                                         38.8        
+59      Georgia                                                           38.3        
+60      Macedonia                                                         38.2        
+61      United States                                                     38.2        
+62      New Zealand                                                       38.1        
+63      Thailand                                                          38.1        
+64      China                                                             37.7        
+65      Jersey                                                            37.7        
+66      Faroe Islands                                                     37.6        
+67      Cook Islands                                                      37.2        
+68      Cyprus                                                            37.2        
+69      United Arab Emirates                                              37.2        
+70      Ireland                                                           37.1        
+71      Moldova                                                           37.0        
+72      British Virgin Islands                                            36.7        
+73      Iceland                                                           36.7        
+74      Trinidad and Tobago                                               36.6        
+75      Curacao                                                           36.3        
+76      Seychelles                                                        35.8        
+77      Mauritius                                                         35.7        
+78      Armenia                                                           35.6        
+79      Saint Kitts and Nevis                                             35.5        
+80      Saint Lucia                                                       35.5        
+81      Anguilla                                                          35.1        
+82      Uruguay                                                           35.1        
+83      Gibraltar                                                         35.0        
+84      Singapore                                                         34.9        
+85      Chile                                                             34.8        
+86      Korea, North                                                      34.2        
+87      Saint Vincent and the Grenadines                                  34.2        
+88      Dominica                                                          34.0        
+89      Greenland                                                         34.0        
+90      Montserrat                                                        33.8        
+91      Turks and Caicos Islands                                          33.8        
+92      Palau                                                             33.6        
+93      Albania                                                           33.4        
+94      Northern Mariana Islands                                          33.4        
+95      Qatar                                                             33.4        
+96      Sri Lanka                                                         33.1        
+97      Saint Martin                                                      32.8        
+98      Wallis and Futuna                                                 32.8        
+99      Bahrain                                                           32.5        
+100     Brazil                                                            32.4        
+101     French Polynesia                                                  32.4        
+102     Bahamas, The                                                      32.3        
+103     New Caledonia                                                     32.3        
+104     Antigua and Barbuda                                               32.2        
+105     Grenada                                                           32.1        
+106     Tunisia                                                           32.0        
+107     Argentina                                                         31.9        
+108     Azerbaijan                                                        31.7        
+109     Costa Rica                                                        31.7        
+110     Turkey                                                            31.4        
+111     Lebanon                                                           31.3        
+112     Kazakhstan                                                        30.9        
+113     Vietnam                                                           30.9        
+114     Iran                                                              30.8        
+115     Brunei                                                            30.5        
+116     Indonesia                                                         30.5        
+117     Colombia                                                          30.4        
+118     Suriname                                                          30.2        
+119     Israel                                                            30.1        
+120     Saudi Arabia                                                      29.9        
+121     Morocco                                                           29.7        
+122     Kosovo                                                            29.6        
+123     Panama                                                            29.5        
+124     Kuwait                                                            29.4        
+125     Libya                                                             29.4        
+126     Fiji                                                              29.2        
+127     Guam                                                              29.1        
+128     Uzbekistan                                                        29.1        
+129     Mongolia                                                          28.8        
+130     Malaysia                                                          28.7        
+131     Paraguay                                                          28.7        
+132     Venezuela                                                         28.7        
+133     Jamaica                                                           28.6        
+134     Maldives                                                          28.6        
+135     Mexico                                                            28.6        
+136     Burma                                                             28.5        
+137     Peru                                                              28.4        
+138     Algeria                                                           28.3        
+139     Turkmenistan                                                      28.3        
+140     Bhutan                                                            28.1        
+141     Ecuador                                                           28.1        
+142     India                                                             28.1        
+143     El Salvador                                                       27.6        
+144     South Africa                                                      27.4        
+145     Dominican Republic                                                27.3        
+146     Bangladesh                                                        27.1        
+147     Kyrgyzstan                                                        26.8        
+148     Guyana                                                            26.7        
+149     Nauru                                                             26.7        
+150     Nicaragua                                                         26.2        
+151     American Samoa                                                    26.1        
+152     Tuvalu                                                            26.0        
+153     Cabo Verde                                                        25.8        
+154     Oman                                                              25.8        
+155     Cambodia                                                          25.7        
+156     Micronesia, Federated States of                                   25.5        
+157     Kiribati                                                          25.0        
+158     Botswana                                                          24.9        
+159     Samoa                                                             24.8        
+160     Tajikistan                                                        24.8        
+161     Bolivia                                                           24.6        
+162     Nepal                                                             24.5        
+163     Syria                                                             24.5        
+164     Lesotho                                                           24.4        
+165     Djibouti                                                          24.2        
+166     Pakistan                                                          24.1        
+167     Egypt                                                             23.9        
+168     Belize                                                            23.7        
+169     Philippines                                                       23.7        
+170     Laos                                                              23.4        
+171     Papua New Guinea                                                  23.4        
+172     Haiti                                                             23.3        
+173     Honduras                                                          23.3        
+174     Tonga                                                             23.3        
+175     Eswatini                                                          23.2        
+176     Marshall Islands                                                  23.1        
+177     Jordan                                                            22.8        
+178     Solomon Islands                                                   22.8        
+179     Guatemala                                                         22.5        
+180     Vanuatu                                                           22.3        
+181     Western Sahara                                                    21.5        
+182     Namibia                                                           21.4        
+183     West Bank                                                         21.4        
+184     Gambia, The                                                       21.3        
+185     Ghana                                                             21.2        
+186     Mauritania                                                        20.7        
+187     Gabon                                                             20.5        
+188     Comoros                                                           20.2        
+189     Iraq                                                              20.2        
+190     Zimbabwe                                                          20.2        
+191     Kenya                                                             20.0        
+192     Cote d'Ivoire                                                     19.9        
+193     Equatorial Guinea                                                 19.9        
+194     Eritrea                                                           19.9        
+195     Madagascar                                                        19.9        
+196     Togo                                                              19.9        
+197     Central African Republic                                          19.8        
+198     Yemen                                                             19.8        
+199     Congo, Republic of the                                            19.6        
+200     Rwanda                                                            19.2        
+201     Sierra Leone                                                      19.1        
+202     Timor-Leste                                                       19.1        
+203     Afghanistan                                                       19.0        
+204     Guinea                                                            19.0        
+205     Senegal                                                           19.0        
+206     Congo, Democratic Republic of the                                 18.8        
+207     Sao Tome and Principe                                             18.7        
+208     Cameroon                                                          18.6        
+209     Benin                                                             18.4        
+210     Nigeria                                                           18.3        
+211     Somalia                                                           18.2        
+212     South Sudan                                                       18.1        
+213     Ethiopia                                                          18.0        
+214     Sudan                                                             17.9        
+215     Tanzania                                                          17.9        
+216     Guinea-Bissau                                                     17.8        
+217     Liberia                                                           17.8        
+218     Burkina Faso                                                      17.4        
+219     Gaza Strip                                                        17.4        
+220     Mozambique                                                        17.3        
+221     Burundi                                                           17.1        
+222     Zambia                                                            16.8        
+223     Malawi                                                            16.6        
+224     Angola                                                            15.9        
+225     Uganda                                                            15.9        
+226     Chad                                                              15.8        
+227     Mali                                                              15.8        
+228     Niger                                                             15.5        

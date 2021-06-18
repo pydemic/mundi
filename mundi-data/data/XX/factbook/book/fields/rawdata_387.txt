@@ -1,0 +1,178 @@
+Country Comparison :: Merchant marine
+
+1       Indonesia                                                        8,782        2017
+2       Panama                                                           8,052        2017
+3       Japan                                                            5,289        2017
+4       China                                                            4,287        2017
+5       United States                                                    3,611        2017
+6       Singapore                                                        3,558        2017
+7       Liberia                                                          3,296        2017
+8       Marshall Islands                                                 3,199        2017
+9       Hong Kong                                                        2,576        2017
+10      Russia                                                           2,572        2017
+11      Malta                                                            2,170        2017
+12      Korea, South                                                     1,907        2017
+13      Vietnam                                                          1,818        2017
+14      Malaysia                                                         1,690        2017
+15      India                                                            1,674        2017
+16      Norway                                                           1,585        2017
+17      United Kingdom                                                   1,551        2017
+18      Philippines                                                      1,508        2017
+19      Bahamas, The                                                     1,440        2017
+20      Italy                                                            1,430        2017
+21      Greece                                                           1,364        2017
+22      Turkey                                                           1,285        2017
+23      Netherlands                                                      1,244        2017
+24      Cyprus                                                           1,022        2017
+25      Antigua and Barbuda                                                964        2017
+26      Saint Vincent and the Grenadines                                   882        2017
+27      Thailand                                                           781        2017
+28      Brazil                                                             775        2017
+29      Belize                                                             756        2017
+30      Iran                                                               739        2017
+31      Denmark                                                            654        2017
+32      Canada                                                             639        2017
+33      Mexico                                                             622        2017
+34      United Arab Emirates                                               618        2017
+35      Germany                                                            614        2017
+36      Nigeria                                                            583        2017
+37      France                                                             555        2017
+38      Honduras                                                           552        2017
+39      Australia                                                          549        2017
+40      Spain                                                              472        2017
+41      Portugal                                                           466        2017
+42      Sierra Leone                                                       451        2017
+43      Cambodia                                                           442        2017
+44      Vanuatu                                                            421        2017
+45      Ukraine                                                            419        2017
+46      Egypt                                                              399        2017
+47      Sweden                                                             368        2017
+48      Saudi Arabia                                                       357        2017
+49      Taiwan                                                             350        2017
+50      Azerbaijan                                                         311        2017
+51      Togo                                                               308        2017
+52      Bangladesh                                                         306        2017
+53      Gibraltar                                                          291        2017
+54      Croatia                                                            288        2017
+55      Tanzania                                                           279        2017
+56      Saint Kitts and Nevis                                              274        2017
+57      Finland                                                            267        2017
+58      Venezuela                                                          267        2017
+59      Mongolia                                                           261        2017
+60      Bahrain                                                            260        2017
+61      Korea, North                                                       248        2017
+62      Tuvalu                                                             245        2017
+63      Cook Islands                                                       218        2017
+64      Chile                                                              211        2017
+65      Comoros                                                            203        2017
+66      Belgium                                                            185        2017
+67      Papua New Guinea                                                   173        2017
+68      Moldova                                                            172        2017
+69      Argentina                                                          161        2017
+70      Cayman Islands                                                     161        2017
+71      Kuwait                                                             161        2017
+72      Bermuda                                                            160        2017
+73      Luxembourg                                                         152        2017
+74      Poland                                                             152        2017
+75      Qatar                                                              143        2017
+76      Ecuador                                                            138        2017
+77      Kiribati                                                           133        2017
+78      Kazakhstan                                                         119        2017
+79      Romania                                                            114        2017
+80      Barbados                                                           112        2017
+81      Algeria                                                            110        2017
+82      Brunei                                                             106        2018
+83      Trinidad and Tobago                                                105        2017
+84      Colombia                                                           103        2017
+85      New Zealand                                                        103        2017
+86      Libya                                                               98        2017
+87      Burma                                                               97        2017
+88      Faroe Islands                                                       96        2017
+89      Curacao                                                             92        2017
+90      Micronesia, Federated States of                                     88        2017
+91      Peru                                                                88        2017
+92      Georgia                                                             84        2017
+93      Ireland                                                             83        2017
+94      Morocco                                                             82        2017
+95      South Africa                                                        82        2017
+96      Sri Lanka                                                           82        2017
+97      Bulgaria                                                            80        2017
+98      Estonia                                                             78        2017
+99      Paraguay                                                            78        
+100     Iraq                                                                77        2017
+101     Dominica                                                            76        2017
+102     Turkmenistan                                                        73        2017
+103     Fiji                                                                68        2017
+104     Maldives                                                            66        2017
+105     Latvia                                                              65        2017
+106     Tunisia                                                             62        2017
+107     Lithuania                                                           60        2017
+108     Albania                                                             57        2017
+109     Uruguay                                                             56        2017
+110     Angola                                                              55        2017
+111     Bolivia                                                             55        2017
+112     Guyana                                                              55        2017
+113     Lebanon                                                             54        2017
+114     Pakistan                                                            52        2017
+115     Oman                                                                51        2017
+116     Switzerland                                                         51        2017
+117     Ghana                                                               44        2017
+118     Cuba                                                                43        2017
+119     Cabo Verde                                                          42        2017
+120     Israel                                                              42        2017
+121     Jamaica                                                             41        2017
+122     Congo, Republic of the                                              40        2017
+123     Equatorial Guinea                                                   40        2017
+124     Tonga                                                               34        2017
+125     Congo, Democratic Republic of the                                   33        2017
+126     Iceland                                                             33        2017
+127     Jordan                                                              31        2017
+128     Yemen                                                               31        2017
+129     Madagascar                                                          28        2017
+130     Mauritius                                                           28        2017
+131     Gabon                                                               27        2017
+132     Mozambique                                                          27        2017
+133     Senegal                                                             26        2017
+134     Seychelles                                                          24        2017
+135     Dominican Republic                                                  23        2017
+136     Solomon Islands                                                     22        2017
+137     Syria                                                               21        2017
+138     British Virgin Islands                                              20        2017
+139     Kenya                                                               20        2017
+140     Cameroon                                                            19        2017
+141     Djibouti                                                            18        2017
+142     French Polynesia                                                    17        2017
+143     Sudan                                                               17        2017
+144     Sao Tome and Principe                                               16        2017
+145     Montenegro                                                          12        2017
+146     Ethiopia                                                            11        2017
+147     Costa Rica                                                          10        2017
+148     Samoa                                                               10        2017
+149     Suriname                                                            10        2017
+150     Cote d'Ivoire                                                        9        2017
+151     Eritrea                                                              9        2017
+152     Guatemala                                                            9        2017
+153     Guinea-Bissau                                                        9        2017
+154     Namibia                                                              9        2017
+155     New Caledonia                                                        9        2017
+156     Gambia, The                                                          8        2017
+157     Greenland                                                            8        2017
+158     Slovenia                                                             7        2017
+159     Benin                                                                6        2017
+160     Grenada                                                              6        2017
+161     Mauritania                                                           6        2017
+162     Nicaragua                                                            5        2017
+163     Somalia                                                              5        2017
+164     Belarus                                                              4        2017
+165     Haiti                                                                4        2017
+166     Turks and Caicos Islands                                             4        2017
+167     Falkland Islands (Islas Malvinas)                                    3        2017
+168     Guam                                                                 3        2017
+169     El Salvador                                                          2        2017
+170     Niger                                                                2        2017
+171     Anguilla                                                             1        2017
+172     Guinea                                                               1        2017
+173     Laos                                                                 1        2017
+174     Macau                                                                1        2017
+175     Uganda                                                               1        2017
+176     Zambia                                                               1        2017

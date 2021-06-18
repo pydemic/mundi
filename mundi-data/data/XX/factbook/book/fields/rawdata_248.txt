@@ -1,0 +1,123 @@
+Country Comparison :: Stock of direct foreign investment - abroad
+
+1       Netherlands                                         $6,579,000,000,000        31 December 2017 est.
+2       United States                                       $5,711,000,000,000        31 December 2017 est.
+3       Germany                                             $2,298,000,000,000        31 December 2017 est.
+4       United Kingdom                                      $2,110,000,000,000        31 December 2017 est.
+5       Hong Kong                                           $2,036,000,000,000        31 December 2017 est.
+6       Switzerland                                         $1,701,000,000,000        31 December 2017 est.
+7       Ireland                                             $1,560,000,000,000        31 December 2017 est.
+8       Japan                                               $1,547,000,000,000        31 December 2017 est.
+9       France                                              $1,429,000,000,000        31 December 2017 est.
+10      China                                               $1,383,000,000,000        31 December 2017 est.
+11      Canada                                              $1,371,000,000,000        31 December 2017 est.
+12      Belgium                                             $1,159,000,000,000        31 December 2017 est.
+13      Singapore                                             $841,400,000,000        31 December 2017 est.
+14      Spain                                                 $776,800,000,000        31 December 2017 est.
+15      Italy                                                 $671,800,000,000        31 December 2017 est.
+16      Sweden                                                $523,500,000,000        31 December 2017 est.
+17      Australia                                             $509,700,000,000        31 December 2017 est.
+18      Russia                                                $470,900,000,000        31 December 2017 est.
+19      Brazil                                                $358,900,000,000        31 December 2017 est.
+20      Korea, South                                          $344,700,000,000        31 December 2017 est.
+21      Austria                                               $339,700,000,000        31 December 2017 est.
+22      Taiwan                                                $332,400,000,000        31 December 2017 est.
+23      Denmark                                               $287,900,000,000        31 December 2017 est.
+24      South Africa                                          $270,300,000,000        31 December 2017 est.
+25      Mexico                                                $243,800,000,000        31 December 2017 est.
+26      Cyprus                                                $222,900,000,000        31 December 2017 est.
+27      Hungary                                               $212,000,000,000        31 December 2017 est.
+28      Norway                                                $196,300,000,000        31 December 2017 est.
+29      Finland                                               $185,600,000,000        31 December 2017 est.
+30      India                                                 $155,200,000,000        31 December 2017 est.
+31      Malaysia                                              $128,500,000,000        31 December 2017 est.
+32      United Arab Emirates                                  $124,400,000,000        31 December 2017 est.
+33      Thailand                                              $117,400,000,000        31 December 2017 est.
+34      Portugal                                              $103,100,000,000        31 December 2017 est.
+35      Israel                                                $100,300,000,000        31 December 2017 est.
+36      Chile                                                  $95,370,000,000        31 December 2017 est.
+37      Kuwait                                                 $82,350,000,000        31 December 2017 est.
+38      Poland                                                 $72,870,000,000        31 December 2017 est.
+39      Qatar                                                  $59,330,000,000        31 December 2017 est.
+40      Sierra Leone                                           $56,800,000,000        31 December 2017 est.
+41      Saudi Arabia                                           $56,090,000,000        31 December 2017 est.
+42      Colombia                                               $55,510,000,000        31 December 2017 est.
+43      Czechia                                                $54,390,000,000        31 December 2017 est.
+44      Philippines                                            $47,820,000,000        31 December 2017 est.
+45      Turkey                                                 $47,440,000,000        31 December 2017 est.
+46      Argentina                                              $40,940,000,000        31 December 2017 est.
+47      Venezuela                                              $35,150,000,000        31 December 2017 est.
+48      Kazakhstan                                             $35,040,000,000        31 December 2017 est.
+49      Greece                                                 $29,640,000,000        31 December 2017 est.
+50      Angola                                                 $28,000,000,000        31 December 2017 est.
+51      Slovakia                                               $21,290,000,000        31 December 2017 est.
+52      Libya                                                  $20,970,000,000        31 December 2017 est.
+53      Indonesia                                              $20,500,000,000        31 December 2017 est.
+54      Uruguay                                                $19,970,000,000        31 December 2017 est.
+55      Vietnam                                                $19,750,000,000        31 December 2015 est.
+56      Azerbaijan                                             $19,600,000,000        31 December 2017 est.
+57      Nigeria                                                $16,930,000,000        31 December 2017 est.
+58      New Zealand                                            $16,740,000,000        31 December 2016 est.
+59      Ghana                                                  $16,620,000,000        31 December 2013 est.
+60      Tajikistan                                             $16,300,000,000        31 December 2009
+61      Lebanon                                                $13,460,000,000        2016
+62      Panama                                                 $11,380,000,000        31 December 2017 est.
+63      Iceland                                                $11,240,000,000        31 December 2017 est.
+64      Estonia                                                $10,960,000,000        31 December 2017 est.
+65      Bahrain                                                $10,660,000,000        31 December 2017 est.
+66      Slovenia                                                $9,914,000,000        31 December 2017 est.
+67      Croatia                                                 $8,473,000,000        31 December 2017 est.
+68      Ukraine                                                 $7,590,000,000        31 December 2017 est.
+69      Egypt                                                   $7,426,000,000        31 December 2017 est.
+70      Romania                                                 $6,822,000,000        31 December 2017 est.
+71      Ecuador                                                 $6,330,000,000        31 December 2012 est.
+72      Lithuania                                               $6,268,000,000        31 December 2017 est.
+73      Bulgaria                                                $5,868,000,000        31 December 2017 est.
+74      Peru                                                    $5,447,000,000        31 December 2017 est.
+75      Morocco                                                 $5,351,000,000        31 December 2017 est.
+76      Iran                                                    $5,226,000,000        31 December 2017 est.
+77      Cuba                                                    $4,138,000,000        2006 est.
+78      Costa Rica                                              $4,007,000,000        31 December 2017 est.
+79      Belarus                                                 $3,547,000,000        31 December 2016 est.
+80      Latvia                                                  $3,402,000,000        31 December 2017 est.
+81      Georgia                                                 $2,477,000,000        31 December 2017 est.
+82      Iraq                                                    $2,109,000,000        2015 est.
+83      Pakistan                                                $1,983,000,000        31 December 2017 est.
+84      Botswana                                                $1,973,000,000        31 December 2017 est.
+85      Algeria                                                 $1,893,000,000        31 December 2017 est.
+86      Kenya                                                   $1,545,000,000        31 December 2017 est.
+87      Trinidad and Tobago                                     $1,266,000,000        2014 est.
+88      Macedonia                                               $1,169,000,000        31 December 2017 est.
+89      Macau                                                   $1,166,000,000        2012 est.
+90      Bermuda                                                   $889,000,000        2014 est.
+91      Kyrgyzstan                                                $709,300,000        31 December 2017 est.
+92      Paraguay                                                  $705,100,000        31 December 2017 est.
+93      El Salvador                                               $678,700,000        31 December 2017 est.
+94      New Caledonia                                             $658,200,000        2015 est.
+95      Jordan                                                    $646,500,000        31 December 2017 est.
+96      Jamaica                                                   $604,000,000        2016
+97      Mongolia                                                  $495,000,000        31 December 2017 est.
+98      Maldives                                                  $448,000,000        31 December 2016 est.
+99      Dominican Republic                                        $408,600,000        31 December 2017 est.
+100     Bangladesh                                                $369,600,000        31 December 2017 est.
+101     French Polynesia                                          $349,300,000        2015
+102     Zimbabwe                                                  $309,600,000        31 December 2017 est.
+103     Mali                                                      $286,200,000        31 December 2017 est.
+104     Tunisia                                                   $285,000,000        31 December 2017 est.
+105     Kosovo                                                    $275,000,000        31 December 2017 est.
+106     Moldova                                                   $252,700,000        31 December 2017
+107     Armenia                                                   $228,000,000        2015 est.
+108     Liberia                                                   $201,000,000        31 December 2013 est.
+109     Lesotho                                                   $122,000,000        31 December 2017 est.
+110     Fiji                                                      $117,100,000        31 December 2017 est.
+111     Rwanda                                                    $113,200,000        31 December 2017 est.
+112     Malta                                                      $65,490,000        June 2015 est.
+113     Cabo Verde                                                 $64,600,000        31 December 2017 est.
+114     Solomon Islands                                            $59,200,000        31 December 2017 est.
+115     Montenegro                                                 $39,770,000        31 December 2017 est.
+116     Vanuatu                                                    $22,300,000        31 December 2017 est.
+117     Sao Tome and Principe                                       $3,980,000        31 December 2017 est.
+118     Guinea                                                      $1,800,000        31 December 2017 est.
+119     Dominica                                                      $220,000        31 December 2017 est.
+120     Bolivia                                                             $0        31 December 2017 est.
+121     Bosnia and Herzegovina                                              $0        2014

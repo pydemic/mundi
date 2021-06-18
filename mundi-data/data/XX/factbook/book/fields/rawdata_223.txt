@@ -1,0 +1,160 @@
+Country Comparison :: Distribution of family income - Gini index
+
+1       Lesotho                                                           63.2        1995
+2       South Africa                                                      62.5        2013 est.
+3       Micronesia, Federated States of                                   61.1        2013 est.
+4       Haiti                                                             60.8        2012
+5       Botswana                                                          60.5        2009
+6       Namibia                                                           59.7        2010
+7       Zambia                                                            57.5        2013
+8       Comoros                                                           55.9        2004 est.
+9       Hong Kong                                                         53.9        2016
+10      Guatemala                                                         53.0        2014 est.
+11      Paraguay                                                          51.7        2014
+12      Colombia                                                          51.1        2015
+13      Papua New Guinea                                                  50.9        1996
+14      Panama                                                            50.7        2014 est.
+15      Chile                                                             50.5        2013
+16      Eswatini                                                          50.4        2001
+17      Rwanda                                                            50.4        2013 est.
+18      Gambia, The                                                       50.2        1998
+19      Brazil                                                            49.0        2014
+20      Congo, Republic of the                                            48.9        2011 est.
+21      Nigeria                                                           48.8        2013
+22      Costa Rica                                                        48.5        2014
+23      Kenya                                                             48.5        2016 est.
+24      Mexico                                                            48.2        2014
+25      Dominican Republic                                                47.1        2013 est.
+26      Honduras                                                          47.1        2014
+27      Nicaragua                                                         47.1        2014
+28      Bolivia                                                           47.0        2016 est.
+29      Seychelles                                                        46.8        2013 est.
+30      Cameroon                                                          46.5        2014 est.
+31      China                                                             46.5        2016 est.
+32      Malaysia                                                          46.2        2009
+33      Malawi                                                            46.1        2010
+34      South Sudan                                                       46.0        2010 est.
+35      Togo                                                              46.0        2011
+36      Ecuador                                                           45.9        December 2017
+37      Saudi Arabia                                                      45.9        2013 est.
+38      Singapore                                                         45.9        2017
+39      Mozambique                                                        45.6        2008
+40      Peru                                                              45.3        2012
+41      United States                                                     45.0        2007
+42      Guyana                                                            44.6        2007
+43      Iran                                                              44.5        2006
+44      Thailand                                                          44.5        2015
+45      Philippines                                                       44.4        2015 est.
+46      Central African Republic                                          43.6        2003 est.
+47      Chad                                                              43.3        2011 est.
+48      Zimbabwe                                                          43.2        2011 est.
+49      Israel                                                            42.8        2013
+50      Angola                                                            42.7        2008 est.
+51      Burundi                                                           42.4        1998
+52      Gabon                                                             42.2        2005 est.
+53      Congo, Democratic Republic of the                                 42.1        2012 est.
+54      Argentina                                                         41.7        2017 est.
+55      Uruguay                                                           41.6        2014
+56      Cote d'Ivoire                                                     41.5        2008
+57      Russia                                                            41.2        2015
+58      Qatar                                                             41.1        2007
+59      Madagascar                                                        41.0        2012
+60      Djibouti                                                          40.9        2002
+61      Morocco                                                           40.9        2007 est.
+62      Turkmenistan                                                      40.8        1998
+63      Senegal                                                           40.3        2011
+64      Bulgaria                                                          40.2        2017
+65      Turkey                                                            40.2        2010
+66      Georgia                                                           40.1        2014
+67      Mali                                                              40.1        2001
+68      Tunisia                                                           40.0        2005 est.
+69      Jordan                                                            39.7        2007
+70      Burkina Faso                                                      39.5        2007
+71      Uganda                                                            39.5        2013
+72      Guinea                                                            39.4        2007
+73      Sri Lanka                                                         39.2        2012 est.
+74      Venezuela                                                         39.0        2011
+75      Bhutan                                                            38.8        2012
+76      Serbia                                                            38.7        2014 est.
+77      Maldives                                                          38.4        2009 est.
+78      Cambodia                                                          37.9        2008 est.
+79      Japan                                                             37.9        2011
+80      Lithuania                                                         37.9        2015
+81      Yemen                                                             37.9        2009 est.
+82      Tanzania                                                          37.6        2007
+83      Mauritania                                                        37.0        2014
+84      Indonesia                                                         36.8        2009
+85      Uzbekistan                                                        36.8        2003
+86      Greece                                                            36.7        2012 est.
+87      Laos                                                              36.7        2008
+88      Benin                                                             36.5        2003
+89      New Zealand                                                       36.2        1997
+90      El Salvador                                                       36.0        2016 est.
+91      Falkland Islands (Islas Malvinas)                                 36.0        2015
+92      Mauritius                                                         35.9        2012 est.
+93      Spain                                                             35.9        2012
+94      Korea, South                                                      35.7        2016 est.
+95      Algeria                                                           35.3        1995
+96      India                                                             35.2        2011
+97      Jamaica                                                           35.0        2016
+98      Macau                                                             35.0        2013
+99      Cyprus                                                            34.8        2014 est.
+100     Estonia                                                           34.8        2015
+101     Vietnam                                                           34.8        2014
+102     Latvia                                                            34.5        2015
+103     West Bank                                                         34.5        2009 est.
+104     Mongolia                                                          34.0        2017
+105     Niger                                                             34.0        2014
+106     Sierra Leone                                                      34.0        2011
+107     Greenland                                                         33.9        2015 est.
+108     Portugal                                                          33.9        2015 est.
+109     Bosnia and Herzegovina                                            33.8        2011
+110     Azerbaijan                                                        33.7        2008
+111     Macedonia                                                         33.7        2015
+112     Taiwan                                                            33.6        2014
+113     Kyrgyzstan                                                        33.4        2007
+114     Ethiopia                                                          33.0        2011
+115     Nepal                                                             32.8        2010
+116     Tajikistan                                                        32.6        2006
+117     United Kingdom                                                    32.4        2012
+118     Bangladesh                                                        32.1        2010
+119     Canada                                                            32.1        2005
+120     Liberia                                                           32.0        2014
+121     Italy                                                             31.9        2012 est.
+122     Montenegro                                                        31.9        2014 est.
+123     Timor-Leste                                                       31.9        2007 est.
+124     Egypt                                                             31.8        2015
+125     Armenia                                                           31.5        2014
+126     Ireland                                                           31.3        2013 est.
+127     Croatia                                                           30.8        2015 est.
+128     Poland                                                            30.8        2015
+129     Sao Tome and Principe                                             30.8        2010 est.
+130     Pakistan                                                          30.7        FY2013
+131     Austria                                                           30.5        2015
+132     Luxembourg                                                        30.4        2013 est.
+133     Australia                                                         30.3        2008
+134     Netherlands                                                       30.3        2015 est.
+135     Switzerland                                                       29.5        2014 est.
+136     Afghanistan                                                       29.4        2008
+137     France                                                            29.3        2016
+138     Albania                                                           29.0        2012 est.
+139     Denmark                                                           29.0        2016 est.
+140     Hungary                                                           28.2        2015 est.
+141     Malta                                                             28.1        2015
+142     Iceland                                                           28.0        2006
+143     Romania                                                           27.3        2012
+144     Finland                                                           27.2        2016
+145     Germany                                                           27.0        2006
+146     Moldova                                                           26.8        2015 est.
+147     Norway                                                            26.8        2010
+148     Belarus                                                           26.5        2011
+149     Kazakhstan                                                        26.3        2013
+150     Belgium                                                           25.9        2013 est.
+151     Ukraine                                                           25.5        2015
+152     Czechia                                                           25.0        2015
+153     Sweden                                                            24.9        2013
+154     Slovenia                                                          24.4        2016
+155     Slovakia                                                          23.7        2015
+156     Kosovo                                                            23.2        2015 est.
+157     Faroe Islands                                                     22.7        2013 est.
+158     Jersey                                                             0.3        2014 est.

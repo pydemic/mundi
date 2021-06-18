@@ -1,0 +1,181 @@
+Country Comparison :: Education expenditures
+
+1       Cuba                                                             12.80        2010
+2       Micronesia, Federated States of                                  12.50        2015
+3       Lesotho                                                          11.40        2008
+4       Grenada                                                          10.30        2016
+5       Solomon Islands                                                  10.00        2010
+6       Botswana                                                          9.60        2009
+7       Zimbabwe                                                          8.40        2014
+8       Namibia                                                           8.30        2010
+9       Iceland                                                           7.80        2013
+10      Norway                                                            7.70        2014
+11      Sweden                                                            7.70        2014
+12      Denmark                                                           7.60        2014
+13      Timor-Leste                                                       7.50        2014
+14      Belize                                                            7.40        2017
+15      Bhutan                                                            7.40        2015
+16      Bolivia                                                           7.30        2014
+17      Finland                                                           7.20        2014
+18      Malta                                                             7.20        2014
+19      Costa Rica                                                        7.10        2016
+20      Eswatini                                                          7.10        2014
+21      Senegal                                                           7.10        2015
+22      Venezuela                                                         6.90        2009
+23      Moldova                                                           6.70        2016
+24      Belgium                                                           6.60        2014
+25      Tunisia                                                           6.60        2015
+26      Aruba                                                             6.50        2015
+27      Mozambique                                                        6.50        2013
+28      British Virgin Islands                                            6.30        2015
+29      New Zealand                                                       6.30        2015
+30      Congo, Republic of the                                            6.20        2010
+31      Ghana                                                             6.20        2014
+32      Oman                                                              6.20        2016
+33      Cyprus                                                            6.10        2014
+34      Kyrgyzstan                                                        6.00        2015
+35      Niger                                                             6.00        2015
+36      Puerto Rico                                                       6.00        2014
+37      Argentina                                                         5.90        2015
+38      Brazil                                                            5.90        2014
+39      Honduras                                                          5.90        2013
+40      South Africa                                                      5.90        2016
+41      Ukraine                                                           5.90        2014
+42      Saint Vincent and the Grenadines                                  5.80        2016
+43      Gaza Strip                                                        5.70        2016
+44      Israel                                                            5.70        2014
+45      Saint Lucia                                                       5.70        2016
+46      Vietnam                                                           5.70        2013
+47      West Bank                                                         5.70        2015
+48      United Kingdom                                                    5.60        2015
+49      Estonia                                                           5.50        2014
+50      France                                                            5.50        2014
+51      Netherlands                                                       5.50        2014
+52      Vanuatu                                                           5.50        2015
+53      Austria                                                           5.40        2014
+54      Burundi                                                           5.40        2013
+55      Cabo Verde                                                        5.40        2016
+56      Jamaica                                                           5.40        2017
+57      Canada                                                            5.30        2011
+58      Kenya                                                             5.30        2015
+59      Latvia                                                            5.30        2014
+60      Mexico                                                            5.30        2014
+61      Morocco                                                           5.30        2009
+62      Slovenia                                                          5.30        2014
+63      Australia                                                         5.20        2014
+64      Mongolia                                                          5.20        2016
+65      Tajikistan                                                        5.20        2015
+66      Barbados                                                          5.10        2016
+67      Korea, South                                                      5.10        2015
+68      Mauritius                                                         5.10        2017
+69      Montserrat                                                        5.10        2009
+70      Portugal                                                          5.10        2014
+71      Saudi Arabia                                                      5.10        2008
+72      Switzerland                                                       5.10        2014
+73      Syria                                                             5.10        2009
+74      Togo                                                              5.10        2016
+75      Belarus                                                           5.00        2016
+76      Ecuador                                                           5.00        2015
+77      Paraguay                                                          5.00        2012
+78      United States                                                     5.00        2014
+79      Chile                                                             4.90        2015
+80      Curacao                                                           4.90        2013
+81      Germany                                                           4.90        2014
+82      Ireland                                                           4.90        2014
+83      Poland                                                            4.90        2014
+84      Cote d'Ivoire                                                     4.80        2015
+85      Malaysia                                                          4.80        2016
+86      Cook Islands                                                      4.70        2016
+87      Malawi                                                            4.70        2016
+88      Croatia                                                           4.60        2013
+89      Hungary                                                           4.60        2014
+90      Slovakia                                                          4.60        2015
+91      Yemen                                                             4.60        2008
+92      Colombia                                                          4.50        2016
+93      Djibouti                                                          4.50        2010
+94      Ethiopia                                                          4.50        2013
+95      Lithuania                                                         4.50        2014
+96      Nicaragua                                                         4.50        2010
+97      Benin                                                             4.40        2015
+98      Brunei                                                            4.40        2016
+99      Turkey                                                            4.40        2014
+100     Uruguay                                                           4.40        2011
+101     Algeria                                                           4.30        2008
+102     Comoros                                                           4.30        2015
+103     Maldives                                                          4.30        2016
+104     Spain                                                             4.30        2014
+105     Burkina Faso                                                      4.20        2015
+106     Bulgaria                                                          4.10        2013
+107     Italy                                                             4.10        2014
+108     Samoa                                                             4.10        2016
+109     Thailand                                                          4.10        2013
+110     Czechia                                                           4.00        2014
+111     Luxembourg                                                        4.00        2014
+112     Serbia                                                            4.00        2015
+113     Fiji                                                              3.90        2013
+114     Jordan                                                            3.90        2016
+115     Egypt                                                             3.80        2008
+116     Georgia                                                           3.80        2016
+117     India                                                             3.80        2013
+118     Mali                                                              3.80        2015
+119     Peru                                                              3.80        2016
+120     Russia                                                            3.80        2012
+121     Nepal                                                             3.70        2015
+122     Sao Tome and Principe                                             3.70        2014
+123     Indonesia                                                         3.60        2015
+124     Japan                                                             3.60        2014
+125     Qatar                                                             3.60        2014
+126     Seychelles                                                        3.60        2011
+127     Albania                                                           3.50        2015
+128     Angola                                                            3.50        2010
+129     El Salvador                                                       3.50        2016
+130     Rwanda                                                            3.50        2016
+131     Sri Lanka                                                         3.50        2016
+132     Tanzania                                                          3.50        2014
+133     Dominica                                                          3.40        2015
+134     Iran                                                              3.40        2016
+135     Andorra                                                           3.30        2016
+136     Hong Kong                                                         3.30        2017
+137     Turks and Caicos Islands                                          3.30        2015
+138     Afghanistan                                                       3.20        2015
+139     Guyana                                                            3.20        2012
+140     Panama                                                            3.20        2011
+141     Romania                                                           3.10        2014
+142     Azerbaijan                                                        3.00        2015
+143     Kazakhstan                                                        3.00        2016
+144     Macau                                                             3.00        2015
+145     Turkmenistan                                                      3.00        2012
+146     Chad                                                              2.90        2013
+147     Laos                                                              2.90        2014
+148     Sierra Leone                                                      2.90        2016
+149     Singapore                                                         2.90        2013
+150     Anguilla                                                          2.80        2008
+151     Armenia                                                           2.80        2016
+152     Cameroon                                                          2.80        2013
+153     Gambia, The                                                       2.80        2013
+154     Guatemala                                                         2.80        2016
+155     Liberia                                                           2.80        2012
+156     Pakistan                                                          2.80        2017
+157     Saint Kitts and Nevis                                             2.80        2015
+158     Bahrain                                                           2.70        2016
+159     Gabon                                                             2.70        2014
+160     Philippines                                                       2.70        2009
+161     Liechtenstein                                                     2.60        2011
+162     Mauritania                                                        2.60        2016
+163     Antigua and Barbuda                                               2.50        2009
+164     Bangladesh                                                        2.50        2016
+165     Lebanon                                                           2.50        2013
+166     Guinea                                                            2.40        2014
+167     San Marino                                                        2.40        2011
+168     Congo, Democratic Republic of the                                 2.30        2015
+169     Uganda                                                            2.30        2014
+170     Sudan                                                             2.20        2009
+171     Guinea-Bissau                                                     2.10        2013
+172     Madagascar                                                        2.10        2013
+173     Cambodia                                                          1.90        2014
+174     South Sudan                                                       1.80        2016
+175     Bermuda                                                           1.50        2017
+176     Monaco                                                            1.40        2016
+177     Central African Republic                                          1.20        2011
+178     Zambia                                                            1.10        2008
+179     Burma                                                             0.80        2011

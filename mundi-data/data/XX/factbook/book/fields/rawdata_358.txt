@@ -1,0 +1,194 @@
+Country Comparison :: Health expenditures
+
+1       Marshall Islands                                                 17.10        2014
+2       United States                                                    17.10        2014
+3       Tuvalu                                                           16.50        2014
+4       Maldives                                                         13.70        2014
+5       Micronesia, Federated States of                                  13.70        2014
+6       Sweden                                                           11.90        2014
+7       Switzerland                                                      11.70        2014
+8       France                                                           11.50        2014
+9       Malawi                                                           11.40        2014
+10      Germany                                                          11.30        2014
+11      Austria                                                          11.20        2014
+12      Cuba                                                             11.10        2014
+13      Sierra Leone                                                     11.10        2014
+14      New Zealand                                                      11.00        2014
+15      Netherlands                                                      10.90        2014
+16      Denmark                                                          10.80        2014
+17      Belgium                                                          10.60        2014
+18      Djibouti                                                         10.60        2014
+19      Lesotho                                                          10.60        2014
+20      Canada                                                           10.40        2014
+21      Serbia                                                           10.40        2014
+22      Moldova                                                          10.30        2014
+23      Japan                                                            10.20        2014
+24      Kiribati                                                         10.20        2014
+25      Liberia                                                          10.00        2014
+26      Paraguay                                                          9.80        2014
+27      Finland                                                           9.70        2014
+28      Malta                                                             9.70        2014
+29      Norway                                                            9.70        2014
+30      Bosnia and Herzegovina                                            9.60        2014
+31      Portugal                                                          9.50        2014
+32      Australia                                                         9.40        2014
+33      Costa Rica                                                        9.30        2014
+34      Eswatini                                                          9.30        2014
+35      Ecuador                                                           9.20        2014
+36      Italy                                                             9.20        2014
+37      Slovenia                                                          9.20        2014
+38      United Kingdom                                                    9.10        2014
+39      Nicaragua                                                         9.00        2014
+40      Palau                                                             9.00        2014
+41      Spain                                                             9.00        2014
+42      Iceland                                                           8.90        2014
+43      Namibia                                                           8.90        2014
+44      South Africa                                                      8.80        2014
+45      Honduras                                                          8.70        2014
+46      Saint Vincent and the Grenadines                                  8.60        2014
+47      Uruguay                                                           8.60        2014
+48      Bulgaria                                                          8.40        2014
+49      Sao Tome and Principe                                             8.40        2014
+50      Sudan                                                             8.40        2014
+51      Brazil                                                            8.30        2014
+52      Afghanistan                                                       8.20        2014
+53      Albania                                                           8.20        2014
+54      Andorra                                                           8.10        2014
+55      Greece                                                            8.10        2014
+56      Slovakia                                                          8.10        2014
+57      Panama                                                            8.00        2014
+58      Chile                                                             7.80        2014
+59      Croatia                                                           7.80        2014
+60      Ireland                                                           7.80        2014
+61      Israel                                                            7.80        2014
+62      Bahamas, The                                                      7.70        2014
+63      Haiti                                                             7.60        2014
+64      Barbados                                                          7.50        2014
+65      Burundi                                                           7.50        2014
+66      Jordan                                                            7.50        2014
+67      Rwanda                                                            7.50        2014
+68      Cyprus                                                            7.40        2014
+69      Czechia                                                           7.40        2014
+70      Georgia                                                           7.40        2014
+71      Hungary                                                           7.40        2014
+72      Korea, South                                                      7.40        2014
+73      Niue                                                              7.40        2014
+74      Gambia, The                                                       7.30        2014
+75      Algeria                                                           7.20        2014
+76      Colombia                                                          7.20        2014
+77      Samoa                                                             7.20        2014
+78      Uganda                                                            7.20        2014
+79      Russia                                                            7.10        2014
+80      Ukraine                                                           7.10        2014
+81      Vietnam                                                           7.10        2014
+82      Mozambique                                                        7.00        2014
+83      Tunisia                                                           7.00        2014
+84      Iran                                                              6.90        2014
+85      Mali                                                              6.90        2014
+86      Tajikistan                                                        6.90        2014
+87      El Salvador                                                       6.80        2014
+88      Comoros                                                           6.70        2014
+89      Saint Lucia                                                       6.70        2014
+90      Lithuania                                                         6.60        2014
+91      Luxembourg                                                        6.60        2014
+92      Kyrgyzstan                                                        6.50        2014
+93      Macedonia                                                         6.50        2014
+94      Thailand                                                          6.50        2014
+95      Estonia                                                           6.40        2014
+96      Lebanon                                                           6.40        2014
+97      Montenegro                                                        6.40        2014
+98      Poland                                                            6.40        2014
+99      Zimbabwe                                                          6.40        2014
+100     Bolivia                                                           6.30        2014
+101     Mexico                                                            6.30        2014
+102     Guatemala                                                         6.20        2014
+103     Grenada                                                           6.10        2014
+104     San Marino                                                        6.10        2014
+105     Azerbaijan                                                        6.00        2014
+106     Latvia                                                            5.90        2014
+107     Morocco                                                           5.90        2014
+108     Trinidad and Tobago                                               5.90        2014
+109     Belize                                                            5.80        2014
+110     Nepal                                                             5.80        2014
+111     Niger                                                             5.80        2014
+112     Uzbekistan                                                        5.80        2014
+113     Belarus                                                           5.70        2014
+114     Cambodia                                                          5.70        2014
+115     Cote d'Ivoire                                                     5.70        2014
+116     Kenya                                                             5.70        2014
+117     Suriname                                                          5.70        2014
+118     Egypt                                                             5.60        2014
+119     Guinea                                                            5.60        2014
+120     Guinea-Bissau                                                     5.60        2014
+121     Romania                                                           5.60        2014
+122     Tanzania                                                          5.60        2014
+123     Yemen                                                             5.60        2014
+124     Antigua and Barbuda                                               5.50        2014
+125     China                                                             5.50        2014
+126     Dominica                                                          5.50        2014
+127     Iraq                                                              5.50        2014
+128     Peru                                                              5.50        2014
+129     Botswana                                                          5.40        2014
+130     Jamaica                                                           5.40        2014
+131     Turkey                                                            5.40        2014
+132     Venezuela                                                         5.30        2014
+133     Congo, Republic of the                                            5.20        2014
+134     Guyana                                                            5.20        2014
+135     Togo                                                              5.20        2014
+136     Tonga                                                             5.20        2014
+137     Saint Kitts and Nevis                                             5.10        2014
+138     Solomon Islands                                                   5.10        2014
+139     Bahrain                                                           5.00        2014
+140     Burkina Faso                                                      5.00        2014
+141     Libya                                                             5.00        2014
+142     Vanuatu                                                           5.00        2014
+143     Zambia                                                            5.00        2014
+144     Ethiopia                                                          4.90        2014
+145     Singapore                                                         4.90        2014
+146     Argentina                                                         4.80        2014
+147     Cabo Verde                                                        4.80        2014
+148     Mauritius                                                         4.80        2014
+149     India                                                             4.70        2014
+150     Mongolia                                                          4.70        2014
+151     Philippines                                                       4.70        2014
+152     Saudi Arabia                                                      4.70        2014
+153     Senegal                                                           4.70        2014
+154     Benin                                                             4.60        2014
+155     Armenia                                                           4.50        2014
+156     Fiji                                                              4.50        2014
+157     Dominican Republic                                                4.40        2014
+158     Kazakhstan                                                        4.40        2014
+159     Congo, Democratic Republic of the                                 4.30        2014
+160     Monaco                                                            4.30        2014
+161     Papua New Guinea                                                  4.30        2014
+162     Central African Republic                                          4.20        2014
+163     Malaysia                                                          4.20        2014
+164     Cameroon                                                          4.10        2014
+165     Equatorial Guinea                                                 3.80        2014
+166     Mauritania                                                        3.80        2014
+167     Nigeria                                                           3.70        2014
+168     Bhutan                                                            3.60        2014
+169     Chad                                                              3.60        2014
+170     Ghana                                                             3.60        2014
+171     Oman                                                              3.60        2014
+172     United Arab Emirates                                              3.60        2014
+173     Sri Lanka                                                         3.50        2014
+174     Cook Islands                                                      3.40        2014
+175     Gabon                                                             3.40        2014
+176     Seychelles                                                        3.40        2014
+177     Angola                                                            3.30        2014
+178     Eritrea                                                           3.30        2014
+179     Nauru                                                             3.30        2014
+180     Syria                                                             3.30        2014
+181     Kuwait                                                            3.00        2014
+182     Madagascar                                                        3.00        2014
+183     Bangladesh                                                        2.80        2014
+184     Indonesia                                                         2.80        2014
+185     South Sudan                                                       2.70        2014
+186     Brunei                                                            2.60        2014
+187     Pakistan                                                          2.60        2014
+188     Burma                                                             2.30        2014
+189     Qatar                                                             2.20        2014
+190     Turkmenistan                                                      2.10        2014
+191     Laos                                                              1.90        2014
+192     Timor-Leste                                                       1.50        2014
