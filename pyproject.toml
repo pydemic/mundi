@@ -24,7 +24,9 @@ description-file = "README.rst"
 requires = [
     "pandas",
     "sqlalchemy",
-    "sidekick",
+    "sidekick.properties",
+    "sidekick.functions",
+    "sidekick.cache",
     "click",
 ]
 

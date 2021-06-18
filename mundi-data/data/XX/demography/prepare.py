@@ -1,4 +1,4 @@
-import sidekick as sk
+import sidekick.api as sk
 
 import mundi
 from mundi.plugins.demography import DemographyData

@@ -3,7 +3,6 @@ from typing import Optional, Iterator, TYPE_CHECKING
 from weakref import WeakValueDictionary
 
 import pandas as pd
-import sidekick.api as sk
 from sqlalchemy import literal
 
 from .. import db
@@ -21,6 +20,11 @@ class Region:
 
     name: str
     _get_column = staticmethod(db.Universe.REGION.column)
+    
+    # Attributes from standard plugins
+    population: Optional[int]
+    age_distribution: Optional[pd.Series]
+    age_pyramid: Optional[pd.DataFrame]
 
     def __new__(cls, ref, unsafe=False):
         if not isinstance(ref, str):
@@ -120,7 +124,7 @@ class Region:
             name = f"{self.id} children"
         if relation in ("*", "all"):
             relation = None
-        ids = sk.iter(self._children_ids(relation, deep))
+        ids = iter(self._children_ids(relation, deep))
         return RegionSet(ids, name=name)
 
     def children_dataframe(

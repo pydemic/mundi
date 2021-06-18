@@ -3,11 +3,11 @@ from pathlib import Path
 from typing import Tuple
 
 import pandas as pd
-from sidekick import api as sk
 from sqlalchemy import create_engine
+from sidekick.functions import once
 
 
-@sk.once
+@once
 def mundi_data_path() -> Path:
     """
     Return local path to the mundi-data repository, if it exists.
@@ -27,7 +27,7 @@ def mundi_data_path() -> Path:
     raise ValueError("could not find mundi data repository")
 
 
-@sk.once
+@once
 def mundi_db_engine():
     """
     Return the SQL engine that access the mundi database.
@@ -35,7 +35,7 @@ def mundi_db_engine():
     return create_engine(f"sqlite:///{mundi_db_path()}", echo=False)
 
 
-@sk.once
+@once
 def mundi_lib_path() -> Path:
     """
     Path to mundi library in user HOME directory.
@@ -45,7 +45,7 @@ def mundi_lib_path() -> Path:
     return path
 
 
-@sk.once
+@once
 def mundi_db_path() -> Path:
     """
     Path to sql library under the mundi_path.

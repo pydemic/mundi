@@ -5,9 +5,9 @@ from collections import defaultdict
 from functools import cmp_to_key
 from pathlib import Path
 from typing import List, Iterable, Optional, Dict, Union
-import sidekick.api as sk
 
 import pandas as pd
+from sidekick.properties import delegate_to
 
 from .. import db
 from ..filling_policies import FillPolicy, apply_filling_policy
@@ -37,7 +37,7 @@ class Collector(ABC):
     fill_policy_map: dict = None
     auto_index: bool = False
     max_size: Optional[int]
-    table_name: str = sk.delegate_to('info.name')
+    table_name: str = delegate_to('info.name')
 
     @classmethod
     def register(cls, table, universe: db.Universe):
@@ -174,7 +174,7 @@ class Collector(ABC):
         """
         (ra, a), *rest = chunks.items()
         for (rb, b) in rest:
-            if (a.dtypes != b.dtypes).all():
+            if a.dtypes.to_dict() != b.dtypes.to_dict():
                 raise TypeError(
                     f"region {a} and {b} have conflicting chunk types:\n"
                     f"{a.dtypes}\n{b.dtypes}"

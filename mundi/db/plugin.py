@@ -7,7 +7,7 @@ from typing import Dict, TypeVar, Type, List, Union, Tuple
 
 import pandas as pd
 import pkg_resources
-import sidekick.api as sk
+from sidekick.proxy import import_later
 
 from . import Table, Universe
 from .. import config
@@ -34,7 +34,7 @@ class Plugin(ABC):
     prefix: str = ""
 
     @classmethod
-    def cli(cls, click=sk.import_later("click")):
+    def cli(cls, click=import_later("click")):
         """
         Execute data processing actions related to plugin.
         """
@@ -44,7 +44,7 @@ class Plugin(ABC):
         def select_tables(plugin, table):
             if table:
                 select = set(table.split(","))
-                yield from sk.filter(lambda x: x.name in select, plugin.tables)
+                yield from filter(lambda x: x.name in select, plugin.tables)
             else:
                 yield from plugin.tables
 

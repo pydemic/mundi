@@ -3,7 +3,6 @@ from typing import (Optional, Dict, FrozenSet, Any, Callable, Union, List, TypeV
                     Sequence)
 
 import pandas as pd
-import sidekick as sk
 
 from .region import as_region, Region
 from .. import db
@@ -17,7 +16,7 @@ def inplace_sum(data):
     A sum function that is also efficient when dealing with sequence of
     dataframes over the same indexes.
     """
-    head, tail = sk.uncons(data)
+    head, tail = uncons(data)  #FIXME: sidekick.seq?
     if hasattr(head, 'copy'):
         head = head.copy()
     else:

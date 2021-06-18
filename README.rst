@@ -2,15 +2,14 @@
 Mundi
 =====
 
-Mundi is a simple package that provides information about countries and sub-regions with a convenient
-set of classes and Pandas integration. It uses information provided by the
-popular pycountry package and supplement it with several other data sources using
-plugins.
+Mundi is a simple package that provides information about countries and sub-regions and has a convenient
+Pandas integration. It uses information provided by the popular pycountry package and supplement it with
+several other data sources using plugins.
 
 Warning!
 ========
 
-Mundi is still in an early stage of development and thus is changing very quickly. New users
+Mundi is still in an early stage of development and thus changes somewhat quickly. New users
 should expect some risks in terms of API changes and general breakage. We suggest that if you
 want to take that risk, install it from git and keep in touch with the developers (and better yet,
 contribute to the project).
@@ -20,7 +19,7 @@ Usage
 
 Install Mundi using ``pip install mundi`` or your preferred method of choice. Now, import
 it and load the desired information. Mundi exposes collections of entries as RegionSet's,
-dataframes, and single entries Region objects.
+or dataframes, and single entries as Region objects.
 
 For instance, we can get the list of all countries in the world using the mundi.countries() function.
 
@@ -29,13 +28,13 @@ For instance, we can get the list of all countries in the world using the mundi.
 RegionSet({'AD', 'AE', 'AF', 'AG', ...})
 
 The resulting object, a region set, is a set-like structure with the list all matched
-regions. The :func:`mundi.countries` function accept filtering using keyword arguments,
+regions. The ``mundi.countries()`` function accept filtering using keyword arguments,
 like the query bellow that fetches all South American countries (XSA is the code for
 South America).
 
 >>> countries = mundi.countries(parent_id='XSA')
 
-The resulting RegionSet can be easily queried and converted to dataframes. We can,
+The resulting RegionSet can be easily queried and converted to a dataframe. We can,
 for instance, aggregate total population or find the region with the largest or
 smallest populations quite easily.
 
@@ -92,6 +91,10 @@ True
 Using dataframes
 ================
 
+If you want to expose data from a collection of countries as dataframes, it may be
+more convenient (and efficient) to call `mundi.countries_dataframe` instead of
+creating an intermediate RegionSet()
+
 >>> df = mundi.countries_dataframe(); df  # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
                 name
 id
@@ -105,7 +108,7 @@ AX      Åland Islands
 
 The ``mundi.country_dataframe()`` function is just an alias to ``mundi.regions_dataframe(type="country")``.
 The more generic ``mundi.regions_dataframe()`` function may be used to query countries and
-subdivisions inside a country.
+subdivisions.
 
 >>> br_states = mundi.regions_dataframe(country_id="BR", type="state"); br_states  # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
                       name
@@ -118,8 +121,8 @@ BR-BA                Bahia
 ...
 
 
-The library creates a custom ``.mundi`` accessor that exposes additional
-methods not present in regular data frames. The most important of those is
+Mundi creates a custom ``.mundi`` accessor to all dataframes that exposes additional
+methods not present in regular dataframes. The most important of those is
 the ability to extend the data frame with additional columns available from Mundi
 itself or from plugins.
 
@@ -166,9 +169,32 @@ BO    Bolivia, Plurinational State of
 BR                             Brazil
 ...
 
+Geopandas integration
+=====================
 
-Information
-===========
+Mundi integrates with geopandas by exposing a "geometry" column.
+
+>>> df.mundi[..., ["geometry"]]
+                                name            geometry
+id
+AW                              Aruba  POLYGON...
+AR                          Argentina  MULTIPOLYGON...
+AG                Antigua and Barbuda  POLYGON...
+BS                            Bahamas  MULTIPOLYGON...
+BZ                             Belize  POLYGON...
+BO    Bolivia, Plurinational State of  POLYGON...
+BR                             Brazil  MULTIPOLYGON...
+...
+
+It is also accessible as a method
+
+>>> (df.mundi.geometry() == df.mundi[..., ["geometry"]]).all()
+True
+
+The method API is more flexible and provides some options to simplify shapes, or to locate the shapefiles.
+
+Basic Information
+=================
 
 The basic data in the mundi package is centered around a table describing many world
 regions with the following structure:
@@ -208,3 +234,7 @@ regions with the following structure:
 +---------------+-------------------------------------------------------------------------------------------+
 | region        | Region of the globe according to UN's classification.                                     |
 +---------------+-------------------------------------------------------------------------------------------+
+
+
+Plugins
+=======

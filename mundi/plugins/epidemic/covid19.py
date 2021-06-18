@@ -1,21 +1,27 @@
 import io
 import time
+import os
+from datetime import datetime
 from functools import lru_cache
 from urllib.error import HTTPError
 
 import numpy as np
 import pandas as pd
 import requests
-import sidekick as sk
+
 import mundi
-from mundi import filling_policies
-from sidekick.beta.cache import ttl_cache, today
+from sidekick.functions import retry
+from sidekick.cache import ttl_cache
+
+from ...impute import impute_subregions
 from ...logging import log
+from .common import init_cache
 
 HOURS = 3600
 TIMEOUT = 6 * HOURS
 EPIDEMIC_CURVES_APIS = {}
 MOBILITY_DATA_APIS = {}
+init_cache()
 
 
 def epidemic_curve_api(key):
@@ -49,7 +55,7 @@ def auto_api(code, **kwargs):
     Select best API to load according to region code.
     """
     if code == "BR" or code.startswith("BR-"):
-        return brasil_io(code)
+        return brasil_io(code, **kwargs)
     elif len(code) == 2:
         return corona_api(code, **kwargs)
     raise ValueError(f"no API can load region with code: {code}")
@@ -79,7 +85,7 @@ def corona_api(code) -> pd.DataFrame:
     return df.astype(int)
 
 
-@sk.retry(10, sleep=0.5)
+@retry(10, sleep=0.5)
 def download_corona_api(code) -> dict:
     log.info(f"[api/corona-api] Downloading data from corona API ({code})")
 
@@ -92,65 +98,33 @@ def download_corona_api(code) -> dict:
 
 
 @epidemic_curve_api("brasil.io")
-def brasil_io(code):
-    cases = brasil_io_cases()
-    cases = cases[cases["id"] == code].drop(columns="id")
-    cases = cases.drop_duplicates("date")
-    return cases.set_index("date").sort_index()
+def brasil_io(code, path=None):
+    return brasil_io_cases(path=path).loc[code]
 
 
 @ttl_cache("covid-19", timeout=TIMEOUT)
-def brasil_io_cases() -> pd.DataFrame:
+def brasil_io_cases(path=None) -> pd.DataFrame:
     """
     Return the complete dataframe of cases and deaths from Brasil.io.
     """
 
-    df = download_brasil_io_cases()
-    cols = {
-        "last_available_confirmed": "cases",
-        "confirmed": "cases",
-        "last_available_deaths": "deaths",
-        "city_ibge_code": "code",
-    }
+    if path is None:
+        df = download_brasil_io_cases()
+    else:
+        log.info(f"[api/brasil.io] Reading local file {path}")
+        df = pd.read_csv(os.path.expanduser(path))
 
-    cases = df.rename(cols, axis=1)
-    cases = cases[cases["code"].notna()]
-
-    cases["code"] = cases["code"].apply(lambda x: str(int(x))).astype("string")
-    cases["code"] = "BR-" + cases["code"]
-
-    cases["date"] = pd.to_datetime(cases["date"])
-    cases = cases[cases["place_type"] == "city"]
-
-    cases = cases[["date", "code", "cases", "deaths"]]
-    cases = cases.dropna().reset_index(drop=True)
-    cases = cases.rename({"code": "id"}, axis=1)
-
-    log.info(f"[api/brasil.io] Merging {len(df)} entries")
-
-    result = {}
-    for col in ["cases", "deaths"]:
-        data = (
-            cases.pivot_table(index="id", columns="date", values=col)
-            .fillna(-1)
-            .sort_index()
-        )
-        data = filling_policies.sum_children(data).reset_index()
-        data = data.melt(id_vars=["id"], var_name="date", value_name=col)
-        data = data[data[col] >= 0]
-        result[col] = data
-    out = (
-        pd.merge(*result.values(), on=["id", "date"], how="outer")
-        .fillna(0)
-        .astype({"cases": int, "deaths": int})
+    cases = brasil_io_clean_cases(df)
+    log.info("[api/brasil.io] Merging data")
+    return (
+        pd.concat([cases, impute_subregions(cases, "BR", "date", level=7)])
+        .set_index(["id", "date"])
+        .sort_index()
     )
 
-    log.info("[api/brasil.io] Merge complete")
 
-    return out
-
-
-@sk.retry(10, sleep=0.5)
+@ttl_cache("covid-19", timeout=TIMEOUT)
+@retry(10, sleep=0.5)
 def download_brasil_io_cases():
     log.info("[api/brasil.io] Downloading data from Brasil.io")
 
@@ -169,18 +143,45 @@ def download_brasil_io_cases():
         return pd.read_csv(io.BytesIO(response.content), compression="gzip")
 
 
+def brasil_io_clean_cases(data: pd.DataFrame):
+    """
+    Clean brasil.io data.
+    """
+
+    cols = {
+        "last_available_confirmed": "cases",
+        "confirmed": "cases",
+        "last_available_deaths": "deaths",
+        "city_ibge_code": "code",
+    }
+
+    cases = data.rename(cols, axis=1)
+    cases = cases[cases["code"].notna()]
+    cases = cases[cases["place_type"] == "city"]
+
+    cases["code"] = cases["code"].apply(lambda x: str(int(x))).astype("string")
+    cases["code"] = "BR-" + cases["code"]
+    cases["date"] = pd.to_datetime(cases["date"])
+
+    cases = cases[["date", "code", "cases", "deaths"]]
+    cases = cases.dropna().reset_index(drop=True)
+    cases = cases.rename({"code": "id"}, axis=1)
+
+    return cases
+
+
 #
 # Mobility data
 #
 @ttl_cache("covid-19", timeout=TIMEOUT)
-@sk.retry(10, sleep=0.5)
+@retry(10, sleep=0.5)
 def google_mobility_data(cli=False):
     """
     Download google mobility data
     """
     url = "https://www.gstatic.com/covid19/mobility/Global_Mobility_Report.csv"
 
-    log.info(f"Downloading google mobility data {today()}")
+    log.info(f"Downloading google mobility data {datetime.now().date()}")
     t0 = time.time()
     data = requests.get(url)
     log.info(f"Download finished after {time.time() - t0:0.2} seconds")
@@ -247,4 +248,6 @@ def google_mobility_map_codes() -> dict:
 
 
 if __name__ == "__main__":
-    sk.import_later("..cli.api:covid19_api_downloader", package=__package__)()
+    from sidekick.proxy import import_later
+
+    import_later("..cli.api:covid19_api_downloader", package=__package__)()

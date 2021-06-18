@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-import sidekick.api as sk
+from sidekick.functions import once
 
 from ..types import Region
 
@@ -28,7 +28,7 @@ def ibge_city(code: str) -> Region:
         return Region(f"BR-{ibge_city_code(code)}")
 
 
-@sk.once
+@once
 def ibge_city_code_mapping() -> dict:
     """
     Return dictionary mapping 6-digit IBGE city code to the 7-digit counterpart.
@@ -38,7 +38,7 @@ def ibge_city_code_mapping() -> dict:
         return json.load(fd)
 
 
-@sk.once
+@once
 def ibge_city_codes() -> set:
     """
     Return a set with all valid IBGE city codes.

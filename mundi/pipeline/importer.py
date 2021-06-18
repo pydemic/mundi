@@ -4,7 +4,7 @@ from typing import Iterable, Callable, Dict, Union
 
 import numpy as np
 import pandas as pd
-import sidekick.api as sk
+from sidekick.properties import delegate_to, lazy
 
 from .. import config
 from .. import db
@@ -26,7 +26,7 @@ class Importer(ABC):
     _init = False
     path: Path
     info: db.TableInfo
-    universe: db.Universe = sk.delegate_to("info")
+    universe: db.Universe = delegate_to("info")
     default_chunk_size = None
 
     @classmethod
@@ -100,7 +100,7 @@ class SQLImporter(Importer):
 
     default_chunk_size = 2048
 
-    @sk.lazy
+    @lazy
     def model(self) -> db.Table:
         if not self.info.is_sql:
             raise RuntimeError("Cannot import non-SQL tables.")

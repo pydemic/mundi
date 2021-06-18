@@ -1,5 +1,5 @@
 import click
-import sidekick.api as sk
+from sidekick.functions import once
 
 from .. import plugins as plugin_modules, Path
 from ..db import create_tables
@@ -32,7 +32,7 @@ def main(path, plugin, force):
     create_tables()
 
 
-@sk.once
+@once
 def get_location():
     return Path(".").absolute() / "mundi-data"
 

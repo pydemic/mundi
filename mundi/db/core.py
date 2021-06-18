@@ -3,9 +3,10 @@ import operator
 from enum import Enum
 from functools import lru_cache
 from typing import Tuple, Callable, Union, Any, List, Dict, cast, Type, Iterable, Iterator
+from sidekick.properties import lazy
+from sidekick.proxy import deferred
 
 import pandas as pd
-from sidekick import api as sk
 from sqlalchemy import Column as _Column
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Session, sessionmaker
@@ -114,10 +115,10 @@ class Universe(Enum):
         models = model if isinstance(model, (tuple, list)) else (model,)
         query = session().query(*models)
 
-        if join == 'auto':
+        if join == "auto":
             models = set()
             for col in filter_dict:
-                m = self.column(col.split('__')[0]).model
+                m = self.column(col.split("__")[0]).model
                 if m is not model:
                     models.add(m)
             query = query.join(*models)
@@ -146,6 +147,7 @@ class Universe(Enum):
 
         return column.expression == value
 
+
 @dataclasses.dataclass(frozen=True)
 class TableInfo:
     """
@@ -173,7 +175,7 @@ class TableInfo:
 
     @classmethod
     def registered(
-            cls, *args, internal_columns=(), export_columns=(), **kwargs
+        cls, *args, internal_columns=(), export_columns=(), **kwargs
     ) -> "TableInfo":
         """
         Create a table info object and register it into global registry.
@@ -302,14 +304,14 @@ class SqlColumn(Column):
     is_sql = True
     is_queryable = True
 
-    @sk.lazy
+    @lazy
     def expression(self) -> _Column:
         """
         Expression element
         """
         return getattr(self.model, self.name)
 
-    @sk.lazy
+    @lazy
     def model(self):
         return self.table.row_type
 
@@ -337,15 +339,11 @@ class SqlColumn(Column):
         index_exprs = [getattr(self.model, name) for name in indexes]
         query = (
             session()
-                .query(self.model)
-                .filter(*filters)
-                .values(*index_exprs, self.expression)
+            .query(self.model)
+            .filter(*filters)
+            .values(*index_exprs, self.expression)
         )
-        return (
-            pd.DataFrame(query)
-                .set_index(indexes)
-                .reindex(pks)[self.name]
-        )
+        return pd.DataFrame(query).set_index(indexes).reindex(pks)[self.name]
 
 
 class HDF5Column(Column):
@@ -413,7 +411,7 @@ class ComputedColumn(Column):
             return data
 
     def __init__(
-            self, ref, table, arguments, universe=None, *, to_scalar=None, to_table=None
+        self, ref, table, arguments, universe=None, *, to_scalar=None, to_table=None
     ):
         super().__init__(ref, table, universe=universe, is_queryable=False)
         super().__setattr__("arguments", arguments)
@@ -503,8 +501,9 @@ def create_tables(*, force=False):
         create_tables_executed = True
 
 
-def column_expressions(universe: Universe, columns: Iterable[str]) -> \
-        Iterator[QueryableAttribute]:
+def column_expressions(
+    universe: Universe, columns: Iterable[str]
+) -> Iterator[QueryableAttribute]:
     """
     Return sequence of SQL expressions from names.
     """
@@ -519,4 +518,4 @@ def column_expressions(universe: Universe, columns: Iterable[str]) -> \
 Table: Type[SQLTableBase] = declarative_base(
     class_registry=SQLTableBase.REGISTRY, cls=SQLTableBase
 )
-BaseSession: Callable[[], Session] = sk.deferred(lambda: sessionmaker(mundi_db_engine()))
+BaseSession: Callable[[], Session] = deferred(lambda: sessionmaker(mundi_db_engine()))

@@ -172,8 +172,8 @@ class Brazil(RegionData):
         df.index.name = "id"
         df = df.astype("string")
 
-        type_levels = {"city": 6, "district": 7}
-        subtype_levels = {"meso-region": 4, "micro-region": 5}
+        type_levels = {"city": 7, "district": 8}
+        subtype_levels = {"meso-region": 5, "micro-region": 6}
         df["level"] = (
             df["type"]
             .apply(type_levels.get)
@@ -254,7 +254,7 @@ class Brazil(RegionData):
         out["long_code"] = out["id"].str[3:]
         out = out.set_index("id")
         return self.fill_region(
-            out, country_id="BR", type="region", subtype="healthcare_region", level=4
+            out, country_id="BR", type="region", subtype="healthcare_region", level=5
         )
 
     @sk.lazy

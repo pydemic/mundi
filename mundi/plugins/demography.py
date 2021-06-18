@@ -2,7 +2,7 @@ from types import ModuleType
 from typing import Union
 
 import pandas as pd
-import sidekick.api as sk
+from sidekick.properties import lazy
 
 from .. import db
 from ..pipeline import DataIO, Collector, HDF5Importer
@@ -32,17 +32,17 @@ class DemographyData(DataIO):
         # },
     }
 
-    @sk.lazy
+    @lazy
     def demography(self):
         return pd.DataFrame({"population": self.population})
 
-    @sk.lazy
+    @lazy
     def population(self) -> pd.DataFrame:
         df = self.age_distribution.sum(axis=1).astype(self.dtype)
         df.index.name = "id"
         return df
 
-    @sk.lazy
+    @lazy
     def age_distributions(self):
         return {
             "all": self.age_distribution,
@@ -50,29 +50,29 @@ class DemographyData(DataIO):
             "male": self.age_pyramid["male"],
         }
 
-    @sk.lazy
+    @lazy
     def age_distribution(self) -> pd.DataFrame:
         df = (self.age_pyramid["female"] + self.age_pyramid["male"]).astype(self.dtype)
         df.index.name = "id"
         return df
 
-    @sk.lazy
+    @lazy
     def age_pyramid(self) -> pd.DataFrame:
         df = self.empty_age_pyramid()
         df.index = df.index = pd.Index([], name="id")
         return df
 
-    @sk.lazy
+    @lazy
     def historic_demography(self):
         return pd.DataFrame({"population": self.historic_population})
 
-    @sk.lazy
+    @lazy
     def historic_population(self):
         df = self.historic_age_distribution.sum(axis=1).astype(self.dtype)
         df.index.names = ["region_id", "year"]
         return df
 
-    @sk.lazy
+    @lazy
     def historic_age_distributions(self):
         return {
             "all": self.historic_age_distribution,
@@ -80,14 +80,14 @@ class DemographyData(DataIO):
             "male": self.historic_age_pyramid["male"],
         }
 
-    @sk.lazy
+    @lazy
     def historic_age_distribution(self):
         df = self.historic_age_pyramid
         df = (df["female"] + df["male"]).astype(self.dtype)
         df.index.names = ["id", "year"]
         return df
 
-    @sk.lazy
+    @lazy
     def historic_age_pyramid(self):
         df = self.empty_age_pyramid()
         df.index = pd.MultiIndex.from_tuples([], names=["id", "year"])
@@ -155,21 +155,19 @@ class DemographyPlugin(db.Plugin):
         msg = 'Male and female parts of pyramid are not synchronized'
         assert len(female) == len(male), msg
 
-        mask: pd.Series = (both.sum(1) != population).values
-        if len(mask):
-            print(pd.DataFrame({
-                'population': population[mask],
-                'sum': both.sum(axis=1)[mask],
-            }))
-            raise ValueError('Population not consistent with age_distribution')
+        join = pd.concat({'all': both, 'male + female': male + female}, axis=1)
+        join = join.dropna().astype(int)
+        mask = (join['all'] != join['male + female']).any(1).values
+        if mask.any():
+            msg = f'Population not consistent with age_distribution:\n{join.loc[mask]}'
+            raise ValueError(msg)
 
-        mask: pd.Series = (both != male + female).values
-        if len(mask):
-            print(pd.DataFrame({
-                'population': population[mask],
-                'sum': both.sum(axis=1)[mask],
-            }))
-            raise ValueError('Population not consistent with age_distribution')
+        join = pd.concat({'population': population, 'sum': both.sum(1)}, axis=1)
+        join = join.dropna().astype(int)
+        mask = (join['population'] != join['sum']).values
+        if mask.any():
+            msg = f'Population not consistent with age_distribution:\n{join.loc[mask]}'
+            raise ValueError(msg)
 
 
 def multi_index(prefix, idxs):

@@ -3,9 +3,9 @@ import os
 from collections import Counter
 from pathlib import Path
 from typing import Union, Dict, Any, Iterable, List, TypeVar
-
+from sidekick.functions import curry
+from sidekick.seq import dedupe
 import pandas as pd
-from sidekick import api as sk
 
 EXT_KINDS = {".pkl.gz": "pickle", ".pkl": "pickle", ".csv": "csv", ".csv.gz": "csv"}
 
@@ -104,7 +104,7 @@ def check_no_object_columns(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-@sk.curry(2)
+@curry(2)
 def check_column_types(
     types: Dict[str, Any], table: pd.DataFrame, *, name="<unknown>"
 ) -> pd.DataFrame:
@@ -347,7 +347,7 @@ def index_roots(index: pd.Index) -> list:
     """
     if index.nlevels == 1:
         return [*index]
-    return [*sk.dedupe(index.get_level_values(0))]
+    return [*dedupe(index.get_level_values(0))]
 
 
 def add_index_level(data, level, **kwargs):

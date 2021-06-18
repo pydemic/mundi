@@ -1,9 +1,8 @@
 import enum
+from functools import lru_cache
 
 import pandas as pd
 
-import mundi.db.core
-import mundi.db.tables
 from . import db
 
 
@@ -25,6 +24,17 @@ POLICY_FUNCTIONS = {
     FillPolicy.MAX_CHILDREN: lambda df: agg_children(df, "max"),
     FillPolicy.MIN_CHILDREN: lambda df: agg_children(df, "min"),
 }
+
+
+@lru_cache(10)
+def region_m2m(relation) -> pd.DataFrame:
+    m = db.RegionM2M
+    return pd.DataFrame(
+        db.session()
+            .query(m)
+            .filter(m.relation == relation)
+            .values(m.child_id, m.parent_id)
+    ).rename(columns={'child_id': 'child', 'parent_id': 'parent'})
 
 
 def apply_filling_policy(table: pd.DataFrame, policy: FillPolicy) -> pd.DataFrame:
@@ -60,11 +70,11 @@ def agg_children(data: pd.DataFrame, agg="sum", relation="default") -> pd.DataFr
     while True:
         m2m = pd.DataFrame(
             list(
-                mundi.db.core.session()
-                .query(db.RegionM2M)
-                .filter(db.RegionM2M.relation == relation)
-                .filter(db.RegionM2M.child_id.in_(data.index))
-                .values(db.RegionM2M.child_id, db.RegionM2M.parent_id)
+                db.session()
+                    .query(db.RegionM2M)
+                    .filter(db.RegionM2M.relation == relation)
+                    .filter(db.RegionM2M.child_id.in_(data.index))
+                    .values(db.RegionM2M.child_id, db.RegionM2M.parent_id)
             )
         )
         if len(m2m) == 0:
@@ -75,13 +85,28 @@ def agg_children(data: pd.DataFrame, agg="sum", relation="default") -> pd.DataFr
 
         out = (
             pd.merge(m2m, data.reset_index(), on="id")
-            .drop(columns="id")
-            .rename(columns={"parent_id": "id"})
-            .groupby("id")
-            .agg(agg)
+                .drop(columns="id")
+                .rename(columns={"parent_id": "id"})
+                .groupby("id")
+                .agg(agg)
         )
         if len(out) == 0:
             return pd.concat(parts)
         parts.append(out)
         skip = skip.union(out.index)
         data = out
+
+
+def agg_children(data: pd.DataFrame, agg="sum", relation="default") -> pd.DataFrame:
+    print(agg)
+    print(data)
+    m2m = region_m2m(relation)
+
+    parents = pd.Index(m2m['parent'].unique())
+    missing = parents.difference(data.index)
+    print(parents)
+    return data
+
+
+def agg_scalar(ref, data, column, relation="default", agg="sum"):
+    ...

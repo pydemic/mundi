@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Dict, Iterator, List
 
 import pandas as pd
-import sidekick.api as sk
+from sidekick.functions import pipe
 
 from .. import config
 from ..logging import log
@@ -171,7 +171,7 @@ class Data(ABC):
             elif isinstance(table, dict):
                 table = check_column_types_ex(dtypes, table, name=name)
 
-        return sk.pipe(table, check_unique_index_ex, check_no_object_columns_ex)
+        return pipe(table, check_unique_index_ex, check_no_object_columns_ex)
 
     def save(self):
         """
